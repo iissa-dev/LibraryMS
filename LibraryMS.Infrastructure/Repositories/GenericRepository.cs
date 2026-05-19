@@ -10,7 +10,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     protected readonly AppDbContext Context;
     protected readonly DbSet<T> DbSet;
 
-    public GenericRepository(AppDbContext context, DbSet<T> dbSet)
+    public GenericRepository(AppDbContext context)
     {
         Context = context ?? throw new ArgumentNullException(nameof(context));
         DbSet = context.Set<T>();

@@ -1,4 +1,6 @@
-﻿using LibraryMS.Infrastructure.Data;
+﻿using LibraryMS.Application.Interfaces.IRepository;
+using LibraryMS.Infrastructure.Data;
+using LibraryMS.Infrastructure.Repositories;
 using LibraryMS.Infrastructure.SeedData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +16,9 @@ public static class InfrastructureDependencyInjection
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
+        
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
     public static async Task InitializeDatabaseAsync(this IServiceProvider services)

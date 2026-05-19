@@ -1,3 +1,4 @@
+using LibraryMS.Application.DependencyInjection;
 using LibraryMS.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddOpenApi();
 // Infrastructure Services
 builder.Services.AddInfrastructure(builder.Configuration);
 // Application Services
+builder.Services.AddApplication();
 
 var app = builder.Build();
 

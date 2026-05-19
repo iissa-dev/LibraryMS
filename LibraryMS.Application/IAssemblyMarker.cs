@@ -1,6 +1,3 @@
 ﻿namespace LibraryMS.Application;
 
-public class Class1
-{
-
-}
+public interface IAssemblyMarker;

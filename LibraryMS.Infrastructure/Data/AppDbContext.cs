@@ -1,13 +1,11 @@
-using LibraryMS.Application.Interfaces.IRepository;
 using LibraryMS.Domain.Entities;
 using LibraryMS.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LibraryMS.Infrastructure.Data;
 
-public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>, IAppDbContext
+public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
 {
     public DbSet<Country> Countries { get; set; }
     public DbSet<Setting> Settings { get; set; }
@@ -30,7 +28,4 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, 
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
-    
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken)
-        => Database.BeginTransactionAsync(cancellationToken);
 }

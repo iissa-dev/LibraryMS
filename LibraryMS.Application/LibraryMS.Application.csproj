@@ -7,12 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LibraryMS.Domain\LibraryMS.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Book\Commands\CreateBook\" />
+    <Folder Include="Features\Book\Commands\DeleteBook\" />
+    <Folder Include="Features\Book\Commands\UpdateBook\" />
+    <Folder Include="Features\Book\Queries\GetBooks\" />
   </ItemGroup>
 
 </Project>
