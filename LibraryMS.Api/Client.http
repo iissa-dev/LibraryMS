@@ -1,0 +1,27 @@
+﻿### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=JetBrains Rider
+
+###
+@baseUrl = http://localhost:5165/api/
+
+POST {{baseUrl}}/Clients
+Content-Type: application/json
+
+{
+  "email": "issa@gmail.com",
+  "password": "Issa1234#",
+  "firstName": "Issa",
+  "lastName": "Atieh",
+  "phoneNumber": "0780830732",
+  "address": "Al-Zarqa",
+  "userName": "IIssadev",
+  "countryId": 113,
+  "birthDate": "2004-10-06",
+  "imageUrl": "",
+  "libraryCardNumber": "230220"
+}
+
+###
+GET {{baseUrl}}/Clients?PageNumber=1&PageSize=10
+Content-Type: application/json
