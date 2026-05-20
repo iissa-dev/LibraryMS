@@ -18,10 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Book\Commands\CreateBook\" />
     <Folder Include="Features\Book\Commands\DeleteBook\" />
     <Folder Include="Features\Book\Commands\UpdateBook\" />
-    <Folder Include="Features\Book\Queries\GetBooks\" />
+    <Folder Include="Interfaces\IServices\" />
   </ItemGroup>
 
 </Project>

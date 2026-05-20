@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using LibraryMS.Application.Interfaces.IRepository;
+using LibraryMS.Application.Interfaces.IServices;
 using LibraryMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -9,15 +10,27 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
     private IDbContextTransaction? _currentTransaction;
-    
+
     // Cash to save Generic Repositories. Create once in Runtime
     private readonly ConcurrentDictionary<string, object> _repositories;
 
-    public UnitOfWork(AppDbContext context)
+    // Proprieties
+    public IBookRepository Books { get; }
+    public IRefreshTokenRepository RefreshTokens { get; }
+    public IClientRepository Clients { get; }
+    public IEmployeeRepository Employees { get; }
+
+    public UnitOfWork(AppDbContext context, IBookRepository books, IRefreshTokenRepository refreshTokenRepository,
+        IClientRepository clientRepository, IEmployeeRepository employeesRepository)
     {
-        _context = context ??  throw new ArgumentNullException(nameof(context));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
         _repositories = new ConcurrentDictionary<string, object>();
+        Books = books ?? throw new ArgumentNullException(nameof(books));
+        RefreshTokens = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
+        Clients = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
+        Employees = employeesRepository ?? throw new ArgumentNullException(nameof(employeesRepository));
     }
+
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
     {
         var type = typeof(TEntity).Name;
@@ -30,11 +43,10 @@ public class UnitOfWork : IUnitOfWork
         => await _context.SaveChangesAsync(cancellationToken);
 
     // Transaction Management
-    public async Task BeginTransactionAsync()
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
     {
-        if (_currentTransaction != null) return;
-
         _currentTransaction = await _context.Database.BeginTransactionAsync();
+        return _currentTransaction;
     }
 
     public async Task CommitTransactionAsync()
@@ -42,7 +54,7 @@ public class UnitOfWork : IUnitOfWork
         try
         {
             await _context.SaveChangesAsync();
-            if(_currentTransaction != null)
+            if (_currentTransaction != null)
                 await _currentTransaction.CommitAsync();
         }
         catch

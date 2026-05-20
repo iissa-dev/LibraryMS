@@ -39,6 +39,32 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await query.Select(selector).ToListAsync();
     }
 
+    public async Task<(IEnumerable<TResult> items, int total)> GetPagedProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector, int pageNumber, int pageSize,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, CancellationToken cancellationToken = default)
+    {
+        var query = DbSet.AsNoTracking();
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
+
+        var total = await query.CountAsync(cancellationToken);
+        if (orderBy != null)
+        {
+            query = orderBy(query);
+        }
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(selector)
+            .ToListAsync(cancellationToken);
+
+        return (items, total);
+    }
+
     public void Add(T entity)
         => DbSet.Add(entity);
 

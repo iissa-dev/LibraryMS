@@ -19,6 +19,14 @@ public interface IGenericRepository<T> where T : class
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null);
 
+    Task<(IEnumerable<TResult> items, int total)> GetPagedProjectedAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        int pageNumber,
+        int pageSize,
+        Expression<Func<T, bool>>? predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        CancellationToken cancellationToken = default);
+
     void Add(T entity);
     void Update(T entity);
     void Delete(T entity);

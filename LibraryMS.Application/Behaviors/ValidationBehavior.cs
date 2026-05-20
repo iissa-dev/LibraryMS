@@ -7,19 +7,19 @@ namespace LibraryMS.Application.Behaviors;
 public class ValidationBehavior<TRequest, TResponse> :
     IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
-    private readonly IEnumerable<IValidator<TRequest>> validators;
+    private readonly IEnumerable<IValidator<TRequest>> _validators;
     public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
-        this.validators = validators ?? throw new ArgumentNullException(nameof(validators));
+        _validators = validators ?? throw new ArgumentNullException(nameof(validators));
     }
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        if (!validators.Any()) return await next(cancellationToken);
+        if (!_validators.Any()) return await next(cancellationToken);
         
         var context = new ValidationContext<TRequest>(request);
         
-        var result = await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+        var result = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
         
         var failures = result.SelectMany(r => r.Errors).Where(e => e is not null).ToList();
         

@@ -1,12 +1,19 @@
-﻿namespace LibraryMS.Application.Interfaces.IRepository;
+﻿using LibraryMS.Application.Interfaces.IServices;
+using Microsoft.EntityFrameworkCore.Storage;
+
+namespace LibraryMS.Application.Interfaces.IRepository;
 
 public interface IUnitOfWork : IDisposable
 {
-   IGenericRepository<TEntity> Repository<TEntity>() where TEntity: class;
-   
-   Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-   
-   Task BeginTransactionAsync();
-   Task CommitTransactionAsync();
-   Task RollbackTransactionAsync();
-} 
+    IBookRepository Books { get; }
+    IRefreshTokenRepository RefreshTokens { get; }
+    IClientRepository Clients { get; }
+    IEmployeeRepository Employees { get; }
+    IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    Task<IDbContextTransaction> BeginTransactionAsync();
+    Task CommitTransactionAsync();
+    Task RollbackTransactionAsync();
+}
