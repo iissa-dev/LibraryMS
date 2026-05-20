@@ -22,14 +22,6 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
             unitOfWork.Repository<Person>().Add(person);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var client = new Domain.Entities.Client
-            {
-                PersonId = person.Id,
-                LibraryCardNumber = request.LibraryCardNumber,
-            };
-            unitOfWork.Clients.Add(client);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
             var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
                 person.Id,
                 request.PhoneNumber);
@@ -39,6 +31,15 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
                 await transaction.RollbackAsync(cancellationToken);
                 return Result<int>.Failure(userResult.Error);
             }
+            
+            var client = new Domain.Entities.Client
+            {
+                PersonId = person.Id,
+                UserId = userResult.Data,
+                LibraryCardNumber = request.LibraryCardNumber,
+            };
+            unitOfWork.Clients.Add(client);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             var roleResult = await identityUser.AddUserToRoleAsync(request.UserName, Roles.Client);
 
