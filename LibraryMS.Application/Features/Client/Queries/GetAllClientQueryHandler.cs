@@ -11,28 +11,16 @@ public class GetAllClientQueryHandler(IUnitOfWork unitOfWork)
     public async Task<Result<PagedResult<ClientResponseDto>>> Handle(GetAllClientQuery request,
         CancellationToken cancellationToken)
     {
-        var (items, total) = await unitOfWork.Clients
-            .GetPagedProjectedAsync(client => new ClientResponseDto
-                {
-                    Id = client.Id,
-                    Address = client.Person.Address,
-                    LibraryCardNumber = client.LibraryCardNumber,
-                    FirstName = client.Person.FirstName,
-                    LastName = client.Person.LastName
-                },
-                request.PageNumber,
-                request.PageSize,
-                null,
-                clients => clients.OrderByDescending(c => c.CreatedOn),
+        var (items, totalCount) =
+            await unitOfWork.Clients.GetClientsWithUsersPagedAsync(request.PageNumber, request.PageSize,
                 cancellationToken);
-
         var pagedResult = new PagedResult<ClientResponseDto>
         {
             Items = items,
-            TotalPages = (int)Math.Ceiling((double)total / request.PageSize),
+            TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize),
             PageNumber = request.PageNumber,
             PageSize = request.PageSize,
-            TotalCount = total
+            TotalCount = totalCount
         };
 
         return Result<PagedResult<ClientResponseDto>>.Success(pagedResult);
