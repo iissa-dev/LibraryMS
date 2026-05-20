@@ -1,0 +1,14 @@
+﻿using LibraryMS.Domain.Enums;
+
+namespace LibraryMS.Application.DTOs.BookDtos;
+
+public class ResponseBookDto
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string  ISBN { get; set; }
+    public DateTime PublishDate { get; set; }
+    public Genre Genre { get; set; } 
+    public string? AdditionalDetails { get; set; }
+    public string? BookImageUrl { get; set; }
+}

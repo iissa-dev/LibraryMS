@@ -1,0 +1,22 @@
+﻿### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=JetBrains Rider
+
+###
+@baseUrl = http://localhost:5165/api/
+POST {{baseUrl}}Books
+Content-Type: application/json
+
+{
+  "title": "Clean Architecture in React",
+  "isbn": "978-3-16-148410-3",
+  "publishDate": "2026-05-11T00:00:00Z",
+  "genre": 11,
+  "additionalDetails": "A premium guide to software architecture.",
+  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch.jpg"
+}
+
+
+###
+GET {{baseUrl}}/Books/books?PageNumber=1&PageSize=10
+Content-Type: application/json
