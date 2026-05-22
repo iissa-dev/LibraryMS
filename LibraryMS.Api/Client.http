@@ -9,17 +9,17 @@ POST {{baseUrl}}/Clients
 Content-Type: application/json
 
 {
-  "email": "issa@gmail.com",
-  "password": "Issa1234#",
-  "firstName": "Issa",
+  "email": "Mohammad@gmail.com",
+  "password": "Mohammad1234#",
+  "firstName": "Mohammad",
   "lastName": "Atieh",
   "phoneNumber": "0780830732",
   "address": "Al-Zarqa",
-  "userName": "IIssadev",
+  "userName": "Mohammad",
   "countryId": 113,
-  "birthDate": "2004-10-06",
+  "birthDate": "1973-10-06",
   "imageUrl": "",
-  "libraryCardNumber": "230220"
+  "libraryCardNumber": "230221"
 }
 
 ###

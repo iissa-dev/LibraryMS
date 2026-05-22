@@ -11,11 +11,6 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
         builder.ToTable("Clients");
         builder.HasKey(a => a.Id);
         
-        builder.HasOne(c => c.Person)
-            .WithOne()
-            .HasForeignKey<Client>(c => c.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
         builder.Property(c => c.LibraryCardNumber)
             .HasColumnType("nvarchar(50)")
             .HasMaxLength(50)

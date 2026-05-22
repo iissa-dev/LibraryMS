@@ -24,10 +24,10 @@ public class ClientRepository(AppDbContext context) : GenericRepository<Client>(
                     Username = user.UserName ?? "",
                     Email = user.Email ?? "",
                     PhoneNumber = user.PhoneNumber ?? "",
-                    Address = client.Person.Address,
+                    Address = user.Person.Address,
                     LibraryCardNumber = client.LibraryCardNumber,
-                    FirstName = client.Person.FirstName,
-                    LastName = client.Person.LastName,
+                    FirstName = user.Person.FirstName,
+                    LastName = user.Person.LastName,
                     CreatedOn = client.CreatedOn
                 }).OrderByDescending(c => c.CreatedOn)
             .Skip((pageNumber - 1) * pageSize)

@@ -1,6 +1,6 @@
 ﻿using LibraryMS.Application.DTOs.ClientDto;
 using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Result;
+using LibraryMS.Application.Results;
 using MediatR;
 
 namespace LibraryMS.Application.Features.Client.Queries;

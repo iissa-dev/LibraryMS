@@ -1,6 +1,6 @@
 ﻿using LibraryMS.Application.Interfaces.IRepository;
 using LibraryMS.Application.Mapper;
-using LibraryMS.Application.Result;
+using LibraryMS.Application.Results;
 using LibraryMS.Domain.Entities;
 using LibraryMS.Domain.Enums;
 using MediatR;
@@ -31,15 +31,13 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
                 await transaction.RollbackAsync(cancellationToken);
                 return Result<int>.Failure(userResult.Error);
             }
-            
+
             var client = new Domain.Entities.Client
             {
-                PersonId = person.Id,
                 UserId = userResult.Data,
                 LibraryCardNumber = request.LibraryCardNumber,
             };
             unitOfWork.Clients.Add(client);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             var roleResult = await identityUser.AddUserToRoleAsync(request.UserName, Roles.Client);
 
@@ -49,6 +47,7 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
                 return Result<int>.Failure(roleResult.Error);
             }
 
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             return Result<int>.Success(client.Id);
         }
