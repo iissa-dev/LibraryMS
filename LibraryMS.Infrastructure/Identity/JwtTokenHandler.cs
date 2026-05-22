@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using LibraryMS.Application.DTOs.AuthDto;
 using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Result;
+using LibraryMS.Application.Results;
 using LibraryMS.Domain.Entities;
 using LibraryMS.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryMS.Infrastructure.Identity;
 
-public class JwtTokenHandler
+public class JwtTokenHandler : IJwtTokenHandler
 {
     private readonly IConfiguration _configuration;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -26,7 +26,63 @@ public class JwtTokenHandler
         _unitOfWork = unitOfWork;
     }
 
-    private string GenerateAccessToken(ApplicationUser user, string role)
+    public async Task<Result<TokenResult>> GenerateFullTokenResult(int userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null) return Result<TokenResult>.Failure("User not found");
+
+        return await GenerateFullTokenResultInternal(user);
+    }
+
+    public async Task<Result<TokenResult>> GenerateRefreshTokenAsync(string refreshToken)
+    {
+        var token = await _unitOfWork.RefreshTokens.GetByTokenAsync(refreshToken);
+
+        if (token is null)
+            return Result<TokenResult>.Failure("Refresh token not found");
+
+        if (token.IsRevoked || token.RefreshTokenExpiry < DateTime.UtcNow)
+            return Result<TokenResult>.Failure("Refresh token is expired");
+
+        token.IsRevoked = true;
+        token.RevokedAt = DateTime.UtcNow;
+        _unitOfWork.RefreshTokens.Update(token);
+
+        var user = await _userManager.FindByIdAsync(token.UserId.ToString());
+        if (user is null) return Result<TokenResult>.Failure("User not found");
+
+        var tokenResult = await GenerateFullTokenResultInternal(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        return tokenResult;
+    }
+
+    private async Task<Result<TokenResult>> GenerateFullTokenResultInternal(ApplicationUser user)
+    {
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var accessToken = GenerateAccessTokenInternal(user, roles.FirstOrDefault() ?? nameof(Roles.Client));
+        
+        var refreshToken = new RefreshToken
+        {
+            RefreshTokenJwt = Guid.NewGuid().ToString(),
+            UserId = user.Id,
+            RefreshTokenExpiry = DateTime.UtcNow.AddDays(7)
+        };
+
+        _unitOfWork.RefreshTokens.Add(refreshToken);
+
+        return Result<TokenResult>.Success(new TokenResult
+        {
+            UserId = user.Id,
+            AccessToken = accessToken,
+            RefreshToken = refreshToken.RefreshTokenJwt,
+            UserName = user.UserName!,
+            Role = roles.FirstOrDefault() ?? nameof(Roles.Client)
+        });
+    }
+
+    private string GenerateAccessTokenInternal(ApplicationUser user, string role)
     {
         var claims = new List<Claim>
         {
@@ -47,53 +103,5 @@ public class JwtTokenHandler
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public async Task<Result<TokenResult>> GenerateRefreshTokenAsync(string refreshToken)
-    {
-        var token = await _unitOfWork.RefreshTokens.GetByTokenWithUserAsync(refreshToken);
-
-        if (token is null)
-            return Result<TokenResult>.Failure("Refresh token not found");
-
-        if (token.IsRevoked || token.RefreshTokenExpiry < DateTime.UtcNow)
-            return Result<TokenResult>.Failure("Refresh token is expired");
-
-        token.IsRevoked = true;
-        token.RevokedAt = DateTime.UtcNow;
-        _unitOfWork.RefreshTokens.Update(token);
-
-        var user = await _userManager.FindByIdAsync(token.UserId.ToString());
-        if (user is null) return Result<TokenResult>.Failure("User not found");
-
-        var tokenResult = await GenerateFullTokenResult(user);
-        await _unitOfWork.SaveChangesAsync();
-
-        return tokenResult;
-    }
-
-    public async Task<Result<TokenResult>> GenerateFullTokenResult(ApplicationUser user)
-    {
-        var roles = await _userManager.GetRolesAsync(user);
-
-        var accessToken = GenerateAccessToken(user, roles.FirstOrDefault() ?? nameof(Roles.Client));
-
-        var refreshToken = new RefreshToken
-        {
-            RefreshTokenJwt = Guid.NewGuid().ToString(),
-            UserId = user.Id,
-            RefreshTokenExpiry = DateTime.UtcNow.AddDays(7)
-        };
-
-        _unitOfWork.RefreshTokens.Add(refreshToken);
-
-        return Result<TokenResult>.Success(new TokenResult
-        {
-            UserId = user.Id,
-            AccessToken = accessToken,
-            RefreshToken = refreshToken.RefreshTokenJwt,
-            UserName = user.UserName!,
-            Role = roles.FirstOrDefault() ?? nameof(Roles.Client)
-        });
     }
 }

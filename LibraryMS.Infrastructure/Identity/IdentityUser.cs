@@ -1,6 +1,7 @@
 ﻿using LibraryMS.Application.DTOs.AuthDto;
 using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Result;
+using LibraryMS.Application.Results;
+using LibraryMS.Domain.Entities;
 using LibraryMS.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,16 +12,16 @@ public class IdentityUser : IIdentityUser
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly JwtTokenHandler _jwtTokenHandler;
+    private readonly IJwtTokenHandler _jwtTokenHandler;
 
-    public IdentityUser(UserManager<ApplicationUser> userManager, JwtTokenHandler jwtTokenHandler,
+    public IdentityUser(UserManager<ApplicationUser> userManager, IJwtTokenHandler jwtTokenHandler,
         IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _jwtTokenHandler = jwtTokenHandler;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<Result<int>> CreateUserAsync(string email, string password, string username, int personId,
         string? phoneNumber)
     {
@@ -70,9 +71,59 @@ public class IdentityUser : IIdentityUser
         if (user is null || !await _userManager.CheckPasswordAsync(user, password))
             return Result<TokenResult>.Failure("Invalid username or password.");
 
-        var tokenResult = await _jwtTokenHandler.GenerateFullTokenResult(user);
+        var tokenResult = await _jwtTokenHandler.GenerateFullTokenResult(user.Id);
         await _unitOfWork.SaveChangesAsync();
 
         return tokenResult;
+    }
+
+    private async Task<Result> RevokeTokenAsync(string refreshToken)
+    {
+        var token = await _unitOfWork.RefreshTokens.GetByTokenAsync(refreshToken);
+
+        if (token is null) return Result.Failure("Token not found");
+
+        if (token.IsRevoked) return Result.Failure("Token is already revoked");
+
+        token.IsRevoked = true;
+        token.RevokedAt = DateTime.UtcNow;
+
+        _unitOfWork.RefreshTokens.Update(token);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Result.Success;
+    }
+
+    public async Task<Result> Logout(string refreshToken)
+        => await RevokeTokenAsync(refreshToken);
+
+    public async Task<Result<TokenResult>> RefreshTokenAsync(string refreshToken)
+        => await _jwtTokenHandler.GenerateRefreshTokenAsync(refreshToken);
+
+    public async Task<Result<CurrentUserDto>> CurrentUserByIdAsync(int userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null) return Result<CurrentUserDto>.Failure("User not found");
+        
+        var person = await _unitOfWork.Repository<Person>()
+        .Query()
+        .Include(p => p.Country)
+        .FirstOrDefaultAsync(p =>  p.Id == user.PersonId!.Value);
+
+        if(person is null) return Result<CurrentUserDto>.Failure("Person not found"); 
+
+        return Result<CurrentUserDto>.Success(new CurrentUserDto
+        {
+            UserId = user.Id,
+            UserName = user.UserName!,
+            Email = user.Email!,
+            FirstName = person.FirstName,
+            LastName = person.LastName,
+            Address = person.Address,
+            PhoneNumber = user.PhoneNumber,
+            ImageUrl = person.ImageUrl,
+            DateOfBirth = person.DateOfBirth,
+            Country = person.Country.Name
+        });
     }
 }
