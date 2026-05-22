@@ -76,4 +76,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
         => await DbSet.AnyAsync(predicate);
+
+    public IQueryable<T> Query() => DbSet.AsNoTracking();
 }

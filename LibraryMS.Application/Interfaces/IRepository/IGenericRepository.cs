@@ -32,4 +32,5 @@ public interface IGenericRepository<T> where T : class
     void Delete(T entity);
 
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
+    IQueryable<T> Query();
 }
