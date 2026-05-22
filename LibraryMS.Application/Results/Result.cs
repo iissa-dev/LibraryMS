@@ -1,4 +1,4 @@
-namespace LibraryMS.Application.Result;
+namespace LibraryMS.Application.Results;
 
 public class Result
 {

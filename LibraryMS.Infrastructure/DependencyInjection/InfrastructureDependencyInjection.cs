@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using IdentityUser = LibraryMS.Infrastructure.Identity.IdentityUser;
 
 namespace LibraryMS.Infrastructure.DependencyInjection;
@@ -21,10 +22,31 @@ public static class InfrastructureDependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
 
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            })
+            .AddJwtBearer(jwtOptions =>
+            {
+                jwtOptions.Authority = configuration["Api:Authority"];
+                jwtOptions.Audience = configuration["Api:Audience"];
+                jwtOptions.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidAudiences = configuration.GetSection("Api:ValidAudiences").Get<string[]>(),
+                    ValidIssuers = configuration.GetSection("Api:ValidIssuers").Get<string[]>()
+                };
+
+                jwtOptions.MapInboundClaims = false;
+            });
+
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBookRepository, BookRepository>();
-        services.AddScoped<JwtTokenHandler>();
+        services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
         services.AddScoped<IIdentityUser, IdentityUser>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();

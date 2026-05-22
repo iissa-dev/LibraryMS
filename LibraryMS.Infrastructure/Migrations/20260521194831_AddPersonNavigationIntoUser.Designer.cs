@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryMS.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260519132748_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260521194831_AddPersonNavigationIntoUser")]
+    partial class AddPersonNavigationIntoUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,8 +72,8 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Genre")
-                        .HasColumnType("int");
+                    b.Property<short>("Genre")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("ISBN")
                         .IsRequired()
@@ -203,13 +203,10 @@ namespace LibraryMS.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PersonId")
-                        .IsUnique();
 
                     b.ToTable("Clients", (string)null);
                 });
@@ -248,13 +245,7 @@ namespace LibraryMS.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PersonId")
-                        .IsUnique();
 
                     b.ToTable("Employees", (string)null);
                 });
@@ -528,6 +519,8 @@ namespace LibraryMS.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("PersonId");
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -694,28 +687,6 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("LibraryMS.Domain.Entities.Client", b =>
-                {
-                    b.HasOne("LibraryMS.Domain.Entities.Person", "Person")
-                        .WithOne()
-                        .HasForeignKey("LibraryMS.Domain.Entities.Client", "PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("LibraryMS.Domain.Entities.Employee", b =>
-                {
-                    b.HasOne("LibraryMS.Domain.Entities.Person", "Person")
-                        .WithOne()
-                        .HasForeignKey("LibraryMS.Domain.Entities.Employee", "PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Person");
-                });
-
             modelBuilder.Entity("LibraryMS.Domain.Entities.Fine", b =>
                 {
                     b.HasOne("LibraryMS.Domain.Entities.BorrowingRecord", "BorrowingRecord")
@@ -772,6 +743,15 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("LibraryMS.Infrastructure.Identity.ApplicationUser", b =>
+                {
+                    b.HasOne("LibraryMS.Domain.Entities.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

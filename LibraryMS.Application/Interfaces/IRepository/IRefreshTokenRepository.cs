@@ -4,5 +4,5 @@ namespace LibraryMS.Application.Interfaces.IRepository;
 
 public interface IRefreshTokenRepository : IGenericRepository<RefreshToken>
 {
-    Task<RefreshToken?> GetByTokenWithUserAsync(string refreshToken);
+    Task<RefreshToken?> GetByTokenAsync(string refreshToken);
 }

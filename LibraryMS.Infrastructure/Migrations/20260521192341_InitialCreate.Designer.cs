@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryMS.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260519225406_UpdateGenreEnumStructure")]
-    partial class UpdateGenreEnumStructure
+    [Migration("20260521192341_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -203,13 +203,10 @@ namespace LibraryMS.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PersonId")
-                        .IsUnique();
 
                     b.ToTable("Clients", (string)null);
                 });
@@ -248,13 +245,7 @@ namespace LibraryMS.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PersonId")
-                        .IsUnique();
 
                     b.ToTable("Employees", (string)null);
                 });
@@ -692,28 +683,6 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.Navigation("BookCopy");
 
                     b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("LibraryMS.Domain.Entities.Client", b =>
-                {
-                    b.HasOne("LibraryMS.Domain.Entities.Person", "Person")
-                        .WithOne()
-                        .HasForeignKey("LibraryMS.Domain.Entities.Client", "PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("LibraryMS.Domain.Entities.Employee", b =>
-                {
-                    b.HasOne("LibraryMS.Domain.Entities.Person", "Person")
-                        .WithOne()
-                        .HasForeignKey("LibraryMS.Domain.Entities.Employee", "PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("LibraryMS.Domain.Entities.Fine", b =>

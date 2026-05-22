@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryMS.Api.Exceptions;
 
-public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
+public sealed class GlobalExceptionHandler(
+    IProblemDetailsService problemDetailsService,
+    ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
     {
+        LogException(httpContext, exception);
         var problem = exception switch
         {
             ValidationException ex => new ValidationProblemDetails(
@@ -38,5 +41,22 @@ public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetails
         });
 
         return true;
+    }
+
+    private void LogException(HttpContext httpContext, Exception exception)
+    {
+        var requestPath = httpContext.Request.Path;
+        var requestMethod = httpContext.Request.Method;
+
+        if (exception is ValidationException validationException)
+        {
+            logger.LogWarning(
+                $"Validation failed for {requestMethod} {requestPath}. Total errors: {validationException.Errors.Count()}");
+        }
+        else
+        {
+            logger.LogError(exception,
+                $"An unhandled exception occurred while processing {requestMethod} {requestPath}: {exception.Message}");
+        }
     }
 }

@@ -11,11 +11,6 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.ToTable("Employees");
         builder.HasKey(a => a.Id);
         
-        builder.HasOne(e => e.Person)
-            .WithOne()
-            .HasForeignKey<Employee>(e => e.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
         builder.Property(e => e.EmployeeCode)
             .HasColumnType("nvarchar(50)")
             .HasMaxLength(50)
