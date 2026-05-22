@@ -1,6 +1,6 @@
 ﻿using LibraryMS.Application.DTOs.BookDtos;
 using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Result;
+using LibraryMS.Application.Results;
 using MediatR;
 
 namespace LibraryMS.Application.Features.Book.Queries.GetAllBook;
@@ -16,7 +16,7 @@ public class GetAllBooksQueryHandler(IUnitOfWork unitOfWork)
                 {
                     Id = book.Id,
                     Title = book.Title,
-                    ISBN = book.ISBN,
+                    Isbn = book.ISBN,
                     PublishDate = book.PublishDate,
                     Genre = book.Genre,
                     AdditionalDetails = book.AdditionalDetails,

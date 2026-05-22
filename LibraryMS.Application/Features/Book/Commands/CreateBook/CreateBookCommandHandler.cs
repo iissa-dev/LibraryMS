@@ -1,5 +1,5 @@
 ﻿using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Result;
+using LibraryMS.Application.Results;
 using LibraryMS.Domain.Entities;
 using LibraryMS.Domain.Enums;
 using MediatR;
