@@ -1,9 +1,9 @@
-﻿using LibraryMS.Application.DTOs.ClientDto;
-using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Results;
+﻿using LibraryMS.Application.Common.DTOs.ClientDto;
+using LibraryMS.Application.Common.Interfaces;
+using LibraryMS.Application.Common.Results;
 using MediatR;
 
-namespace LibraryMS.Application.Features.Client.Queries;
+namespace LibraryMS.Application.Features.Client.Queries.GetAllClient;
 
 public class GetAllClientQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAllClientQuery, Result<PagedResult<ClientResponseDto>>>

@@ -1,6 +1,10 @@
-﻿using LibraryMS.Application.Features.Client.Commands.RegisterClient;
-using LibraryMS.Application.Features.Client.Queries;
+﻿using System.Security.Claims;
+using LibraryMS.Api.Common.Extensions;
+using LibraryMS.Application.Features.Client.Commands.RegisterClient;
+using LibraryMS.Application.Features.Client.Queries.GetAllClient;
+using LibraryMS.Application.Features.Client.Queries.GetClientById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryMS.Api.Controllers;
@@ -19,6 +23,18 @@ public class ClientsController(IMediator mediator) : ControllerBase
             return BadRequest(result);
 
         return Ok(result);
+    }
+
+    [HttpGet("GetClientProfileByIdUserAsync")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetEmployeeProfileByIdUserAsync()
+    {
+        var result = await mediator.Send(new GetClientByIdQuery(User.GetUserId()));
+        return result.IsFailure ? NotFound(result) : Ok(result);
     }
 
     [HttpPost]

@@ -1,7 +1,6 @@
-﻿using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Mapper;
-using LibraryMS.Application.Results;
-using LibraryMS.Domain.Entities;
+﻿using LibraryMS.Application.Common.Interfaces;
+using LibraryMS.Application.Common.Mapper;
+using LibraryMS.Application.Common.Results;
 using LibraryMS.Domain.Enums;
 using MediatR;
 
@@ -19,7 +18,7 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
         try
         {
             var person = request.ToEntity();
-            unitOfWork.Repository<Person>().Add(person);
+            unitOfWork.Repository<Domain.Entities.Person>().Add(person);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
             var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
