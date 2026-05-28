@@ -1,4 +1,4 @@
-﻿namespace LibraryMS.Application.DTOs.AuthDto;
+﻿namespace LibraryMS.Application.Common.DTOs.AuthDto;
 
 public class TokenResult
 {

@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace LibraryMS.Application.Features.Auth.Commands.Login;
+namespace LibraryMS.Application.Features.Auth.Queries.Login;
 
-public sealed class LoginCommandValidator : AbstractValidator<LoginCommand>
+public sealed class LoginQueryValidator : AbstractValidator<LoginQuery>
 {
-    public LoginCommandValidator()
+    public LoginQueryValidator()
     {
         RuleFor(l => l.Username).NotEmpty().WithMessage("Username is required");
 

@@ -1,5 +1,5 @@
-using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Results;
+using LibraryMS.Application.Common.Interfaces;
+using LibraryMS.Application.Common.Results;
 using MediatR;
 
 namespace LibraryMS.Application.Features.Auth.Commands.Logout;
