@@ -1,0 +1,19 @@
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace LibraryMS.Application.Common.Interfaces;
+
+public interface IUnitOfWork : IDisposable
+{
+    IBookRepository Books { get; }
+    IRefreshTokenRepository RefreshTokens { get; }
+    IClientRepository Clients { get; }
+    IEmployeeRepository Employees { get; }
+    IPersonRepository Persons { get; }
+    IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    Task<IDbContextTransaction> BeginTransactionAsync();
+    Task CommitTransactionAsync();
+    Task RollbackTransactionAsync();
+}
