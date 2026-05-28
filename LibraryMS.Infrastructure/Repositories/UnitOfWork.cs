@@ -19,10 +19,8 @@ public class UnitOfWork : IUnitOfWork
     public IClientRepository Clients { get; }
     public IEmployeeRepository Employees { get; }
 
-    public IPersonRepository Persons { get; }
-
     public UnitOfWork(AppDbContext context, IBookRepository books, IRefreshTokenRepository refreshTokenRepository,
-        IClientRepository clientRepository, IEmployeeRepository employeesRepository, IPersonRepository persons)
+        IClientRepository clientRepository, IEmployeeRepository employeesRepository)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _repositories = new ConcurrentDictionary<string, object>();
@@ -30,7 +28,6 @@ public class UnitOfWork : IUnitOfWork
         RefreshTokens = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
         Clients = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
         Employees = employeesRepository ?? throw new ArgumentNullException(nameof(employeesRepository));
-        Persons = persons;
     }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class

@@ -8,7 +8,6 @@ public interface IUnitOfWork : IDisposable
     IRefreshTokenRepository RefreshTokens { get; }
     IClientRepository Clients { get; }
     IEmployeeRepository Employees { get; }
-    IPersonRepository Persons { get; }
     IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

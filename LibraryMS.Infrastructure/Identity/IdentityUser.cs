@@ -22,8 +22,8 @@ public class IdentityUser : IIdentityUser
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<int>> CreateUserAsync(string email, string password, string username, int personId,
-        string? phoneNumber)
+    public async Task<Result<int>> CreateUserAsync(string email, string password, string username,
+        string? phoneNumber, string firstName, string lastName, string address, int countryId, DateOnly dateOfBirth)
     {
         var userExists = await _userManager.FindByEmailAsync(email);
         if (userExists != null)
@@ -35,8 +35,12 @@ public class IdentityUser : IIdentityUser
         {
             Email = email,
             UserName = username,
-            PersonId = personId,
-            PhoneNumber = phoneNumber ?? ""
+            PhoneNumber = phoneNumber ?? "",
+            FirstName = firstName,
+            LastName = lastName,
+            Address = address,
+            CountryId = countryId,
+            DateOfBirth = dateOfBirth
         };
 
         var result = await _userManager.CreateAsync(user, password);
@@ -105,25 +109,18 @@ public class IdentityUser : IIdentityUser
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null) return Result<CurrentUserDto>.Failure("User not found");
         
-        var person = await _unitOfWork.Repository<Person>()
-        .Query()
-        .Include(p => p.Country)
-        .FirstOrDefaultAsync(p =>  p.Id == user.PersonId!.Value);
-
-        if(person is null) return Result<CurrentUserDto>.Failure("Person not found"); 
-
         return Result<CurrentUserDto>.Success(new CurrentUserDto
         {
             UserId = user.Id,
             UserName = user.UserName!,
             Email = user.Email!,
-            FirstName = person.FirstName,
-            LastName = person.LastName,
-            Address = person.Address,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Address = user.Address,
             PhoneNumber = user.PhoneNumber,
-            ImageUrl = person.ImageUrl,
-            DateOfBirth = person.DateOfBirth,
-            Country = person.Country.Name
+            ImageUrl = user.ImageUrl,
+            DateOfBirth = user.DateOfBirth,
+            Country = user.Country?.Name ?? "Not Found"
         });
     }
 

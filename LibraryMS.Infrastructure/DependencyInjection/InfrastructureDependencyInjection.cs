@@ -49,7 +49,6 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-        services.AddScoped<IPersonRepository, PersonRepository>();
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {

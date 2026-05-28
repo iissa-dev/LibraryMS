@@ -1,5 +1,4 @@
 ﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Mapper;
 using LibraryMS.Application.Common.Results;
 using LibraryMS.Domain.Enums;
 using MediatR;
@@ -18,13 +17,8 @@ public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdenti
              if (await unitOfWork.Employees.ExistsAsync(c => c.EmployeeCode == request.EmployeeCode))
             return Result<int>.Failure("This Employee Number is already assigned to another employee.");
 
-            var person = request.ToEntity();
-            unitOfWork.Repository<Domain.Entities.Person>().Add(person);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
-                person.Id,
-                request.PhoneNumber);
+           var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
+                request.PhoneNumber, request.FirstName, request.LastName, request.Address, request.CountryId, request.BirthDate);
 
             if (userResult.IsFailure)
             {

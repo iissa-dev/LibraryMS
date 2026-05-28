@@ -26,9 +26,9 @@ public class ClientRepository(AppDbContext context) : GenericRepository<Client>(
             Username = x.user.UserName ?? "",
             Email = x.user.Email ?? "",
             PhoneNumber = x.user.PhoneNumber ?? "",
-            Address = x.user.Person.Address,
-            FirstName = x.user.Person.FirstName,
-            LastName = x.user.Person.LastName,
+            Address = x.user.Address,
+            FirstName = x.user.FirstName,
+            LastName = x.user.LastName,
         })
         .FirstOrDefaultAsync(cancellationToken);
     }
@@ -54,10 +54,10 @@ public class ClientRepository(AppDbContext context) : GenericRepository<Client>(
                 Username = x.user.UserName ?? "",
                 Email = x.user.Email ?? "",
                 PhoneNumber = x.user.PhoneNumber ?? "",
-                Address = x.user.Person.Address,
+                Address = x.user.Address,
                 LibraryCardNumber = x.client.LibraryCardNumber,
-                FirstName = x.user.Person.FirstName,
-                LastName = x.user.Person.LastName,
+                FirstName = x.user.FirstName,
+                LastName = x.user.LastName,
                 CreatedOn = x.client.CreatedOn
             })
             .ToListAsync(cancellationToken);

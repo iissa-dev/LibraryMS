@@ -16,7 +16,6 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, 
     public DbSet<BorrowingRecord> BorrowingRecords { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Employee> Employees { get; set; }
-    public DbSet<Person> People { get; set; }
     public DbSet<Fine> Fines { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Reservation> Reservations { get; set; }

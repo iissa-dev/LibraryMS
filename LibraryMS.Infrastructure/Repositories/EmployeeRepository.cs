@@ -29,9 +29,9 @@ public class EmployeeRepository(AppDbContext context) : GenericRepository<Employ
             Email = x.user.Email ?? "",
             PhoneNumber = x.user.PhoneNumber ?? "",
             
-            FirstName = x.user.Person.FirstName,
-            LastName = x.user.Person.LastName,
-            Address = x.user.Person.Address
+            FirstName = x.user.FirstName,
+            LastName = x.user.LastName,
+            Address = x.user.Address
         })
         .FirstOrDefaultAsync(cancellationToken);
     }
@@ -59,9 +59,9 @@ public class EmployeeRepository(AppDbContext context) : GenericRepository<Employ
                 EmployeeCode = x.employee.EmployeeCode,
                 CreatedOn = x.employee.CreatedOn,
 
-                FirstName = x.user.Person.FirstName,
-                LastName = x.user.Person.LastName,
-                Address = x.user.Person.Address
+                FirstName = x.user.FirstName,
+                LastName = x.user.LastName,
+                Address = x.user.Address
             })
             .ToListAsync(cancellationToken);
 

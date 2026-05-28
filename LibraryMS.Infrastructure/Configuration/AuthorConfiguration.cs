@@ -10,12 +10,15 @@ public class AuthorConfiguration : IEntityTypeConfiguration<Author>
     {
         builder.HasKey(a => a.Id);
         builder.ToTable("Authors");
-        
-        builder.HasOne(a => a.Person)
-            .WithOne()
-            .HasForeignKey<Author>(a => a.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
+
+        builder.Property(a => a.FirstName)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(a => a.LastName)
+            .HasMaxLength(50)
+            .IsRequired();
+
         builder.Property(a => a.Biography)
             .HasColumnType("nvarchar(250)")
             .HasMaxLength(250)

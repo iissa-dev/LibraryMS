@@ -1,0 +1,24 @@
+###
+@baseUrl = http://localhost:5165/api
+
+POST {{baseUrl}}/Employee
+Content-Type: application/json
+
+{
+  "email": "Issa@gmail.com",
+  "password": "Issa1234#",
+  "firstName": "Issa",
+  "lastName": "Atieh",
+  "phoneNumber": "0780830732",
+  "address": "Al-Zarqa",
+  "userName": "Issa",
+  "countryId": 113,
+  "birthDate": "1973-10-06",
+  "imageUrl": "",
+  "employeeCode": "230221",
+  "roleId" : 1
+}
+
+###
+GET {{baseUrl}}/Employee?pageNumber=1&pageSize=10
+Content-Type: application/json

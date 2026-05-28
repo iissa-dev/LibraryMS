@@ -5,6 +5,13 @@ namespace LibraryMS.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser<int>
 {
-    public int? PersonId { get; set; }
-    public Person Person {get; set;} = null!;
+     public string FirstName { get; set; }= string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public DateOnly DateOfBirth { get; set; }
+    public int CountryId { get; set; }
+    public string? ImageUrl { get; set; }
+
+    public Country? Country {get; set;}
+    
 }

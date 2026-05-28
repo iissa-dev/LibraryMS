@@ -1,14 +1,14 @@
-﻿using LibraryMS.Domain.Entities;
+﻿using LibraryMS.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LibraryMS.Infrastructure.Configuration;
 
-public class PeopleConfiguration : IEntityTypeConfiguration<Person>
+public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
-    public void Configure(EntityTypeBuilder<Person> builder)
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        builder.ToTable("People");
+        builder.ToTable("Users");
         builder.HasKey(f => f.Id);
         
         builder.HasOne(p => p.Country)
