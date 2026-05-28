@@ -1,9 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LibraryMS.Application.Common.Interfaces;
+using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.DTOs.AuthDto;
-using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Results;
 using LibraryMS.Domain.Entities;
 using LibraryMS.Domain.Enums;
 using Microsoft.AspNetCore.Identity;

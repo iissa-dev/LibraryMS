@@ -1,4 +1,4 @@
-﻿using LibraryMS.Application.Interfaces.IRepository;
+﻿using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Domain.Entities;
 using LibraryMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

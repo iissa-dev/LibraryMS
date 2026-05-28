@@ -11,4 +11,13 @@ public class Person : BaseEntity
     
 
     public Country Country { get; set; } = null!;
+
+    public void Update(string FirstName, string LastName, string Address, string? ImageUrl, DateOnly DateOfBirth)
+    {
+        this.FirstName =  FirstName;
+        this.LastName = LastName;
+        this.Address = Address;
+        this.ImageUrl = ImageUrl;
+        this.DateOfBirth = DateOfBirth;
+    }
 }

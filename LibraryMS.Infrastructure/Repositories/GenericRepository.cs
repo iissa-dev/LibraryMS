@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using LibraryMS.Application.Interfaces.IRepository;
+using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

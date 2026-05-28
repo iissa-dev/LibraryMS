@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Interfaces.IServices;
+using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -20,8 +19,10 @@ public class UnitOfWork : IUnitOfWork
     public IClientRepository Clients { get; }
     public IEmployeeRepository Employees { get; }
 
+    public IPersonRepository Persons { get; }
+
     public UnitOfWork(AppDbContext context, IBookRepository books, IRefreshTokenRepository refreshTokenRepository,
-        IClientRepository clientRepository, IEmployeeRepository employeesRepository)
+        IClientRepository clientRepository, IEmployeeRepository employeesRepository, IPersonRepository persons)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _repositories = new ConcurrentDictionary<string, object>();
@@ -29,6 +30,7 @@ public class UnitOfWork : IUnitOfWork
         RefreshTokens = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
         Clients = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
         Employees = employeesRepository ?? throw new ArgumentNullException(nameof(employeesRepository));
+        Persons = persons;
     }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class

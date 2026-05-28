@@ -1,6 +1,4 @@
-﻿using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Interfaces.IServices;
-using LibraryMS.Infrastructure.Data;
+﻿using LibraryMS.Infrastructure.Data;
 using LibraryMS.Infrastructure.Identity;
 using LibraryMS.Infrastructure.Repositories;
 using LibraryMS.Infrastructure.SeedData;
@@ -9,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using IdentityUser = LibraryMS.Infrastructure.Identity.IdentityUser;
+using LibraryMS.Application.Common.Interfaces;
 
 namespace LibraryMS.Infrastructure.DependencyInjection;
 
@@ -47,10 +45,11 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
-        services.AddScoped<IIdentityUser, IdentityUser>();
+        services.AddScoped<IIdentityUser, Identity.IdentityUser>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IPersonRepository, PersonRepository>();
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {

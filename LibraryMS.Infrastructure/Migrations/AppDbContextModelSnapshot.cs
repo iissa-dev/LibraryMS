@@ -205,6 +205,9 @@ namespace LibraryMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("Clients", (string)null);
                 });
 
@@ -242,7 +245,13 @@ namespace LibraryMS.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Employees", (string)null);
                 });
@@ -682,6 +691,24 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.Navigation("BookCopy");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("LibraryMS.Domain.Entities.Client", b =>
+                {
+                    b.HasOne("LibraryMS.Infrastructure.Identity.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("LibraryMS.Domain.Entities.Client", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LibraryMS.Domain.Entities.Employee", b =>
+                {
+                    b.HasOne("LibraryMS.Infrastructure.Identity.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("LibraryMS.Domain.Entities.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LibraryMS.Domain.Entities.Fine", b =>

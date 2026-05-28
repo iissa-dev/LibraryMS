@@ -1,6 +1,6 @@
-﻿using LibraryMS.Application.DTOs.BookDtos;
-using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Results;
+﻿using LibraryMS.Application.Common.Interfaces;
+using LibraryMS.Application.Common.Results;
+using LibraryMS.Application.DTOs.BookDtos;
 using MediatR;
 
 namespace LibraryMS.Application.Features.Book.Queries.GetAllBook;

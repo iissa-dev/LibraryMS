@@ -1,6 +1,6 @@
-﻿using LibraryMS.Application.Common.DTOs.ClientDto;
-using LibraryMS.Application.Common.Interfaces;
+﻿using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Application.Common.Results;
+using LibraryMS.Application.DTOs.ClientDto;
 using MediatR;
 
 namespace LibraryMS.Application.Features.Client.Queries.GetClientById;

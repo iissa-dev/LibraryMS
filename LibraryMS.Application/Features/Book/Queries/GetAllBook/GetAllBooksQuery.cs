@@ -1,5 +1,5 @@
-﻿using LibraryMS.Application.DTOs.BookDtos;
-using LibraryMS.Application.Results;
+﻿using LibraryMS.Application.Common.Results;
+using LibraryMS.Application.DTOs.BookDtos;
 using MediatR;
 
 namespace LibraryMS.Application.Features.Book.Queries.GetAllBook;

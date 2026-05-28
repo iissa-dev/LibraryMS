@@ -3,7 +3,7 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=JetBrains Rider
 
 ###
-@baseUrl = http://localhost:5165/api/
+@baseUrl = http://localhost:5165/api
 POST {{baseUrl}}Books
 Content-Type: application/json
 
