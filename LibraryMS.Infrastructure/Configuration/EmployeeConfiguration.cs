@@ -1,4 +1,5 @@
 ﻿using LibraryMS.Domain.Entities;
+using LibraryMS.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,7 +11,15 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
     {
         builder.ToTable("Employees");
         builder.HasKey(a => a.Id);
-        
+
+        builder.HasOne<ApplicationUser>()
+            .WithOne()
+            .HasForeignKey<Employee>(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(e => e.UserId)
+            .IsUnique();
+
         builder.Property(e => e.EmployeeCode)
             .HasColumnType("nvarchar(50)")
             .HasMaxLength(50)
