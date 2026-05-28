@@ -1,8 +1,8 @@
-﻿using LibraryMS.Application.DTOs.AuthDto;
-using LibraryMS.Application.Results;
+﻿using LibraryMS.Application.Common.DTOs.AuthDto;
+using LibraryMS.Application.Common.Results;
 using LibraryMS.Domain.Enums;
 
-namespace LibraryMS.Application.Interfaces.IRepository;
+namespace LibraryMS.Application.Common.Interfaces;
 
 public interface IIdentityUser
 {
@@ -12,4 +12,5 @@ public interface IIdentityUser
     Task<Result> Logout(string refreshToken);
     Task<Result<TokenResult>> RefreshTokenAsync(string refreshToken);
     Task<Result<CurrentUserDto>> CurrentUserByIdAsync(int userId);
+    Task<Result<int>> AddToRolesAsync(string username, IEnumerable<string> roles);
 }

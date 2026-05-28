@@ -1,6 +1,6 @@
-﻿using LibraryMS.Application.DTOs.AuthDto;
-using LibraryMS.Application.Interfaces.IRepository;
-using LibraryMS.Application.Results;
+﻿using LibraryMS.Application.Common.DTOs.AuthDto;
+using LibraryMS.Application.Common.Interfaces;
+using LibraryMS.Application.Common.Results;
 using LibraryMS.Domain.Entities;
 using LibraryMS.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -125,5 +125,17 @@ public class IdentityUser : IIdentityUser
             DateOfBirth = person.DateOfBirth,
             Country = person.Country.Name
         });
+    }
+
+    public async Task<Result<int>> AddToRolesAsync(string username, IEnumerable<string> roles)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if(user is null) return Result<int>.Failure("User not found");
+
+        var result = await _userManager.AddToRolesAsync(user , roles);
+        
+        return result.Succeeded 
+        ? Result<int>.Success(user.Id) 
+        : Result<int>.Failure(result.Errors.FirstOrDefault()?.Description ?? "Role creation failed.");
     }
 }
