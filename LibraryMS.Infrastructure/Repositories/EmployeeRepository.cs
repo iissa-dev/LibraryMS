@@ -9,6 +9,12 @@ namespace LibraryMS.Infrastructure.Repositories;
 
 public class EmployeeRepository(AppDbContext context) : GenericRepository<Employee>(context), IEmployeeRepository
 {
+    public async Task<Employee?> GetEmployeeByUserIdAsync(int UserId)
+    {
+        return await Context.Employees
+        .SingleOrDefaultAsync(e => e.UserId == UserId);
+    }
+
     public async Task<EmployeeResponseDto?> GetEmployeeProfileByIdUserAsync(int UserId, CancellationToken cancellationToken)
     {
         return await Context.Employees
@@ -17,18 +23,18 @@ public class EmployeeRepository(AppDbContext context) : GenericRepository<Employ
         .Join(Context.Users,
         employee => employee.UserId,
         user => user.Id,
-        (employee, user) => new {employee, user})
+        (employee, user) => new { employee, user })
         .Select(x => new EmployeeResponseDto
         {
             Id = x.employee.Id,
             EmployeeCode = x.employee.EmployeeCode,
             CreatedOn = x.employee.CreatedOn,
-            
+
             UserId = x.user.Id,
             Username = x.user.UserName ?? "",
             Email = x.user.Email ?? "",
             PhoneNumber = x.user.PhoneNumber ?? "",
-            
+
             FirstName = x.user.FirstName,
             LastName = x.user.LastName,
             Address = x.user.Address

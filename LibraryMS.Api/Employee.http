@@ -22,3 +22,22 @@ Content-Type: application/json
 ###
 GET {{baseUrl}}/Employee?pageNumber=1&pageSize=10
 Content-Type: application/json
+
+###
+Put {{baseUrl}}/Employee/update-employee-info/2
+Content-Type: application/json
+
+{
+  "userId" : 2,
+  "firstName": "Issa",
+  "lastName": "Atieh",
+  "address": "Al-Zarqa",
+  "employeeCode": "230221",
+  "phoneNumber": "0780830732",
+  "email": "Issa@gmail.com",
+  "userName": "IIssadev",
+  "imageUrl": "",
+  "dateOfBirth": "2004-10-06",
+  "countryId": 113
+}
+

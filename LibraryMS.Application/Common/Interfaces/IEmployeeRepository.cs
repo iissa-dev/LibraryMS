@@ -9,4 +9,6 @@ public interface IEmployeeRepository : IGenericRepository<Employee>
     GetEmployeesWithUsersPagedAsync(int PageNumber, int PageSize, CancellationToken cancellationToken);
 
     Task<EmployeeResponseDto?> GetEmployeeProfileByIdUserAsync(int UserId, CancellationToken cancellationToken);
+
+    Task<Employee?> GetEmployeeByUserIdAsync(int UserId);
 }

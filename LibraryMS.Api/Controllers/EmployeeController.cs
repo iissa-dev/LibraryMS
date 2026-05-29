@@ -1,5 +1,7 @@
 using LibraryMS.Api.Common.Extensions;
+using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
+using LibraryMS.Application.Features.Employee.Commands.Update;
 using LibraryMS.Application.Features.Employee.Queries.GetAllEmployee;
 using LibraryMS.Application.Features.Employee.Queries.GetEmployeeById;
 using MediatR;
@@ -47,5 +49,18 @@ public class EmployeeController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(new GetEmployeeByIdQuery(User.GetUserId()));
 
         return result.IsFailure ? NotFound(result) : Ok(result);
+    }
+
+    [HttpPut($"update-employee-info/{{{nameof(userId)}}}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateEmployeeInfoAsync([FromRoute] int userId, UpdateEmployeeCommand command)
+    {
+        if (userId != command.UserId) return BadRequest(Result.Failure("User id mismatch"));
+
+        var result = await mediator.Send(command);
+
+        return result.IsSuccess ? Ok(result) : NotFound("Employee profile not found or no changes made");
     }
 }
