@@ -41,3 +41,10 @@ Content-Type: application/json
   "countryId": 113
 }
 
+###
+DELETE {{baseUrl}}/Employee/delete-employee/2
+Content-Type: application/json
+
+###
+PUT {{baseUrl}}/Employee/restore-employee/2
+Content-Type: application/json

@@ -1,6 +1,8 @@
 using LibraryMS.Api.Common.Extensions;
 using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
+using LibraryMS.Application.Features.Employee.Commands.Delete;
+using LibraryMS.Application.Features.Employee.Commands.Restore;
 using LibraryMS.Application.Features.Employee.Commands.Update;
 using LibraryMS.Application.Features.Employee.Queries.GetAllEmployee;
 using LibraryMS.Application.Features.Employee.Queries.GetEmployeeById;
@@ -62,5 +64,27 @@ public class EmployeeController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(command);
 
         return result.IsSuccess ? Ok(result) : NotFound("Employee profile not found or no changes made");
+    }
+
+    [HttpDelete($"delete-employee/{{{nameof(userId)}}}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteEmployeeAsync([FromRoute] int userId)
+    {
+        var result = await mediator.Send(new DeleteEmployeeCommand(userId));
+
+        return result.IsSuccess ? Ok(result) : NotFound(result);
+    }
+
+    [HttpPut($"restore-employee/{{{nameof(userId)}}}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RestoreEmployeeAsync([FromRoute] int userId)
+    {
+        var result = await mediator.Send(new RestoreEmployeeCommand(userId));
+
+        return result.IsSuccess ? Ok(result) : NotFound(result);
     }
 }

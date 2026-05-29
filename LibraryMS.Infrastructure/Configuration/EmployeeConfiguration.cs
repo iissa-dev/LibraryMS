@@ -12,6 +12,8 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.ToTable("Employees");
         builder.HasKey(a => a.Id);
 
+        builder.HasQueryFilter(e => !e.IsDeleted);
+
         builder.HasOne<ApplicationUser>()
             .WithOne()
             .HasForeignKey<Employee>(e => e.UserId)
@@ -23,6 +25,11 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.Property(e => e.EmployeeCode)
             .HasColumnType("nvarchar(50)")
             .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(e => e.IsDeleted)
+            .HasColumnType("bit")
+            .HasDefaultValue(0)
             .IsRequired();
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using LibraryMS.Application.Common.Interfaces;
+using LibraryMS.Infrastructure.Interceptors;
 
 namespace LibraryMS.Infrastructure.DependencyInjection;
 
@@ -17,7 +18,8 @@ public static class InfrastructureDependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+            .AddInterceptors(new SoftDeleteInterceptor());
         });
 
         services.AddAuthentication(options =>

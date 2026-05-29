@@ -16,4 +16,8 @@ public interface IIdentityUser
     Task<Result<CurrentUserDto>> CurrentUserByIdAsync(int userId);
     Task<Result<int>> AddToRolesAsync(string username, IEnumerable<string> roles);
     Task<Result> UpdateUserInfoAsync(UpdateUserInfoDto dto);
+
+    Task<Result> DeleteUserAsync(int UserId);
+
+    Task<Result> RestoreUserAsync(int userId);
 }

@@ -73,4 +73,11 @@ public class EmployeeRepository(AppDbContext context) : GenericRepository<Employ
 
         return (items, totalCount);
     }
+
+    public async Task<Employee?> GetDeletedEmployeeByIdAsync(int userId)
+    {
+        return await Context.Employees
+        .IgnoreQueryFilters()
+        .SingleOrDefaultAsync(e => e.UserId == userId && e.IsDeleted);
+    }
 }

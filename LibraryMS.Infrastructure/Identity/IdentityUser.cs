@@ -4,6 +4,7 @@ using LibraryMS.Application.DTOs.AuthDto;
 using LibraryMS.Application.DTOs.UserDto;
 using LibraryMS.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryMS.Infrastructure.Identity;
 
@@ -107,7 +108,7 @@ public class IdentityUser : IIdentityUser
     {
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null) return Result<CurrentUserDto>.Failure("User not found");
-        
+
         return Result<CurrentUserDto>.Success(new CurrentUserDto
         {
             UserId = user.Id,
@@ -126,12 +127,12 @@ public class IdentityUser : IIdentityUser
     public async Task<Result<int>> AddToRolesAsync(string username, IEnumerable<string> roles)
     {
         var user = await _userManager.FindByNameAsync(username);
-        if(user is null) return Result<int>.Failure("User not found");
+        if (user is null) return Result<int>.Failure("User not found");
 
-        var result = await _userManager.AddToRolesAsync(user , roles);
-        
-        return result.Succeeded 
-        ? Result<int>.Success(user.Id) 
+        var result = await _userManager.AddToRolesAsync(user, roles);
+
+        return result.Succeeded
+        ? Result<int>.Success(user.Id)
         : Result<int>.Failure(result.Errors.FirstOrDefault()?.Description ?? "Role creation failed.");
     }
 
@@ -153,5 +154,35 @@ public class IdentityUser : IIdentityUser
         var result = await _userManager.UpdateAsync(user);
 
         return !result.Succeeded ? Result.Failure(result.Errors.First().Description) : Result.Success;
+    }
+
+    public async Task<Result> DeleteUserAsync(int UserId)
+    {
+        var user = await _userManager.FindByIdAsync(UserId.ToString());
+        if (user is null) return Result.Failure("User not found");
+
+        user.Delete();
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded 
+        ? Result.Success 
+        : Result.Failure(result.Errors.First().Description);
+    }
+
+    public async Task<Result> RestoreUserAsync(int userId)
+    {
+        var user = await _userManager.Users
+        .IgnoreQueryFilters()
+        .FirstOrDefaultAsync(u => u.Id == userId);
+        
+        if(user is null) return Result.Failure("User not found");
+
+        user.UnDelete();
+
+        var result = await _userManager.UpdateAsync(user);
+
+        return result.Succeeded
+        ? Result.Success
+        : Result.Failure(result.Errors.First().Description);
     }
 }

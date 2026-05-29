@@ -11,4 +11,6 @@ public interface IEmployeeRepository : IGenericRepository<Employee>
     Task<EmployeeResponseDto?> GetEmployeeProfileByIdUserAsync(int UserId, CancellationToken cancellationToken);
 
     Task<Employee?> GetEmployeeByUserIdAsync(int UserId);
+
+    Task<Employee?> GetDeletedEmployeeByIdAsync(int Id);
 }
