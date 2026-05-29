@@ -43,3 +43,12 @@ Content-Type: application/json
   "dateOfBirth": "1973-10-06",
   "countryId": 113
 }
+
+###
+DELETE {{baseUrl}}/Clients/delete-client/1
+Content-Type: application/json
+
+
+###
+PUT {{baseUrl}}/Clients/resotre-client/1
+Content-Type: application/json

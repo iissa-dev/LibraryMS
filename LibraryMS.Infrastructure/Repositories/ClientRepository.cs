@@ -72,4 +72,11 @@ public class ClientRepository(AppDbContext context) : GenericRepository<Client>(
 
         return client;
     }
+
+    public async Task<Client?> GetDeletedClientByUserIdAsync(int userId)
+    {
+        return await Context.Clients
+        .IgnoreQueryFilters()
+        .FirstOrDefaultAsync(c => c.UserId == userId && c.IsDeleted);
+    }
 }

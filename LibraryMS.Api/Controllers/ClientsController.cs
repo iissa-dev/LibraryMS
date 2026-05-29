@@ -1,6 +1,8 @@
 ﻿using LibraryMS.Api.Common.Extensions;
 using LibraryMS.Application.Common.Results;
+using LibraryMS.Application.Features.Client.Commands.DeleteClient;
 using LibraryMS.Application.Features.Client.Commands.RegisterClient;
+using LibraryMS.Application.Features.Client.Commands.RestoreClient;
 using LibraryMS.Application.Features.Client.Commands.UpdateClient;
 using LibraryMS.Application.Features.Client.Queries.GetAllClient;
 using LibraryMS.Application.Features.Client.Queries.GetClientById;
@@ -51,7 +53,10 @@ public class ClientsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut($"update-client-info/{{{nameof(userId)}}}")]
-    public async Task<IActionResult> UpdateClientAsynTask([FromRoute]int userId, UpdateClientCommand command)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateClientAsynTask([FromRoute] int userId, UpdateClientCommand command)
     {
         if (userId != command.UserId) return BadRequest(Result.Failure("User Id mismatch"));
 
@@ -59,5 +64,27 @@ public class ClientsController(IMediator mediator) : ControllerBase
         if (result.IsFailure) return NotFound("Client profile not found or no changes made");
 
         return Ok(result);
+    }
+
+    [HttpDelete($"delete-client/{{{nameof(userId)}}}")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteClientAsync([FromRoute] int userId)
+    {
+        var result = await mediator.Send(new DeleteClientCommand(userId));
+
+        return result.IsSuccess
+        ? Ok(result)
+        : NotFound(result);
+    }
+
+    [HttpPut($"resotre-client/{{{nameof(userId)}}}")]
+    public async Task<IActionResult> RestoreClientAsync([FromRoute]int userId)
+    {
+        var result = await mediator.Send(new RestoreClientCommand(userId));
+
+        return result.IsSuccess
+        ? Ok(result)
+        : NotFound(result);
     }
 }
