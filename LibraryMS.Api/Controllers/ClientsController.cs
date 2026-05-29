@@ -1,6 +1,7 @@
-﻿using System.Security.Claims;
-using LibraryMS.Api.Common.Extensions;
+﻿using LibraryMS.Api.Common.Extensions;
+using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.Features.Client.Commands.RegisterClient;
+using LibraryMS.Application.Features.Client.Commands.UpdateClient;
 using LibraryMS.Application.Features.Client.Queries.GetAllClient;
 using LibraryMS.Application.Features.Client.Queries.GetClientById;
 using MediatR;
@@ -47,5 +48,16 @@ public class ClientsController(IMediator mediator) : ControllerBase
             return BadRequest(result);
 
         return StatusCode(StatusCodes.Status201Created, result);
+    }
+
+    [HttpPut($"update-client-info/{{{nameof(userId)}}}")]
+    public async Task<IActionResult> UpdateClientAsynTask([FromRoute]int userId, UpdateClientCommand command)
+    {
+        if (userId != command.UserId) return BadRequest(Result.Failure("User Id mismatch"));
+
+        var result = await mediator.Send(command);
+        if (result.IsFailure) return NotFound("Client profile not found or no changes made");
+
+        return Ok(result);
     }
 }

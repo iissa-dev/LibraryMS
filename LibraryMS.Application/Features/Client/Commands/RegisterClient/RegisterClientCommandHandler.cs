@@ -10,12 +10,13 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
 {
     public async Task<Result<int>> Handle(RegisterClientCommand request, CancellationToken cancellationToken)
     {
-        if (await unitOfWork.Clients.ExistsAsync(c => c.LibraryCardNumber == request.LibraryCardNumber))
-            return Result<int>.Failure("This Library Card Number is already assigned to another client.");
         await using var transaction = await unitOfWork.BeginTransactionAsync();
 
         try
         {
+            if (await unitOfWork.Clients.ExistsAsync(c => c.LibraryCardNumber == request.LibraryCardNumber))
+            return Result<int>.Failure("This Library Card Number is already assigned to another client.");
+            
             var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
                 request.PhoneNumber, request.FirstName, request.LastName, request.Address, request.CountryId, request.BirthDate);
 

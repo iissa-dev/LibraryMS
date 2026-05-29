@@ -1,10 +1,9 @@
 ﻿using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.DTOs.AuthDto;
-using LibraryMS.Domain.Entities;
+using LibraryMS.Application.DTOs.UserDto;
 using LibraryMS.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryMS.Infrastructure.Identity;
 
@@ -134,5 +133,25 @@ public class IdentityUser : IIdentityUser
         return result.Succeeded 
         ? Result<int>.Success(user.Id) 
         : Result<int>.Failure(result.Errors.FirstOrDefault()?.Description ?? "Role creation failed.");
+    }
+
+    public async Task<Result> UpdateUserInfoAsync(UpdateUserInfoDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
+        if (user is null) return Result.Failure("User not found");
+
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.Email = dto.Email;
+        user.Address = dto.Address;
+        user.DateOfBirth = dto.DateOfBirth;
+        user.UserName = dto.UserName;
+        user.ImageUrl = dto.ImageUrl;
+        user.CountryId = dto.CountryId;
+        user.PhoneNumber = dto.PhoneNumber;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        return !result.Succeeded ? Result.Failure(result.Errors.First().Description) : Result.Success;
     }
 }

@@ -8,11 +8,11 @@ namespace LibraryMS.Infrastructure.Repositories;
 
 public class ClientRepository(AppDbContext context) : GenericRepository<Client>(context), IClientRepository
 {
-    public async Task<ClientResponseDto?> GetClientProfileByIdUserAsync(int UserId, CancellationToken cancellationToken)
+    public async Task<ClientResponseDto?> GetClientProfileByIdUserAsync(int userId, CancellationToken cancellationToken)
     {
         return await Context.Clients
         .AsNoTracking()
-        .Where(c => c.UserId == UserId)
+        .Where(c => c.UserId == userId)
         .Join(Context.Users,
         client => client.UserId,
         user => user.Id,
@@ -63,5 +63,13 @@ public class ClientRepository(AppDbContext context) : GenericRepository<Client>(
             .ToListAsync(cancellationToken);
 
         return (items, totalCount);
+    }
+
+    public async Task<Client?> GetClientByUserId(int userId)
+    {
+        var client = await Context.Clients
+            .SingleOrDefaultAsync(c => c.UserId == userId);
+
+        return client;
     }
 }

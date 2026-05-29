@@ -25,3 +25,21 @@ Content-Type: application/json
 ###
 GET {{baseUrl}}/Clients?pageNumber=1&pageSize=10
 Content-Type: application/json
+
+###
+Put {{baseUrl}}/Clients/update-client-info/1
+Content-Type: application/json
+
+{
+  "userId" : 1,
+  "firstName": "Mohammad",
+  "lastName": "Atieh",
+  "address": "Al-Zarqa",
+  "libraryCardNumber": "230221",
+  "phoneNumber": "0780830732",
+  "email": "Mohammad@gmail.com",
+  "userName": "Mohammad",
+  "imageUrl": "",
+  "dateOfBirth": "1973-10-06",
+  "countryId": 113
+}
