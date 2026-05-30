@@ -1,6 +1,5 @@
 ﻿using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Application.Common.Results;
-using LibraryMS.Domain.Entities;
 using LibraryMS.Domain.Enums;
 using MediatR;
 
@@ -10,7 +9,7 @@ public sealed class CreateBookCommandHandler(IUnitOfWork unitOfWork) : IRequestH
 {
     public async Task<Result<int>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
-        var isbnExists = await unitOfWork.Books.IsIsbnUniqueAsync(request.ISBN, cancellationToken);
+        var isbnExists = await unitOfWork.Books.IsIsbnExistsAsync(request.ISBN, cancellationToken);
         if (isbnExists)
             return Result<int>.Failure("The provided ISBN is already registered with another book.");
         
@@ -25,12 +24,14 @@ public sealed class CreateBookCommandHandler(IUnitOfWork unitOfWork) : IRequestH
             Genre = (Genre)request.Genre,
             AdditionalDetails = request.AdditionalDetails,
             BookImageUrl = request.BookImageUrl,
-            
-            Authors = request.AuthorIds.Select(id => new BookAuthor
-            {
-                AuthorId = id
-            }).ToList()
         };
+
+        book.AddBookAuthors(request.AuthorIds);
+        
+        for (int i = 0; i < request.InitialCopiesCount; i++)
+        {
+            book.AddCopy();
+        }
 
         unitOfWork.Books.Add(book);
         await unitOfWork.SaveChangesAsync(cancellationToken);

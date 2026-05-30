@@ -1,4 +1,5 @@
-﻿using LibraryMS.Domain.Enums;
+﻿using LibraryMS.Application.DTOs.AuthorDto;
+using LibraryMS.Domain.Enums;
 
 namespace LibraryMS.Application.DTOs.BookDtos;
 
@@ -11,4 +12,6 @@ public class ResponseBookDto
     public Genre Genre { get; set; } 
     public string? AdditionalDetails { get; set; }
     public string? BookImageUrl { get; set; }
+
+    public List<AuthorResponseDto> Authors { get; set; } = [];
 }

@@ -14,10 +14,23 @@ Content-Type: application/json
   "genre": 11,
   "additionalDetails": "A premium guide to software architecture.",
   "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch.jpg",
-  "authorIds": [1]
+  "authorIds": [1],
+  "initialCopiesCount": 5
 }
 
 
 ###
 GET {{baseUrl}}/Books/books?PageNumber=1&PageSize=10
+Content-Type: application/json
+
+###
+DELETE {{baseUrl}}/Books/10
+Content-Type: application/json
+
+###
+PUT {{baseUrl}}/Books/restore/10
+Content-Type: application/json
+
+###
+GET {{baseUrl}}/Books/10
 Content-Type: application/json

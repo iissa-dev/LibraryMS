@@ -1,5 +1,6 @@
 ﻿using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Application.Common.Results;
+using LibraryMS.Application.DTOs.AuthorDto;
 using LibraryMS.Application.DTOs.BookDtos;
 using MediatR;
 
@@ -21,6 +22,11 @@ public class GetAllBooksQueryHandler(IUnitOfWork unitOfWork)
                     Genre = book.Genre,
                     AdditionalDetails = book.AdditionalDetails,
                     BookImageUrl = book.BookImageUrl,
+                    Authors = book.BookAuthors.Select(a => new AuthorResponseDto
+                    {
+                        Id = a.Id,
+                        FullName = $"{a.Author.FirstName} {a.Author.LastName}"
+                    }).ToList()
                 },
                 request.PageNumber,
                 request.PageSize,

@@ -12,7 +12,7 @@ public class BookAuthorsConfiguration: IEntityTypeConfiguration<BookAuthor>
         builder.HasKey(b => b.Id);
 
         builder.HasOne(ba => ba.Book)
-            .WithMany(b => b.Authors)
+            .WithMany(b => b.BookAuthors)
             .HasForeignKey(ba => ba.BookId)
             .OnDelete(DeleteBehavior.Cascade);
         

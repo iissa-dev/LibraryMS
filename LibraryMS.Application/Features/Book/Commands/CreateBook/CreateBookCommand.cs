@@ -10,4 +10,6 @@ public sealed record CreateBookCommand(
     short Genre,
     string AdditionalDetails,
     string? BookImageUrl,
-    List<int> AuthorIds) : IRequest<Result<int>>;
+    List<int> AuthorIds,
+    int InitialCopiesCount
+) : IRequest<Result<int>>;
