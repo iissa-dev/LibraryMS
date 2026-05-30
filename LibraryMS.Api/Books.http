@@ -4,7 +4,7 @@ GET https://examples.http-client.intellij.net/get
 
 ###
 @baseUrl = http://localhost:5165/api
-POST {{baseUrl}}Books
+POST {{baseUrl}}/Books
 Content-Type: application/json
 
 {
@@ -13,7 +13,8 @@ Content-Type: application/json
   "publishDate": "2026-05-11T00:00:00Z",
   "genre": 11,
   "additionalDetails": "A premium guide to software architecture.",
-  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch.jpg"
+  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch.jpg",
+  "authorIds": [1]
 }
 
 

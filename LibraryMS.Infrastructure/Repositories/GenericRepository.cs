@@ -40,9 +40,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
 
     public async Task<(IEnumerable<TResult> items, int total)> GetPagedProjectedAsync<TResult>(
-        Expression<Func<T, TResult>> selector, int pageNumber, int pageSize,
+        Expression<Func<T, TResult>> selector,
+        int pageNumber,
+        int pageSize,
         Expression<Func<T, bool>>? predicate = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, CancellationToken cancellationToken = default)
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        CancellationToken cancellationToken = default)
     {
         var query = DbSet.AsNoTracking();
         if (predicate != null)
