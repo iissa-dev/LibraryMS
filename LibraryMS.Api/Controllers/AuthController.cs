@@ -3,26 +3,30 @@ using LibraryMS.Application.Features.Auth.Commands.Logout;
 using LibraryMS.Application.Features.Auth.Commands.RefreshToken;
 using LibraryMS.Application.Features.Auth.Queries.Login;
 using LibraryMS.Application.Features.Auth.Queries.User;
-
 namespace LibraryMS.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IMediator mediator) : ControllerBase
+public class AuthController(IMediator mediator, IWebHostEnvironment hostEnvironment) : ControllerBase
 {
+    private void SetRefreshTokenCookie(string refreshToken)
+    {
+        Response.Cookies.Append(ApiConstant.RefreshTokenKey, refreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = hostEnvironment.IsProduction(), // Set Secure flag in production
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddDays(7)
+        });
+    }
+
     [HttpPost("LoginAsync")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginDto)
     {
         var result = await mediator.Send(new LoginQuery(loginDto.UserName, loginDto.Password));
         if (result.IsFailure) return Unauthorized(new { error = result.Error });
 
-        Response.Cookies.Append(ApiConstant.RefreshTokenKey, result.Data!.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.UtcNow.AddDays(7)
-        });
+        SetRefreshTokenCookie(result.Data!.RefreshToken);
 
         return Ok(result);
     }
@@ -46,6 +50,10 @@ public class AuthController(IMediator mediator) : ControllerBase
         if (refreshToken is null) return BadRequest(Result.Failure("Invalid Refresh Token Or you are not login"));
 
         var result = await mediator.Send(new RefreshTokenCommand(refreshToken));
+
+        if (result.IsFailure) return BadRequest(result);
+
+        SetRefreshTokenCookie(result.Data!.RefreshToken);
 
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
