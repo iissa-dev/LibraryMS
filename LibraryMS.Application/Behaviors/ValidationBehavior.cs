@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
-
-namespace LibraryMS.Application.Behaviors;
+﻿namespace LibraryMS.Application.Behaviors;
 
 // Behavior into MedaitR work with any request and any response in General execute before the handler
 public class ValidationBehavior<TRequest, TResponse> :

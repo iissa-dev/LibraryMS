@@ -1,5 +1,4 @@
 ﻿using LibraryMS.Application.DTOs.ClientDto;
-using LibraryMS.Domain.Entities;
 
 namespace LibraryMS.Application.Common.Interfaces;
 

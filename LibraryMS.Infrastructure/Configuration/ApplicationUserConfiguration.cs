@@ -1,8 +1,4 @@
-﻿using LibraryMS.Infrastructure.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace LibraryMS.Infrastructure.Configuration;
+﻿namespace LibraryMS.Infrastructure.Configuration;
 
 public class ApplicationUserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {

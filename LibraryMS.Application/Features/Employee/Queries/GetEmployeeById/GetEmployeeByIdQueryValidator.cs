@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace LibraryMS.Application.Features.Employee.Queries.GetEmployeeById;
+﻿namespace LibraryMS.Application.Features.Employee.Queries.GetEmployeeById;
 
 public class GetEmployeeByIdQueryValidator : AbstractValidator<GetEmployeeByIdQuery>
 {

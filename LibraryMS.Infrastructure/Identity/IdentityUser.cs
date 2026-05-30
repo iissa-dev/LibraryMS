@@ -1,10 +1,5 @@
-﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using LibraryMS.Application.DTOs.AuthDto;
+﻿using LibraryMS.Application.DTOs.AuthDto;
 using LibraryMS.Application.DTOs.UserDto;
-using LibraryMS.Domain.Enums;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryMS.Infrastructure.Identity;
 

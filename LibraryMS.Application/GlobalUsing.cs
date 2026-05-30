@@ -1,0 +1,7 @@
+global using MediatR;
+global using LibraryMS.Application.Common.Interfaces;
+global using LibraryMS.Application.Common.Results;
+global using LibraryMS.Domain.Entities;
+global using LibraryMS.Domain.Enums;
+global using FluentValidation;
+global using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LibraryMS.Infrastructure.Repositories;

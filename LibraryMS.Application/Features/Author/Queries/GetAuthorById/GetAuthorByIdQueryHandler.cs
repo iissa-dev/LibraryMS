@@ -1,7 +1,4 @@
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.DTOs.AuthorDto;
-using MediatR;
 
 namespace LibraryMS.Application.Features.Author.Queries.GetAuthorById;
 

@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using LibraryMS.Domain.Enums;
-
-namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
+﻿namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
 
 public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
 {

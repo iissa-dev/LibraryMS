@@ -1,7 +1,4 @@
-﻿using LibraryMS.Application.Common.Results;
-using MediatR;
-
-namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
+﻿namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
 
 public sealed record RegisterClientCommand(
     string Email,

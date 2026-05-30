@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Book.Commands.RestoreBook;
 
 public sealed class RestoreBookCommandValidator : AbstractValidator<RestoreBookCommand>

@@ -1,9 +1,4 @@
-﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Domain.Entities;
-using LibraryMS.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-
-namespace LibraryMS.Infrastructure.Repositories;
+﻿namespace LibraryMS.Infrastructure.Repositories;
 
 public class BookRepository(AppDbContext context) : GenericRepository<Book>(context), IBookRepository
 {

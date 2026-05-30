@@ -1,0 +1,13 @@
+global using LibraryMS.Application.Common.Interfaces;
+global using LibraryMS.Application.Common.Results;
+global using LibraryMS.Domain.Entities;
+global using LibraryMS.Domain.Enums;
+global using Microsoft.AspNetCore.Identity;
+global using LibraryMS.Domain.Common;
+global using Microsoft.EntityFrameworkCore;
+global using LibraryMS.Infrastructure.Data;
+global using LibraryMS.Infrastructure.Identity;
+global using LibraryMS.Infrastructure.Repositories;
+global using LibraryMS.Infrastructure.SeedData;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;

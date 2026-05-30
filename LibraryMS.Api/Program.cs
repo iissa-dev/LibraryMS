@@ -1,8 +1,3 @@
-using LibraryMS.Api.Common.Exceptions;
-using LibraryMS.Application.DependencyInjection;
-using LibraryMS.Infrastructure.DependencyInjection;
-using Serilog;
-
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services

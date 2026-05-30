@@ -1,7 +1,4 @@
-﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using LibraryMS.Application.DTOs.ClientDto;
-using MediatR;
+﻿using LibraryMS.Application.DTOs.ClientDto;
 
 namespace LibraryMS.Application.Features.Client.Queries.GetAllClient;
 

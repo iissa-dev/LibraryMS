@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Employee.Commands.Delete;
 
 public sealed class DeleteEmployeeCommandValidator : AbstractValidator<DeleteEmployeeCommand>

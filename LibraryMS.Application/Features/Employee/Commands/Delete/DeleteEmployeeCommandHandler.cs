@@ -1,7 +1,3 @@
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using MediatR;
-
 namespace LibraryMS.Application.Features.Employee.Commands.Delete;
 
 public sealed class DeleteEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdentityUser identityUser) : IRequestHandler<DeleteEmployeeCommand, Result>

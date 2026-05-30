@@ -1,8 +1,3 @@
-using LibraryMS.Domain.Entities;
-using LibraryMS.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace LibraryMS.Infrastructure.Configuration;
 
 public class BookConfiguration : IEntityTypeConfiguration<Book>

@@ -1,14 +1,10 @@
-using LibraryMS.Api.Common.Extensions;
-using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
 using LibraryMS.Application.Features.Employee.Commands.Delete;
 using LibraryMS.Application.Features.Employee.Commands.Restore;
 using LibraryMS.Application.Features.Employee.Commands.Update;
 using LibraryMS.Application.Features.Employee.Queries.GetAllEmployee;
 using LibraryMS.Application.Features.Employee.Queries.GetEmployeeById;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryMS.Api.Controllers;
 

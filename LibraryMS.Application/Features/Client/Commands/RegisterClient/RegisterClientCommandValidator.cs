@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
+﻿namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
 
 public sealed class RegisterClientCommandValidator : AbstractValidator<RegisterClientCommand>
 {

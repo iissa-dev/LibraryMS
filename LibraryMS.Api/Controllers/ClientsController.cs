@@ -1,14 +1,10 @@
-﻿using LibraryMS.Api.Common.Extensions;
-using LibraryMS.Application.Common.Results;
-using LibraryMS.Application.Features.Client.Commands.DeleteClient;
+﻿using LibraryMS.Application.Features.Client.Commands.DeleteClient;
 using LibraryMS.Application.Features.Client.Commands.RegisterClient;
 using LibraryMS.Application.Features.Client.Commands.RestoreClient;
 using LibraryMS.Application.Features.Client.Commands.UpdateClient;
 using LibraryMS.Application.Features.Client.Queries.GetAllClient;
 using LibraryMS.Application.Features.Client.Queries.GetClientById;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryMS.Api.Controllers;
 

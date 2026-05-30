@@ -1,9 +1,4 @@
-﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using LibraryMS.Domain.Enums;
-using MediatR;
-
-namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
+﻿namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
 
 public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdentityUser identityUser)
     : IRequestHandler<CreateEmployeeCommand, Result<int>>

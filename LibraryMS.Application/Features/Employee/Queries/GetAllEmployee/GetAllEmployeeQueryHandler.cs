@@ -1,7 +1,4 @@
-﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using LibraryMS.Application.DTOs.EmployeeDto;
-using MediatR;
+﻿using LibraryMS.Application.DTOs.EmployeeDto;
 
 namespace LibraryMS.Application.Features.Employee.Queries.GetAllEmployee;
 

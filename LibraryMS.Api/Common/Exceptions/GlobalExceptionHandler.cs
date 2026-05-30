@@ -1,7 +1,3 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-
 namespace LibraryMS.Api.Common.Exceptions;
 
 public sealed class GlobalExceptionHandler(

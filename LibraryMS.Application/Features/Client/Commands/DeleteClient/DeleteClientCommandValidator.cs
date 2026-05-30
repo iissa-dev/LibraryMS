@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Client.Commands.DeleteClient;
 
 public sealed class DeleteClientCommandValidator : AbstractValidator<DeleteClientCommand>

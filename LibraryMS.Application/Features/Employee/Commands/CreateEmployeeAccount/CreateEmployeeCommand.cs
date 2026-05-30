@@ -1,7 +1,4 @@
-﻿using LibraryMS.Application.Common.Results;
-using MediatR;
-
-namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
+﻿namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
 
 public sealed record CreateEmployeeCommand(
     string Email,

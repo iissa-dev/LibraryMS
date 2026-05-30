@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Auth.Queries.User;
 
 public class CurrentUserQueryValidator: AbstractValidator<CurrentUserQuery>

@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Client.Commands.UpdateClient;
 
 public class UpdateClientCommandValidator : AbstractValidator<UpdateClientCommand>

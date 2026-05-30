@@ -1,12 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.DTOs.AuthDto;
-using LibraryMS.Domain.Entities;
-using LibraryMS.Domain.Enums;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 

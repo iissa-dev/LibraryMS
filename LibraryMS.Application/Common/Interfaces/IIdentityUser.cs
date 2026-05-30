@@ -1,7 +1,5 @@
-﻿using LibraryMS.Application.Common.Results;
-using LibraryMS.Application.DTOs.AuthDto;
+﻿using LibraryMS.Application.DTOs.AuthDto;
 using LibraryMS.Application.DTOs.UserDto;
-using LibraryMS.Domain.Enums;
 
 namespace LibraryMS.Application.Common.Interfaces;
 

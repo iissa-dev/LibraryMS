@@ -1,9 +1,4 @@
-﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using LibraryMS.Domain.Enums;
-using MediatR;
-
-namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
+﻿namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
 
 public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdentityUser identityUser)
     : IRequestHandler<RegisterClientCommand, Result<int>>

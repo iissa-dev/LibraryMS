@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Author.Queries.GetAuthorById;
 
 public sealed class GetAuthorByIdQueryValidator : AbstractValidator<GetAuthorByIdQuery>

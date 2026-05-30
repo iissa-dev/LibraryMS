@@ -1,13 +1,8 @@
-using LibraryMS.Api.Common.Constant;
-using LibraryMS.Api.Common.Extensions;
-using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.DTOs.AuthDto;
 using LibraryMS.Application.Features.Auth.Commands.Logout;
 using LibraryMS.Application.Features.Auth.Commands.RefreshToken;
 using LibraryMS.Application.Features.Auth.Queries.Login;
 using LibraryMS.Application.Features.Auth.Queries.User;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryMS.Api.Controllers;
 

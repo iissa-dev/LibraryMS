@@ -1,8 +1,4 @@
-﻿using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.DTOs.ClientDto;
-using LibraryMS.Domain.Entities;
-using LibraryMS.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using LibraryMS.Application.DTOs.ClientDto;
 
 namespace LibraryMS.Infrastructure.Repositories;
 

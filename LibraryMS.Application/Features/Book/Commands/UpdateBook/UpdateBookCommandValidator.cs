@@ -1,6 +1,3 @@
-using FluentValidation;
-using LibraryMS.Domain.Enums;
-
 namespace LibraryMS.Application.Features.Book.Commands.UpdateBook;
 
 public sealed class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>

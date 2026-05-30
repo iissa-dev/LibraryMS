@@ -1,13 +1,6 @@
-﻿using LibraryMS.Infrastructure.Data;
-using LibraryMS.Infrastructure.Identity;
-using LibraryMS.Infrastructure.Repositories;
-using LibraryMS.Infrastructure.SeedData;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using LibraryMS.Application.Common.Interfaces;
 using LibraryMS.Infrastructure.Interceptors;
 
 namespace LibraryMS.Infrastructure.DependencyInjection;

@@ -1,8 +1,3 @@
-using LibraryMS.Domain.Entities;
-using LibraryMS.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-
 namespace LibraryMS.Infrastructure.Data;
 
 public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>

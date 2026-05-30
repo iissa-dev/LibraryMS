@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Auth.Queries.Login;
 
 public sealed class LoginQueryValidator : AbstractValidator<LoginQuery>

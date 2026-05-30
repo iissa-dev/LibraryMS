@@ -1,7 +1,3 @@
-using LibraryMS.Domain.Common;
-using LibraryMS.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-
 namespace LibraryMS.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser<int>, ISoftDeleteable

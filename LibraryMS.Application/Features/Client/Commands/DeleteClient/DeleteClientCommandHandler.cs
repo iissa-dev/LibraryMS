@@ -1,7 +1,3 @@
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using MediatR;
-
 namespace LibraryMS.Application.Features.Client.Commands.DeleteClient;
 
 public sealed class DeleteClientCommandHandler(IUnitOfWork unitOfWork, IIdentityUser identityUser)

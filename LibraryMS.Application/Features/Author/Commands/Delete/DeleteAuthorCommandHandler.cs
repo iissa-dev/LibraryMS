@@ -1,7 +1,3 @@
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
-using MediatR;
-
 namespace LibraryMS.Application.Features.Author.Commands.Delete;
 
 public sealed class DeleteAuthorCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteAuthorCommand, Result>

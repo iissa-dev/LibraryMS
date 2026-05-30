@@ -1,6 +1,4 @@
-﻿using LibraryMS.Domain.Enums;
-
-namespace LibraryMS.Domain.Entities;
+﻿namespace LibraryMS.Domain.Entities;
 
 public class Reservation : BaseEntity
 {

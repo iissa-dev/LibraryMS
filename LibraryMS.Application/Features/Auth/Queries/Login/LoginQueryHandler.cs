@@ -1,7 +1,4 @@
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.DTOs.AuthDto;
-using MediatR;
 
 namespace LibraryMS.Application.Features.Auth.Queries.Login;
 

@@ -1,6 +1,4 @@
-﻿using LibraryMS.Domain.Entities;
-
-namespace LibraryMS.Application.Common.Interfaces;
+﻿namespace LibraryMS.Application.Common.Interfaces;
 
 public interface IRefreshTokenRepository : IGenericRepository<RefreshToken>
 {

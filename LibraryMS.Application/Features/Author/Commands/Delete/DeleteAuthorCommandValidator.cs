@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Author.Commands.Delete;
 
 public sealed class DeleteAuthorCommandValidator : AbstractValidator<DeleteAuthorCommand>

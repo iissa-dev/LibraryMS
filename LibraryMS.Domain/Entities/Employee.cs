@@ -1,6 +1,4 @@
-﻿using LibraryMS.Domain.Common;
-
-namespace LibraryMS.Domain.Entities;
+﻿namespace LibraryMS.Domain.Entities;
 
 public class Employee : BaseEntity, ISoftDeleteable
 {

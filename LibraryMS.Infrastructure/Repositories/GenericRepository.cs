@@ -1,7 +1,4 @@
 using System.Linq.Expressions;
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryMS.Infrastructure.Repositories;
 

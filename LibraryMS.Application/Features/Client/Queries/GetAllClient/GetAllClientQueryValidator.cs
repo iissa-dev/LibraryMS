@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace LibraryMS.Application.Features.Client.Queries.GetAllClient;
+﻿namespace LibraryMS.Application.Features.Client.Queries.GetAllClient;
 
 public class GetAllClientQueryValidator : AbstractValidator<GetAllClientQuery>
 {

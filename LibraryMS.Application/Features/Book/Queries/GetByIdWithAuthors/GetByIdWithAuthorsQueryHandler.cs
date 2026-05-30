@@ -1,10 +1,5 @@
-using FluentValidation;
-using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Application.Common.Results;
 using LibraryMS.Application.DTOs.AuthorDto;
 using LibraryMS.Application.DTOs.BookDtos;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryMS.Application.Features.Book.Queries.GetByIdWithAuthors;
 

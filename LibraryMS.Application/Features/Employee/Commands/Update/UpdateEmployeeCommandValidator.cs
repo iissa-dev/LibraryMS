@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace LibraryMS.Application.Features.Employee.Commands.Update;
 
 public class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCommand>

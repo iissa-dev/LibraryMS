@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-namespace LibraryMS.Application.Features.Client.Queries.GetClientById;
+﻿namespace LibraryMS.Application.Features.Client.Queries.GetClientById;
 
 public class GetClientByIdQueryValidator : AbstractValidator<GetClientByIdQuery>
 {

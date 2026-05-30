@@ -1,7 +1,3 @@
-using LibraryMS.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace LibraryMS.Infrastructure.Configuration;
 
 public class AuthorConfiguration : IEntityTypeConfiguration<Author>

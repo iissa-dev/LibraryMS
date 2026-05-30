@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace LibraryMS.Application.Features.Book.Queries.GetAllBook;
+﻿namespace LibraryMS.Application.Features.Book.Queries.GetAllBook;
 
 public sealed class GetAllBooksQueryValidator : AbstractValidator<GetAllBooksQuery>
 {

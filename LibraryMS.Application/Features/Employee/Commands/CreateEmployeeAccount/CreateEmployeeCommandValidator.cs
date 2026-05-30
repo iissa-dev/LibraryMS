@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using LibraryMS.Domain.Enums;
-
-namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
+﻿namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
 
 public sealed class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCommand>
 {
