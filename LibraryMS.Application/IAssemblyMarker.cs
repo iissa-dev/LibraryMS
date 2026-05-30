@@ -1,3 +1,3 @@
-﻿namespace LibraryMS.Application;
+namespace LibraryMS.Application;
 
 public interface IAssemblyMarker;

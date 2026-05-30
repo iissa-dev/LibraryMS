@@ -11,7 +11,7 @@ public sealed class RestoreAuthorCommandHandler(IUnitOfWork unitOfWork) : IReque
     public async Task<Result> Handle(RestoreAuthorCommand request, CancellationToken cancellationToken)
     {
         var author = await unitOfWork.Repository<Domain.Entities.Author>()
-        .Query()
+        .AsQueryable()
         .IgnoreQueryFilters()
         .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken: cancellationToken);
 

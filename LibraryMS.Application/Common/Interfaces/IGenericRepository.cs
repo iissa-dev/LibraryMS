@@ -6,19 +6,14 @@ public interface IGenericRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(int id);
     Task<IEnumerable<T>> GetAllAsync();
-    /// <summary>
-    /// Retrieves a filtered, sorted, and projected list of read-only data directly from the database.
-    /// </summary>
-    /// <typeparam name="TResult">The DTO or target type to project the data into.</typeparam>
-    /// <param name="selector">The mapping expression (Projection) to select specific columns.</param>
-    /// <param name="predicate">Optional filter conditions (Where clause).</param>
-    /// <param name="orderBy">Optional sorting logic (OrderBy/ThenBy clauses).</param>
-    /// <returns>An asynchronous collection of projected results (<typeparamref name="TResult"/>).</returns>
-    Task<IEnumerable<TResult>> GetProjectionAsync<TResult>
-    (Expression<Func<T, TResult>> selector,
+
+    /// <include file="../../Docs/IGenericDocs.xml" path="/doc/members/member[@name='GetProjectionAsync']/*" />
+    Task<IEnumerable<TResult>> GetProjectionAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null);
 
+    /// <include file="../../Docs/IGenericDocs.xml" path="/doc/members/member[@name='GetPagedProjectedAsync']/*" />
     Task<(IEnumerable<TResult> items, int total)> GetPagedProjectedAsync<TResult>(
         Expression<Func<T, TResult>> selector,
         int pageNumber,
@@ -32,5 +27,7 @@ public interface IGenericRepository<T> where T : class
     void Delete(T entity);
 
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
-    IQueryable<T> Query();
+
+    /// <include file="../../Docs/IGenericDocs.xml" path="/doc/members/member[@name='AsQueryable']/*" />
+    IQueryable<T> AsQueryable();
 }

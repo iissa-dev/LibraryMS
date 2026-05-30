@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LibraryMS.Application</name>
+    </assembly>
+    <members>
+        <member name="GetProjectionAsync">            
+            <summary>
+            Retrieves a filtered, sorted, and projected read-only list directly via SQL SELECT.
+            </summary>
+            <typeparam name="TResult">The target DTO type to project into.</typeparam>
+            <param name="selector">LINQ Projection expression selecting only required columns.</param>
+            <param name="predicate">Optional filter conditions (Where clause).</param>
+            <param name="orderBy">Optional sorting logic (OrderBy/ThenBy).</param>
+            <returns>A collection of projected DTOs.</returns>
+        </member>
+        <member name="GetPagedProjectedAsync">
+            <summary>
+            Retrieves a paginated, filtered, and projected read-only list with a total record count.
+            </summary>
+            <typeparam name="TResult">The target DTO type to project into.</typeparam>
+            <param name="selector">LINQ Projection expression selecting only required columns.</param>
+            <param name="pageNumber">1-based page index.</param>
+            <param name="pageSize">Number of items per page.</param>
+            <param name="predicate">Optional filter conditions (Where clause).</param>
+            <param name="orderBy">Optional sorting logic (OrderBy/ThenBy).</param>
+            <param name="cancellationToken">Cancellation token.</param>
+            <returns>A tuple containing the paginated DTO items and the total matching records count.</returns>
+        </member>
+        <member name="AsQueryable">
+            <summary>
+            Provides an <see cref="T:System.Linq.IQueryable`1"/> for advanced dynamic querying and DTO projections.
+            </summary>
+            <returns>An <see cref="T:System.Linq.IQueryable`1"/> for the entity type.</returns>
+            <remarks>
+            <strong>Caution:</strong> Uses Deferred Execution. Do NOT call <c>ToList()</c> or <c>AsEnumerable()</c> 
+            prematurely to prevent loading entire tables into memory. Expose with care to avoid tight coupling.
+            </remarks>
+        </member>
+    </members>
+</doc>
