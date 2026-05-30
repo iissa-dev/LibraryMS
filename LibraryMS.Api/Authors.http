@@ -1,0 +1,58 @@
+### Note: This file is used to test and validate the Author Management Endpoints.
+### It aligns perfectly with the AuthorsController routing specifications and MediatR structure.
+
+@baseUrl = http://localhost:5165/api
+@contentType = application/json
+
+### 1. Create a New Author
+### Adds a new writer profile into the catalog system database records.
+POST {{baseUrl}}/Authors
+Content-Type: {{contentType}}
+
+{
+  "firstName": "Martin",
+  "lastName": "Fowler",
+  "biography": "An author, software developer, and public speaker on software architecture.",
+}
+
+### ------------------------------------------------------------------
+
+### 2. Get All Authors
+### Queries the entire author catalog collection based on specified filter criteria parameters.
+GET {{baseUrl}}/Authors?pageNumber=1&pageSize=10
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 3. Get Author By ID
+### Resolves details for a single target author by their principal key tracker.
+GET {{baseUrl}}/Authors/1
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 4. Update Author Profile
+### Modifies existing author attributes. Ensure that the URL parameter id matches the body payload Id.
+PUT {{baseUrl}}/Authors/1
+Content-Type: {{contentType}}
+
+{
+  "id": 1,
+  "firstName": "Martin",
+  "lastName": "Fowler",
+  "biography": "An updated premium biography regarding enterprise software patterns.",
+}
+
+### ------------------------------------------------------------------
+
+### 5. Delete Author Profile (Soft Delete)
+### Safely moves the target author instance to an inactive deleted tracking state.
+DELETE {{baseUrl}}/Authors/1
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 6. Restore Soft-Deleted Author
+### Reverts the soft delete mutation to re-integrate the author record into the library index.
+PUT {{baseUrl}}/Authors/1/restore-author
+Content-Type: {{contentType}}

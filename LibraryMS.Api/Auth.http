@@ -1,0 +1,39 @@
+### Note: This file is used to test and validate the Authentication & Session Endpoints.
+### It automatically manages secure HttpOnly Refresh Token Cookies across sequential requests.
+
+@baseUrl = http://localhost:5165/api
+@contentType = application/json
+
+### 1. Account Login
+### Authenticates credentials. On success, the server appends a secure HTTP-Only Cookie 
+### containing the Refresh Token, which the HTTP Client engine automatically captures.
+POST {{baseUrl}}/Auth/LoginAsync
+Content-Type: {{contentType}}
+
+{
+  "userName": "Mohammad",
+  "password": "Mohammad1234#"
+}
+
+### ------------------------------------------------------------------
+
+### 2. Refresh Security Token Sequence
+### Re-evaluates session state. The client engine automatically passes the stored 
+### Refresh Token cookie back to the controller endpoint context.
+PUT {{baseUrl}}/Auth/Refresh
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 3. Fetch Current Authenticated User Profile
+### Resolves identity from the active principal context claims processing system.
+GET {{baseUrl}}/Auth/Current
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 4. Account Logout & Session Revocation
+### Sends the active cookie payload to revoke token validity inside database state management,
+### then instructs the calling agent client to drop and wipe the token cookie entirely.
+PUT {{baseUrl}}/Auth/Logout
+Content-Type: {{contentType}}

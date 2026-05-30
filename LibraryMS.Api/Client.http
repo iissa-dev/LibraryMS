@@ -1,12 +1,13 @@
-﻿### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=JetBrains Rider
+﻿### Note: This file is used to test and validate the Client Management Endpoints.
+### It aligns perfectly with the ClientsController routes and MediatR commands.
 
-###
 @baseUrl = http://localhost:5165/api
+@contentType = application/json
 
+### 1. Register a New Client
+### Creates a new client user profile in the system with a unique library card.
 POST {{baseUrl}}/Clients
-Content-Type: application/json
+Content-Type: {{contentType}}
 
 {
   "email": "Mohammad@gmail.com",
@@ -22,16 +23,29 @@ Content-Type: application/json
   "libraryCardNumber": "230221"
 }
 
-###
-GET {{baseUrl}}/Clients?pageNumber=1&pageSize=10
-Content-Type: application/json
+### ------------------------------------------------------------------
 
-###
-Put {{baseUrl}}/Clients/update-client-info/1
-Content-Type: application/json
+### 2. Get Paginated Clients List
+### Retrieves all active clients using query string routing parameters.
+GET {{baseUrl}}/Clients?pageNumber=1&pageSize=10
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 3. Get Authenticated Client Profile
+### Automatically parses identity token claims from incoming HTTP request context/cookies.
+GET {{baseUrl}}/Clients/GetClientProfileByIdUserAsync
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 4. Update Client Information
+### Updates demographic and account info. Route ID must match the body payload UserId.
+PUT {{baseUrl}}/Clients/update-client-info/1
+Content-Type: {{contentType}}
 
 {
-  "userId" : 1,
+  "userId": 1,
   "firstName": "Mohammad",
   "lastName": "Atieh",
   "address": "Al-Zarqa",
@@ -44,11 +58,17 @@ Content-Type: application/json
   "countryId": 113
 }
 
-###
+### ------------------------------------------------------------------
+
+### 5. Delete Client Profile (Soft Delete)
+### Flags the target client entity as deleted using the unique user primary key tracking identifier.
 DELETE {{baseUrl}}/Clients/delete-client/1
-Content-Type: application/json
+Content-Type: {{contentType}}
 
+### ------------------------------------------------------------------
 
-###
+### 6. Restore Soft-Deleted Client
+### Reverses the soft delete state to re-enable database inclusion and portal access.
+### Note: Route reflects the exact variable configuration string definition ('resotre-client').
 PUT {{baseUrl}}/Clients/resotre-client/1
-Content-Type: application/json
+Content-Type: {{contentType}}

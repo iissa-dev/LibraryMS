@@ -1,11 +1,20 @@
-﻿### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=JetBrains Rider
+﻿### Note: This file is used to test and validate the Book Management Endpoints.
+### It aligns perfectly with the BooksController using MediatR and Fluent Results.
 
-###
 @baseUrl = http://localhost:5165/api
+@contentType = application/json
+
+### 1. Get Paginated Books List
+### Retrieves a filtered, sorted, and projected list of books.
+GET {{baseUrl}}/Books/books?PageNumber=1&PageSize=10
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 2. Create a New Book
+### Handles business logic for creating a book, attaching authors, and auto-generating copies.
 POST {{baseUrl}}/Books
-Content-Type: application/json
+Content-Type: {{contentType}}
 
 {
   "title": "Clean Architecture in React",
@@ -18,19 +27,40 @@ Content-Type: application/json
   "initialCopiesCount": 5
 }
 
+### ------------------------------------------------------------------
 
-###
-GET {{baseUrl}}/Books/books?PageNumber=1&PageSize=10
-Content-Type: application/json
-
-###
-DELETE {{baseUrl}}/Books/10
-Content-Type: application/json
-
-###
-PUT {{baseUrl}}/Books/restore/10
-Content-Type: application/json
-
-###
+### 3. Get Book By ID
+### Retrieves specific book details along with its assigned authors.
 GET {{baseUrl}}/Books/10
-Content-Type: application/json
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 4. Update Book Details
+### Updates an existing book. Ensure that the route ID matches the body ID parameter.
+PUT {{baseUrl}}/Books/10
+Content-Type: {{contentType}}
+
+{
+  "id": 10,
+  "title": "Clean Architecture in React & Next.js",
+  "isbn": "978-3-16-148410-3",
+  "publishDate": "2026-05-11T00:00:00Z",
+  "genre": 11,
+  "additionalDetails": "An updated premium guide to software architecture including Next.js.",
+  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch-updated.jpg"
+}
+
+### ------------------------------------------------------------------
+
+### 5. Delete Book (Soft Delete)
+### Triggers a soft delete sequence. Prevents deletion if active loans exist.
+DELETE {{baseUrl}}/Books/10
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 6. Restore Deleted Book
+### Reverts the soft delete state, making the book available in active queries again.
+PUT {{baseUrl}}/Books/restore/10
+Content-Type: {{contentType}}

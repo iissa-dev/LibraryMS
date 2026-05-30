@@ -1,8 +1,13 @@
-###
-@baseUrl = http://localhost:5165/api
+### Note: This file is used to test and validate the Employee Management Endpoints.
+### It aligns perfectly with the EmployeeController routes and MediatR commands.
 
+@baseUrl = http://localhost:5165/api
+@contentType = application/json
+
+### 1. Register a New Employee
+### Creates a new staff/employee account profile with role assignment.
 POST {{baseUrl}}/Employee
-Content-Type: application/json
+Content-Type: {{contentType}}
 
 {
   "email": "Issa@gmail.com",
@@ -16,19 +21,32 @@ Content-Type: application/json
   "birthDate": "1973-10-06",
   "imageUrl": "",
   "employeeCode": "230221",
-  "roleId" : 1
+  "roleId": 1
 }
 
-###
-GET {{baseUrl}}/Employee?pageNumber=1&pageSize=10
-Content-Type: application/json
+### ------------------------------------------------------------------
 
-###
-Put {{baseUrl}}/Employee/update-employee-info/2
-Content-Type: application/json
+### 2. Get Paginated Employees List
+### Retrieves a list of employees using query string paging configuration parameters.
+GET {{baseUrl}}/Employee?pageNumber=1&pageSize=10
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 3. Get Authenticated Employee Profile
+### Requires authentication cookie context. Automatically reads the User Id from the claims token.
+GET {{baseUrl}}/Employee/EmployeeProfile
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 4. Update Employee Information
+### Modifies account attributes. Route parameter userId must match the request body payload UserId.
+PUT {{baseUrl}}/Employee/update-employee-info/2
+Content-Type: {{contentType}}
 
 {
-  "userId" : 2,
+  "userId": 2,
   "firstName": "Issa",
   "lastName": "Atieh",
   "address": "Al-Zarqa",
@@ -41,10 +59,16 @@ Content-Type: application/json
   "countryId": 113
 }
 
-###
-DELETE {{baseUrl}}/Employee/delete-employee/2
-Content-Type: application/json
+### ------------------------------------------------------------------
 
-###
+### 5. Delete Employee Profile (Soft Delete)
+### Executes a soft delete logic sequence by flagging the target employee tracking record.
+DELETE {{baseUrl}}/Employee/delete-employee/2
+Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 6. Restore Soft-Deleted Employee
+### Reverts the soft delete state to grant the employee access back to system resources.
 PUT {{baseUrl}}/Employee/restore-employee/2
-Content-Type: application/json
+Content-Type: {{contentType}}
