@@ -5,3 +5,4 @@ global using LibraryMS.Domain.Entities;
 global using LibraryMS.Domain.Enums;
 global using FluentValidation;
 global using Microsoft.EntityFrameworkCore;
+global using System.Text.Json.Serialization;

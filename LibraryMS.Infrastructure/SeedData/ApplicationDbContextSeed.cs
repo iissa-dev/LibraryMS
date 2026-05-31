@@ -1,9 +1,4 @@
 ﻿using System.Text.Json;
-using LibraryMS.Domain.Entities;
-using LibraryMS.Domain.Enums;
-using LibraryMS.Infrastructure.Data;
-using LibraryMS.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace LibraryMS.Infrastructure.SeedData;
 

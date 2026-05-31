@@ -28,7 +28,9 @@ public class GetAllBooksQueryHandler(IUnitOfWork unitOfWork)
                 request.PageNumber,
                 request.PageSize,
                 null,
-                books => books.OrderByDescending(b => b.CreatedOn), cancellationToken);
+                books => books.OrderByDescending(b => b.CreatedOn),
+                ignoreQueryFilters: false,
+                cancellationToken);
 
         var pageResult = new PagedResult<ResponseBookDto>
         {

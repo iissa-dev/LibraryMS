@@ -24,6 +24,7 @@
             <param name="pageSize">Number of items per page.</param>
             <param name="predicate">Optional filter conditions (Where clause).</param>
             <param name="orderBy">Optional sorting logic (OrderBy/ThenBy).</param>
+            <param name="ignoreQueryFilters">Optional ignore global query filter</param>
             <param name="cancellationToken">Cancellation token.</param>
             <returns>A tuple containing the paginated DTO items and the total matching records count.</returns>
         </member>

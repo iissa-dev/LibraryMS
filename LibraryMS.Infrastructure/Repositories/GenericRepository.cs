@@ -42,9 +42,15 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         int pageSize,
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool? ignoreQueryFilters = false,
         CancellationToken cancellationToken = default)
     {
         var query = DbSet.AsNoTracking();
+        if (ignoreQueryFilters.HasValue && ignoreQueryFilters.Value)
+        {
+            query = query.IgnoreQueryFilters();
+        }
+
         if (predicate != null)
         {
             query = query.Where(predicate);

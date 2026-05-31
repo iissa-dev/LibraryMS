@@ -23,7 +23,7 @@ public class Book : BaseEntity, ISoftDeleteable
 
         foreach (var copy in Copies)
         {
-            copy.IsAvailable = false;
+            copy.CopyStatus = CopyStatus.Archived;
             copy.Delete();
         }
     }
@@ -34,7 +34,7 @@ public class Book : BaseEntity, ISoftDeleteable
         DeletedOn = null;
         foreach (var copy in Copies)
         {
-            copy.IsAvailable = true;
+            copy.CopyStatus = CopyStatus.Available;
             copy.UnDelete();
         }
     }
@@ -43,7 +43,7 @@ public class Book : BaseEntity, ISoftDeleteable
     {
         var copy = new BookCopy
         {
-            IsAvailable = true,
+            CopyStatus = CopyStatus.Available,
             SerialNumber = $"{this.ISBN}-{Guid.NewGuid().ToString()[..8].ToUpper()}" // Generate a unique serial number for the copy
         };
         Copies.Add(copy);

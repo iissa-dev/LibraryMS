@@ -1,3 +1,5 @@
+using LibraryMS.Domain.Exceptions;
+
 namespace LibraryMS.Api.Common.Exceptions;
 
 public sealed class GlobalExceptionHandler(
@@ -26,6 +28,12 @@ public sealed class GlobalExceptionHandler(
                 Title = "Unauthorized",
                 Detail = ex.Message,
                 Status = StatusCodes.Status401Unauthorized
+            },
+            DomainException ex => new ProblemDetails
+            {
+                Title = "Domain Business Rule Violation",
+                Detail = ex.Message,
+                Status = StatusCodes.Status400BadRequest
             },
             _ => new ProblemDetails
             {

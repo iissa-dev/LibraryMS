@@ -20,6 +20,7 @@ public interface IGenericRepository<T> where T : class
         int pageSize,
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        bool? ignoreQueryFilters = false,
         CancellationToken cancellationToken = default);
 
     void Add(T entity);

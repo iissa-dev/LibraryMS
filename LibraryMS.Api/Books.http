@@ -64,3 +64,33 @@ Content-Type: {{contentType}}
 ### Reverts the soft delete state, making the book available in active queries again.
 PUT {{baseUrl}}/Books/restore/10
 Content-Type: {{contentType}}
+
+### ------------------------------------------------------------------
+
+### 7. Get All Copies
+GET {{baseUrl}}/Books/copies?BookId=10&OnlyAvailable=false&PageNumber=1&PageSize=10
+Content-Type: {{contentType}}
+
+### 8. Insert new Copy
+POST {{baseUrl}}/Books/10/copies
+Content-Type: {{contentType}}
+
+{
+  "initialCopiesCount": 1
+}
+
+### 9. Delete Copy
+DELETE {{baseUrl}}/Books/43/delete-copy
+Content-Type: {{contentType}}
+
+### 10. Update Copy status
+PATCH {{baseUrl}}/Books/42/update-status
+Content-Type: {{contentType}}
+
+{
+  "copyStatus": 1
+}
+
+### 11. Rstore Copy
+PUT {{baseUrl}}/Books/43/restore-copy
+Content-Type: {{contentType}}

@@ -6,15 +6,12 @@ public class BookCopiesConfiguration : IEntityTypeConfiguration<BookCopy>
     {
         builder.ToTable("BookCopies");
         builder.HasKey(b => b.Id);
+        builder.HasQueryFilter(bc => !bc.IsDeleted);
 
         builder.HasOne(b => b.Book)
             .WithMany(b => b.Copies)
             .HasForeignKey(b => b.BookId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Property(b => b.IsAvailable)
-            .HasColumnType("bit")
-            .IsRequired();
 
         builder.Property(b => b.CreatedOn)
             .HasColumnType("datetime2")
@@ -26,8 +23,13 @@ public class BookCopiesConfiguration : IEntityTypeConfiguration<BookCopy>
             .IsRequired();
 
         builder.Property(b => b.IsDeleted)
-        .HasColumnType("bit")
-        .HasDefaultValue(false)
-        .IsRequired();
+            .HasColumnType("bit")
+            .HasDefaultValue(false)
+            .IsRequired();
+
+        builder.Property(b => b.CopyStatus)
+            .HasConversion<string>()
+            .HasDefaultValue(CopyStatus.Available)
+            .IsRequired();
     }
 }

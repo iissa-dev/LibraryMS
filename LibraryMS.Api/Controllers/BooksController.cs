@@ -4,6 +4,11 @@ using LibraryMS.Application.Features.Book.Commands.RestoreBook;
 using LibraryMS.Application.Features.Book.Commands.UpdateBook;
 using LibraryMS.Application.Features.Book.Queries.GetAllBook;
 using LibraryMS.Application.Features.Book.Queries.GetByIdWithAuthors;
+using LibraryMS.Application.Features.BookCopies.Command.Create;
+using LibraryMS.Application.Features.BookCopies.Command.Delete;
+using LibraryMS.Application.Features.BookCopies.Command.Restore;
+using LibraryMS.Application.Features.BookCopies.Command.UpdateStatus;
+using LibraryMS.Application.Features.BookCopies.Queries.GetAllCopies;
 
 namespace LibraryMS.Api.Controllers;
 
@@ -71,5 +76,44 @@ public class BooksController : ControllerBase
 
         var result = await _mediator.Send(command);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpGet("copies")]
+    public async Task<IActionResult> GetAllCopies([FromQuery] GetAllCopiesQuery query)
+    {
+        var result = await _mediator.Send(query);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpPost("{bookId:int}/copies")]
+    public async Task<IActionResult> InsertNewCopy([FromRoute] int bookId, [FromBody] CreateBookCopyCommand command)
+    {
+        var updatedCommand = command with { BookId = bookId };
+
+        var result = await _mediator.Send(updatedCommand);
+
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpDelete("{bookId:int}/delete-copy")]
+    public async Task<IActionResult> DeleteCopy([FromRoute] int bookId)
+    {
+        var result = await _mediator.Send(new DeleteCopyCommand(bookId));
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpPatch("{copyId:int}/update-status")]
+    public async Task<IActionResult> UpdateStatus([FromRoute] int copyId, [FromBody] UpdateStatusCopyCommand command)
+    {
+        var updatedCommand = command with { BookCopyId = copyId };
+        var result = await _mediator.Send(updatedCommand);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+    [HttpPut("{copyId:int}/restore-copy")]
+    public async Task<IActionResult> RestoreCopyAsync([FromRoute] int copyId)
+    {
+        var result = await _mediator.Send(new RestoreCopyCommand(copyId));
+        return result.IsSuccess ? Ok(result) : BadRequest(Request);
     }
 }
