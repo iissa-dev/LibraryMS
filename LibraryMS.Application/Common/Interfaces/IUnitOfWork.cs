@@ -7,7 +7,6 @@ public interface IUnitOfWork : IDisposable
     IRefreshTokenRepository RefreshTokens { get; }
     IClientRepository Clients { get; }
     IEmployeeRepository Employees { get; }
-    IBookCopiesRepository BookCopies { get; }
     IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

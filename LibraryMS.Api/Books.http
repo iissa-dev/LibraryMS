@@ -69,11 +69,11 @@ Content-Type: {{contentType}}
 ### ------------------------------------------------------------------
 
 ### 7. Get All Copies
-GET {{baseUrl}}/Books/copies?BookId=10&OnlyAvailable=false&PageNumber=1&PageSize=10
+GET {{baseUrl}}/Books/copies?BookId=10&OnlyAvailable=true&PageNumber=1&PageSize=20
 Content-Type: {{contentType}}
 
 ### 8. Insert new Copy
-POST {{baseUrl}}/Books/10/copies
+POST {{baseUrl}}/Books/11/copies
 Content-Type: {{contentType}}
 
 {

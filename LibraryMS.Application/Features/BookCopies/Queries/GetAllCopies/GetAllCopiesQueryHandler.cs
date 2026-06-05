@@ -1,16 +1,21 @@
+using LibraryMS.Application.Common.Extensions;
 using LibraryMS.Application.DTOs.BookDtos;
 
 namespace LibraryMS.Application.Features.BookCopies.Queries.GetAllCopies;
 
-public sealed class GetAllCopiesQueryHandler(IUnitOfWork unitOfWork)
+public sealed class GetAllCopiesQueryHandler(IAppDbContext context)
     : IRequestHandler<GetAllCopiesQuery, Result<PagedResult<ResponseBookCopiesDto>>>
 {
     public async Task<Result<PagedResult<ResponseBookCopiesDto>>> Handle(GetAllCopiesQuery request, CancellationToken cancellationToken)
     {
-
-        var (items, totalCount) = await unitOfWork.BookCopies
-        .GetPagedProjectedAsync
-        (
+        var query = context.BookCopies
+            .AsNoTracking()
+            .OrderByDescending(bc => bc.CreatedOn);
+        
+        var pagedResult = await context.BookCopies
+        .ToPagedResultAsync(
+            request.PageNumber,
+            request.PageSize,
             selector: bc => new ResponseBookCopiesDto
             {
                 BookCopyId = bc.Id,
@@ -21,23 +26,8 @@ public sealed class GetAllCopiesQueryHandler(IUnitOfWork unitOfWork)
                 SerialNumber = bc.SerialNumber,
                 Status = bc.CopyStatus.ToString()
             },
-            pageNumber: request.PageNumber,
-            pageSize: request.PageSize,
-            predicate: bc => bc.BookId == request.BookId &&
-                (!request.OnlyAvailable.HasValue || !request.OnlyAvailable.Value || bc.CopyStatus == CopyStatus.Available),
-            orderBy: bookCopies => bookCopies.OrderBy(bc => bc.Id),
-            ignoreQueryFilters: false,
             cancellationToken
         );
-
-        var pagedResult = new PagedResult<ResponseBookCopiesDto>
-        {
-            Items = items,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
-            TotalCount = totalCount,
-            TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize)
-        };
 
         return Result<PagedResult<ResponseBookCopiesDto>>.Success(pagedResult);
     }

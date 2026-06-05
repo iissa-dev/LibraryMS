@@ -2,7 +2,7 @@ using LibraryMS.Domain.Common.Events;
 
 namespace LibraryMS.Application.Features.Borrowing.Commands.Create;
 
-public sealed class CreateBorrowingsCommandHandler(IUnitOfWork unitOfWork, IMediator mediator)
+public sealed class CreateBorrowingsCommandHandler(IUnitOfWork unitOfWork, IMediator mediator, IAppDbContext context)
     : IRequestHandler<CreateBorrowingsCommand, Result>
 {
     public async Task<Result> Handle(CreateBorrowingsCommand request, CancellationToken cancellationToken)
@@ -16,7 +16,7 @@ public sealed class CreateBorrowingsCommandHandler(IUnitOfWork unitOfWork, IMedi
         .FirstOrDefaultAsync(cancellationToken);
         if (setting is null) return Result.Failure("Settings not found");
 
-        var copy = await unitOfWork.BookCopies.GetByIdAsync(request.CopyId);
+        var copy = await context.BookCopies.FindAsync(request.CopyId, cancellationToken);
         if (copy is null) return Result.Failure("Copy not found");
 
         if (!copy.IsAvailable) return Result.Failure("Copy not available");

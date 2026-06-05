@@ -1,6 +1,6 @@
 namespace LibraryMS.Application.Features.BookCopies.Command.Create;
 
-public sealed class CreateBookCopyCommandHandler(IUnitOfWork unitOfWork, IAppDbContext context)
+public sealed class CreateBookCopyCommandHandler(IAppDbContext context)
     : IRequestHandler<CreateBookCopyCommand, Result>
 {
     public async Task<Result> Handle(CreateBookCopyCommand request, CancellationToken cancellationToken)
@@ -8,7 +8,7 @@ public sealed class CreateBookCopyCommandHandler(IUnitOfWork unitOfWork, IAppDbC
         var book = await context.Books
         .Include(b => b.Copies)
         .FirstOrDefaultAsync(b => b.Id == request.BookId, cancellationToken);
-        
+
         if (book is null) return Result.Failure("Book not found");
 
         for (int i = 0; i < request.InitialCopiesCount; i++)
@@ -16,7 +16,7 @@ public sealed class CreateBookCopyCommandHandler(IUnitOfWork unitOfWork, IAppDbC
             book.AddCopy();
         }
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success;
     }

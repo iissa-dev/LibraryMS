@@ -4,7 +4,6 @@ namespace LibraryMS.Application.Features.BookCopies.Queries.GetAllCopies;
 
 public sealed record GetAllCopiesQuery(
     int BookId,
-    bool? OnlyAvailable,
     int PageNumber = 1,
     int PageSize = 10
 ) : IRequest<Result<PagedResult<ResponseBookCopiesDto>>>;
