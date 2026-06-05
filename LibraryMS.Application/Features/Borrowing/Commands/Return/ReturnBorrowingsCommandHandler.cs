@@ -1,12 +1,11 @@
 namespace LibraryMS.Application.Features.Borrowing.Commands.Return;
 
-public sealed class ReturnBorrowingsCommandHandler(IUnitOfWork unitOfWork)
+public sealed class ReturnBorrowingsCommandHandler(IAppDbContext context)
     : IRequestHandler<ReturnBorrowingsCommand, Result>
 {
     public async Task<Result> Handle(ReturnBorrowingsCommand request, CancellationToken cancellationToken)
     {
-        var borrowing = await unitOfWork.Repository<BorrowingRecord>()
-        .AsQueryable()
+        var borrowing = await context.BorrowingRecords
         .Include(b => b.BookCopy)
         .FirstOrDefaultAsync(b => b.Id == request.BorrowingId, cancellationToken);
 
@@ -15,10 +14,8 @@ public sealed class ReturnBorrowingsCommandHandler(IUnitOfWork unitOfWork)
         if (borrowing.ActualReturnDate is not null)
             return Result.Failure("This book has already been returned");
 
-        var setting = await unitOfWork
-        .Repository<Setting>()
-        .AsQueryable()
-        .FirstOrDefaultAsync(cancellationToken);
+        var setting = await context.Settings
+            .FirstOrDefaultAsync(cancellationToken);
         if (setting is null) return Result.Failure("Settings not found");
 
         borrowing.BookCopy?.MakeStatusAvailable();
@@ -37,8 +34,8 @@ public sealed class ReturnBorrowingsCommandHandler(IUnitOfWork unitOfWork)
         }
 
         borrowing.MarkAsReturned();
-        unitOfWork.Repository<BorrowingRecord>().Update(borrowing);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.BorrowingRecords.Update(borrowing);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success;
     }

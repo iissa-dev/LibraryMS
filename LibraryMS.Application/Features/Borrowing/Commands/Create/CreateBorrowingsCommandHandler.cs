@@ -2,17 +2,15 @@ using LibraryMS.Domain.Common.Events;
 
 namespace LibraryMS.Application.Features.Borrowing.Commands.Create;
 
-public sealed class CreateBorrowingsCommandHandler(IUnitOfWork unitOfWork, IMediator mediator, IAppDbContext context)
+public sealed class CreateBorrowingsCommandHandler(IAppDbContext context, IPublisher publisher)
     : IRequestHandler<CreateBorrowingsCommand, Result>
 {
     public async Task<Result> Handle(CreateBorrowingsCommand request, CancellationToken cancellationToken)
     {
-        if (!await unitOfWork.Clients.ExistsAsync(c => c.Id == request.ClientId))
+        if (!await context.Clients.AnyAsync(c => c.Id == request.ClientId, cancellationToken))
             return Result.Failure("Client not found");
 
-        var setting = await unitOfWork
-        .Repository<Setting>()
-        .AsQueryable()
+        var setting = await context.Settings
         .FirstOrDefaultAsync(cancellationToken);
         if (setting is null) return Result.Failure("Settings not found");
 
@@ -30,11 +28,11 @@ public sealed class CreateBorrowingsCommandHandler(IUnitOfWork unitOfWork, IMedi
 
         copy.UpdateStatus(CopyStatus.Borrowed);
 
-        unitOfWork.Repository<BorrowingRecord>().Add(borrowing);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.BorrowingRecords.Add(borrowing);
+        await context.SaveChangesAsync(cancellationToken);
 
         var borrowedEvent = new BookBorrowedEvent(borrowing.CopyId, borrowing.ClientId, borrowing.DueDate);
-        await mediator.Publish(borrowedEvent, cancellationToken);
+        await publisher.Publish(borrowedEvent, cancellationToken);
 
         return Result.Success;
     }

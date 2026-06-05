@@ -16,7 +16,7 @@ POST {{baseUrl}}/Borrows/return
 Content-Type: {{contentType}}
 
 {
-    "borrowingId": 5,
+    "borrowingId": 6,
     "copyId": 36
 }
 

@@ -180,4 +180,14 @@ public class IdentityUser : IIdentityUser
         ? Result.Success
         : Result.Failure(result.Errors.First().Description);
     }
+
+    public async Task<string?> GetFullnameByIdAsync(int userId)
+    {
+        var user=  await _userManager.Users
+        .AsNoTracking()
+        .Select(u => new {fullName= $"{u.FirstName} {u.LastName}", Id = u.Id} )
+        .FirstOrDefaultAsync(u => u.Id == userId);
+
+        return user?.fullName;
+    }
 }
