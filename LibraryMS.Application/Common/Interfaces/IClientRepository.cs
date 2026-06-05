@@ -11,4 +11,5 @@ public interface IClientRepository : IGenericRepository<Client>
 
     Task<Client?> GetClientByUserId(int userId);
     Task<Client?> GetDeletedClientByUserIdAsync(int userId);
+    Task<ClientResponseDto?> GetClientWithUserInfoByClientIdAsync(int clientId);
 }

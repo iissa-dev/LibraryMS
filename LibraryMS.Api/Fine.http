@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:5165/api
+@contentType = application/json
+
+GET {{baseUrl}}/Fines/client/1
+Content-Type: {{contentType}}
+
+{
+    "pageNumber": 1,
+    "pageSize": 10,
+    "clientId": 1
+}

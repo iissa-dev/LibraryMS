@@ -7,7 +7,8 @@ public sealed class GetFullBorrowDetailsQueryHandler(IUnitOfWork unitOfWork)
 {
     public async Task<Result<PagedResult<BorrowDetails>>> Handle(GetFullBorrowDetailsQuery request, CancellationToken cancellationToken)
     {
-        if (!await unitOfWork.Clients.ExistsAsync(b => b.Id == request.ClientId))
+        var clientInfo = await unitOfWork.Clients.GetClientWithUserInfoByClientIdAsync(request.ClientId);
+        if(clientInfo is null) 
             return Result<PagedResult<BorrowDetails>>.Failure($"Client with Id {request.ClientId} not found");
 
         var (items, totalCount) = await unitOfWork.Repository<BorrowingRecord>()
@@ -23,8 +24,9 @@ public sealed class GetFullBorrowDetailsQueryHandler(IUnitOfWork unitOfWork)
                 },
                 Borrower = new DTOs.UserDto.UserSummaryDto
                 {
-                    UserId = b.ClientId,
-                    LibraryCardNumber = b.Client.LibraryCardNumber
+                    UserId = clientInfo.UserId,
+                    LibraryCardNumber = clientInfo.LibraryCardNumber,
+                    ClientName = $"{clientInfo.FirstName} {clientInfo.LastName}"
                 },
                 BorrowDate = b.BorrowingDate,
                 DueDate = b.DueDate,

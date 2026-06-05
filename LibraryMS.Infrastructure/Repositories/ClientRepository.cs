@@ -40,7 +40,7 @@ public class ClientRepository(AppDbContext context) : GenericRepository<Client>(
                 client => client.UserId,
                 user => user.Id,
                 (client, user) => new { client, user })
-                 .OrderByDescending(c => c.client.CreatedOn)
+                .OrderByDescending(c => c.client.CreatedOn)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .Select(x => new ClientResponseDto
@@ -74,5 +74,30 @@ public class ClientRepository(AppDbContext context) : GenericRepository<Client>(
         return await Context.Clients
         .IgnoreQueryFilters()
         .FirstOrDefaultAsync(c => c.UserId == userId && c.IsDeleted);
+    }
+
+    public async Task<ClientResponseDto?> GetClientWithUserInfoByClientIdAsync(int clientId)
+    {
+        return await Context.Clients
+            .AsNoTracking()
+            .Where(c => c.Id == clientId)
+            .Join(Context.Users ,
+            client => client.UserId,
+            user => user.Id,
+            (client, user) => new {client, user})
+            .Select(x => new ClientResponseDto
+            {
+                ClientId = x.client.Id,
+                UserId = x.user.Id,
+                Username = x.user.UserName ?? "",
+                Email = x.user.Email ?? "",
+                PhoneNumber = x.user.PhoneNumber ?? "",
+                Address = x.user.Address,
+                LibraryCardNumber = x.client.LibraryCardNumber,
+                FirstName = x.user.FirstName,
+                LastName = x.user.LastName,
+                CreatedOn = x.client.CreatedOn
+            })
+            .FirstOrDefaultAsync();
     }
 }

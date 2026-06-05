@@ -26,7 +26,7 @@ public sealed class ReturnBorrowingsCommandHandler(IUnitOfWork unitOfWork)
         if (borrowing.IsLate)
         {
             var lateDays = borrowing.LateDate;
-            borrowing.AddFine(new Fine
+            borrowing.AddFine(new Domain.Entities.Fine
             {
                 BorrowingRecordId = borrowing.Id,
                 ClientId = borrowing.ClientId,
