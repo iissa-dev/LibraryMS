@@ -1,10 +1,13 @@
 namespace LibraryMS.Application.Features.Book.Commands.UpdateBook;
 
-public sealed class UpdateBookCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateBookCommand, Result>
+public sealed class UpdateBookCommandHandler(IAppDbContext context) : IRequestHandler<UpdateBookCommand, Result>
 {
     public  async Task<Result> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
     {
-        var book = await unitOfWork.Books.GetByIdWithAuthorsAsync(request.Id, cancellationToken);
+        var book = await context.Books
+        .Include(b => b.BookAuthors)
+        .FirstOrDefaultAsync(b => b.Id == request.Id, cancellationToken);
+
         if (book is null)
             return Result.Failure("Book not found.");
 
@@ -17,8 +20,8 @@ public sealed class UpdateBookCommandHandler(IUnitOfWork unitOfWork) : IRequestH
 
         book.UpdateBookAuthors(request.AuthorIds);
 
-        unitOfWork.Books.Update(book);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.Books.Update(book);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success;
     }

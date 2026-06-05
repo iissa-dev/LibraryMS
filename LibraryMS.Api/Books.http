@@ -17,8 +17,8 @@ POST {{baseUrl}}/Books
 Content-Type: {{contentType}}
 
 {
-  "title": "Clean Architecture in React",
-  "isbn": "978-3-16-148410-3",
+  "title": "Clean Architecture in C#",
+  "isbn": "978-3-16-148410-4",
   "publishDate": "2026-05-11T00:00:00Z",
   "genre": 11,
   "additionalDetails": "A premium guide to software architecture.",
@@ -31,24 +31,25 @@ Content-Type: {{contentType}}
 
 ### 3. Get Book By ID
 ### Retrieves specific book details along with its assigned authors.
-GET {{baseUrl}}/Books/10
+GET {{baseUrl}}/Books/11
 Content-Type: {{contentType}}
 
 ### ------------------------------------------------------------------
 
 ### 4. Update Book Details
 ### Updates an existing book. Ensure that the route ID matches the body ID parameter.
-PUT {{baseUrl}}/Books/10
+PUT {{baseUrl}}/Books/11
 Content-Type: {{contentType}}
 
 {
-  "id": 10,
-  "title": "Clean Architecture in React & Next.js",
-  "isbn": "978-3-16-148410-3",
-  "publishDate": "2026-05-11T00:00:00Z",
+  "id": 11,
+  "title": "Clean Architecture in C#",
+  "isbn": "978-3-16-148410-4",
+  "publishDate": "2026-05-11T00:00:00",
   "genre": 11,
-  "additionalDetails": "An updated premium guide to software architecture including Next.js.",
-  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch-updated.jpg"
+  "additionalDetails": "An updated premium guide to software architecture Asp.net.",
+  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch-updated.jpg",
+  "authorIds": [1, 2]
 }
 
 ### ------------------------------------------------------------------

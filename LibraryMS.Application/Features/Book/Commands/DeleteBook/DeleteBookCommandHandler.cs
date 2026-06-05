@@ -1,11 +1,14 @@
 namespace LibraryMS.Application.Features.Book.Commands.DeleteBook;
 
-public sealed class DeleteBookCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteBookCommand, Result>
+public sealed class DeleteBookCommandHandler(IAppDbContext context) : IRequestHandler<DeleteBookCommand, Result>
 {
 
     public async Task<Result> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
     {
-        var book = await unitOfWork.Books.GetByIdWithCopiesAsync(request.Id, cancellationToken);
+        var book = await context.Books
+        .Include(b => b.Copies)
+        .FirstOrDefaultAsync(b => b.Id == request.Id, cancellationToken);
+
         if (book is null)
         {
             return Result.Failure("Book not found.");
@@ -17,8 +20,8 @@ public sealed class DeleteBookCommandHandler(IUnitOfWork unitOfWork) : IRequestH
         }
 
 
-        unitOfWork.Books.Delete(book);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.Books.Remove(book);
+        await context.SaveChangesAsync(cancellationToken);
         return Result.Success;
     }
 }

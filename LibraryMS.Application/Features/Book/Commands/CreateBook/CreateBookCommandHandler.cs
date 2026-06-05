@@ -1,10 +1,13 @@
 ﻿namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
 
-public sealed class CreateBookCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateBookCommand, Result<int>>
+public sealed class CreateBookCommandHandler(IAppDbContext context) : IRequestHandler<CreateBookCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
-        var isbnExists = await unitOfWork.Books.IsIsbnExistsAsync(request.ISBN, cancellationToken);
+        var isbnExists = await context.Books
+        .IgnoreQueryFilters()
+        .AnyAsync(b => b.ISBN == request.ISBN, cancellationToken);
+        
         if (isbnExists)
             return Result<int>.Failure("The provided ISBN is already registered with another book.");
         
@@ -28,8 +31,8 @@ public sealed class CreateBookCommandHandler(IUnitOfWork unitOfWork) : IRequestH
             book.AddCopy();
         }
 
-        unitOfWork.Books.Add(book);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.Books.Add(book);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result<int>.Success(book.Id);
     }

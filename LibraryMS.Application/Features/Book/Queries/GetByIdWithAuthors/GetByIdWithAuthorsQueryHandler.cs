@@ -3,29 +3,14 @@ using LibraryMS.Application.DTOs.BookDtos;
 
 namespace LibraryMS.Application.Features.Book.Queries.GetByIdWithAuthors;
 
-public sealed class GetByIdWithAuthorsQueryHandler(IUnitOfWork unitOfWork)
+public sealed class GetByIdWithAuthorsQueryHandler(IAppDbContext context)
     : IRequestHandler<GetByIdWithAuthorsQuery, Result<ResponseBookDto>>
 {
     public async Task<Result<ResponseBookDto>> Handle(GetByIdWithAuthorsQuery request, CancellationToken cancellationToken)
     {
-        var bookDto = await unitOfWork.Books
-            .AsQueryable()
+        var bookDto = await context.Books
             .Where(b => b.Id == request.Id)
-            .Select(book => new ResponseBookDto
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Isbn = book.ISBN,
-                PublishDate = book.PublishDate,
-                Genre = book.Genre,
-                AdditionalDetails = book.AdditionalDetails,
-                BookImageUrl = book.BookImageUrl,
-                Authors = book.BookAuthors.Select(a => new AuthorResponseDto
-                {
-                    Id = a.Id,
-                    FullName = $"{a.Author.FirstName} {a.Author.LastName}"
-                }).ToList()
-            })
+            .Select(ResponseBookDto.Projection)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (bookDto == null)

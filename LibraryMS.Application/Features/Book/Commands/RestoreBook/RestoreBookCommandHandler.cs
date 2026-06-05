@@ -1,11 +1,15 @@
 namespace LibraryMS.Application.Features.Book.Commands.RestoreBook;
 
-public sealed class RestoreBookCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<RestoreBookCommand, Result>
+public sealed class RestoreBookCommandHandler(IAppDbContext context) : IRequestHandler<RestoreBookCommand, Result>
 {
 
     public async Task<Result> Handle(RestoreBookCommand request, CancellationToken cancellationToken)
     {
-        var book = await unitOfWork.Books.GetDeletedBookByIdWithCopiesAsync(request.Id, cancellationToken);
+        var book = await context.Books
+        .Include(b => b.Copies)
+        .IgnoreQueryFilters()
+        .FirstOrDefaultAsync(b => b.Id == request.Id && b.IsDeleted, cancellationToken);
+
         if (book is null)
         {
             return Result.Failure("Book not found.");
@@ -18,7 +22,7 @@ public sealed class RestoreBookCommandHandler(IUnitOfWork unitOfWork) : IRequest
 
         book.UnDelete();
         
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
         return Result.Success;
     }
 }
