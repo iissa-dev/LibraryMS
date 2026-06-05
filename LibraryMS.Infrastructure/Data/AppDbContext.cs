@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace LibraryMS.Infrastructure.Data;
 
-public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
+public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>, IAppDbContext
 {
     public DbSet<Country> Countries { get; set; }
     public DbSet<Setting> Settings { get; set; }
@@ -15,11 +17,15 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, 
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
 
-    public AppDbContext(DbContextOptions options) : base(options) {}
+    public AppDbContext(DbContextOptions options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        => await Database.BeginTransactionAsync(cancellationToken);
+
 }
