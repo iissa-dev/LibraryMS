@@ -42,4 +42,9 @@ public class BookCopy : BaseEntity, ISoftDeleteable
 
         CopyStatus = newStatus;
     }
+
+    public void MakeStatusAvailable()
+    {
+        CopyStatus = CopyStatus.Available;
+    }
 }

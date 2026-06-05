@@ -8,10 +8,7 @@ public sealed class UpdateStatusCopyCommandHandler(IUnitOfWork unitOfWork)
         var copy = await unitOfWork.BookCopies.GetByIdAsync(request.BookCopyId);
         if (copy is null) return Result.Failure("Copy Id not found");
 
-
         copy.UpdateStatus((CopyStatus)request.CopyStatus);
-
-
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success;
