@@ -4,7 +4,6 @@ namespace LibraryMS.Application.Common.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    IBookRepository Books { get; }
     IRefreshTokenRepository RefreshTokens { get; }
     IClientRepository Clients { get; }
     IEmployeeRepository Employees { get; }

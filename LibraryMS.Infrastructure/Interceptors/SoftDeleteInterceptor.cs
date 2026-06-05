@@ -15,8 +15,18 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
             if (entry is not { State: EntityState.Deleted, Entity: ISoftDeleteable softDeleteable })
                 continue;
 
-            entry.State = EntityState.Modified;
             softDeleteable.Delete();
+            entry.State = EntityState.Modified;
+
+            // Modifi only IsDeleted And DeletedOn
+            foreach (var property in entry.Properties)
+            {
+                if (property.Metadata.Name != nameof(ISoftDeleteable.IsDeleted) &&
+                    property.Metadata.Name != nameof(ISoftDeleteable.DeletedOn))
+                {
+                    property.IsModified = false;
+                }
+            }
         }
 
         return ValueTask.FromResult(result);
