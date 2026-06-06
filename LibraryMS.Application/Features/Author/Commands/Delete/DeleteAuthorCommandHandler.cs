@@ -1,16 +1,16 @@
 namespace LibraryMS.Application.Features.Author.Commands.Delete;
 
-public sealed class DeleteAuthorCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<DeleteAuthorCommand, Result>
+public sealed class DeleteAuthorCommandHandler(IAppDbContext context) : IRequestHandler<DeleteAuthorCommand, Result>
 {
 
     public async Task<Result> Handle(DeleteAuthorCommand request, CancellationToken cancellationToken)
     {
-        var author = await unitOfWork.Repository<Domain.Entities.Author>().GetByIdAsync(request.Id);
+        var author = await context.Authors.SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (author is null)
             return Result.Failure("Author not found.");
 
-        unitOfWork.Repository<Domain.Entities.Author>().Delete(author);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.Authors.Remove(author);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success;
     }

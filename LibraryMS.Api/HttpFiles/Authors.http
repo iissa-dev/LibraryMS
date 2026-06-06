@@ -12,7 +12,7 @@ Content-Type: {{contentType}}
 {
   "firstName": "Martin",
   "lastName": "Fowler",
-  "biography": "An author, software developer, and public speaker on software architecture.",
+  "biography": "An author, software developer, and public speaker on software architecture."
 }
 
 ### ------------------------------------------------------------------
@@ -40,7 +40,7 @@ Content-Type: {{contentType}}
   "id": 1,
   "firstName": "Martin",
   "lastName": "Fowler",
-  "biography": "An updated premium biography regarding enterprise software patterns.",
+  "biography": "An updated premium biography regarding enterprise software patterns."
 }
 
 ### ------------------------------------------------------------------

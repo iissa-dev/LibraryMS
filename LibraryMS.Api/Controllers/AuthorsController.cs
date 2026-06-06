@@ -42,7 +42,7 @@ public class AuthorsController(IMediator mediator) : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateAuthorCommand command)
     {
-        if(id != command.Id)
+        if (id != command.Id)
         {
             return BadRequest("Id in URL does not match Id in request body.");
         }

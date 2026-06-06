@@ -1,12 +1,11 @@
 namespace LibraryMS.Application.Features.Author.Commands.Restore;
 
-public sealed class RestoreAuthorCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<RestoreAuthorCommand, Result>
+public sealed class RestoreAuthorCommandHandler(IAppDbContext context) : IRequestHandler<RestoreAuthorCommand, Result>
 {
 
     public async Task<Result> Handle(RestoreAuthorCommand request, CancellationToken cancellationToken)
     {
-        var author = await unitOfWork.Repository<Domain.Entities.Author>()
-        .AsQueryable()
+        var author = await context.Authors
         .IgnoreQueryFilters()
         .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken: cancellationToken);
 
@@ -17,8 +16,8 @@ public sealed class RestoreAuthorCommandHandler(IUnitOfWork unitOfWork) : IReque
             return Result.Failure("Author is not deleted.");
 
         author.UnDelete();
-        unitOfWork.Repository<Domain.Entities.Author>().Update(author);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.Authors.Update(author);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success;
     }

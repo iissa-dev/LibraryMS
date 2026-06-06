@@ -1,6 +1,6 @@
 namespace LibraryMS.Application.Features.Author.Commands.Create;
 
-public sealed class CreateAuthorCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateAuthorCommand, Result>
+public sealed class CreateAuthorCommandHandler(IAppDbContext context) : IRequestHandler<CreateAuthorCommand, Result>
 {
 
     public async Task<Result> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
@@ -12,8 +12,8 @@ public sealed class CreateAuthorCommandHandler(IUnitOfWork unitOfWork) : IReques
             Biography = request.Biography
         };
 
-        unitOfWork.Repository<Domain.Entities.Author>().Add(author);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        context.Authors.Add(author);
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success;
     }

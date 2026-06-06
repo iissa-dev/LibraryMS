@@ -2,11 +2,11 @@ using LibraryMS.Application.DTOs.AuthorDto;
 
 namespace LibraryMS.Application.Features.Author.Queries.GetAuthorById;
 
-public sealed class GetAuthorByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAuthorByIdQuery, Result<AuthorDto>>
+public sealed class GetAuthorByIdQueryHandler(IAppDbContext context) : IRequestHandler<GetAuthorByIdQuery, Result<AuthorDto>>
 {
     public async Task<Result<AuthorDto>> Handle(GetAuthorByIdQuery request, CancellationToken cancellationToken)
     {
-        var author = await unitOfWork.Repository<Domain.Entities.Author>().GetByIdAsync(request.Id);
+        var author = await context.Authors.SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken: cancellationToken);
         if (author == null)
         {
             return Result<AuthorDto>.Failure("Author not found.");
