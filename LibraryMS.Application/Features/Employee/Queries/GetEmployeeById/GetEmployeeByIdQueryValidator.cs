@@ -4,8 +4,8 @@ public class GetEmployeeByIdQueryValidator : AbstractValidator<GetEmployeeByIdQu
 {
     public GetEmployeeByIdQueryValidator()
     {
-        RuleFor(x => x.UserId)
-        .NotEmpty().WithMessage("User Id is required")
-        .GreaterThan(0).WithMessage("User Id must be a valid positive number.");
+        RuleFor(x => x.EmployeeId)
+        .NotEmpty().WithMessage("Employee Id is required")
+        .GreaterThan(0).WithMessage("Employee Id must be a valid positive number.");
     }
 }

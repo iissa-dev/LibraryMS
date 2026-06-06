@@ -36,50 +36,50 @@ public class EmployeeController(IMediator mediator) : ControllerBase
         return StatusCode(StatusCodes.Status201Created, result);
     }
 
-    [HttpGet("EmployeeProfile")]
-    [Authorize]
+    [HttpGet("get-employee-profile/{employeeId:int}")]
+    // [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetEmployeeProfileByIdUserAsync()
+    public async Task<IActionResult> GetEmployeeProfileByIdUserAsync([FromRoute] int employeeId)
     {
-        var result = await mediator.Send(new GetEmployeeByIdQuery(User.GetUserId()));
+        var result = await mediator.Send(new GetEmployeeByIdQuery(employeeId));
 
         return result.IsFailure ? NotFound(result) : Ok(result);
     }
 
-    [HttpPut($"update-employee-info/{{{nameof(userId)}}}")]
+    [HttpPut("update-employee-info/{employeeId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateEmployeeInfoAsync([FromRoute] int userId, UpdateEmployeeCommand command)
+    public async Task<IActionResult> UpdateEmployeeInfoAsync([FromRoute] int employeeId, UpdateEmployeeCommand command)
     {
-        if (userId != command.UserId) return BadRequest(Result.Failure("User id mismatch"));
+        if (employeeId != command.EmployeeId) return BadRequest(Result.Failure("Employee Id mismatch"));
 
         var result = await mediator.Send(command);
-
-        return result.IsSuccess ? Ok(result) : NotFound("Employee profile not found or no changes made");
-    }
-
-    [HttpDelete($"delete-employee/{{{nameof(userId)}}}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteEmployeeAsync([FromRoute] int userId)
-    {
-        var result = await mediator.Send(new DeleteEmployeeCommand(userId));
 
         return result.IsSuccess ? Ok(result) : NotFound(result);
     }
 
-    [HttpPut($"restore-employee/{{{nameof(userId)}}}")]
+    [HttpDelete("delete-employee/{employeeId:int}/user/{userId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RestoreEmployeeAsync([FromRoute] int userId)
+    public async Task<IActionResult> DeleteEmployeeAsync([FromRoute] int userId, [FromRoute] int employeeId)
     {
-        var result = await mediator.Send(new RestoreEmployeeCommand(userId));
+        var result = await mediator.Send(new DeleteEmployeeCommand(userId, employeeId));
+
+        return result.IsSuccess ? Ok(result) : NotFound(result);
+    }
+
+    [HttpPut("restore-employee/{employeeId:int}/user/{userId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RestoreEmployeeAsync([FromRoute] int userId, [FromRoute] int employeeId)
+    {
+        var result = await mediator.Send(new RestoreEmployeeCommand(userId, employeeId));
 
         return result.IsSuccess ? Ok(result) : NotFound(result);
     }

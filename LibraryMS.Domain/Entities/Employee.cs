@@ -3,7 +3,8 @@
 public class Employee : BaseEntity, ISoftDeleteable
 {
     public string EmployeeCode { get; set; } = string.Empty;
-    public int UserId { get; set; }
+    public int PersonId { get; set; }
+    public Person Person { get; set; } = null!;
 
     public bool IsDeleted { get; set; }
     public DateTime? DeletedOn { get; set; }

@@ -2,54 +2,22 @@ using LibraryMS.Application.DTOs.UserDto;
 
 namespace LibraryMS.Application.Features.Employee.Commands.Update;
 
-public class UpdateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdentityUser identityUser) : IRequestHandler<UpdateEmployeeCommand, Result>
+public class UpdateEmployeeCommandHandler(IAppDbContext context) : IRequestHandler<UpdateEmployeeCommand, Result>
 {
     public async Task<Result> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        await using var transaction = await unitOfWork.BeginTransactionAsync();
-
-        try
+        // Update this method if Employee properties are added in the future.
+        var employee = await context.Employees.SingleOrDefaultAsync(e => e.Id == request.EmployeeId, cancellationToken);
+        if (employee is null)
         {
-            // Update Employee
-            var employee = await unitOfWork.Employees.GetEmployeeByUserIdAsync(request.UserId);
-            if (employee is null)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                return Result.Failure("Employee not found");
-            }
-
-            employee.EmployeeCode = request.EmployeeCode;
-
-            // Update User
-            var userData = new UpdateUserInfoDto
-            {
-                UserId = request.UserId,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Address = request.Address,
-                PhoneNumber = request.PhoneNumber,
-                Email = request.Email,
-                UserName = request.UserName,
-                ImageUrl = request.ImageUrl,
-                DateOfBirth = request.DateOfBirth,
-                CountryId = request.CountryId
-            };
-
-            var result = await identityUser.UpdateUserInfoAsync(userData);
-            if (result.IsFailure)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                return Result.Failure(result.Error);
-            }
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
-
-            return Result.Success;
+            return Result.Failure("Employee not found");
         }
-        catch (Exception)
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+
+        employee.EmployeeCode = request.EmployeeCode;
+
+        await context.SaveChangesAsync(cancellationToken);
+
+        return Result.Success;
+
     }
 }

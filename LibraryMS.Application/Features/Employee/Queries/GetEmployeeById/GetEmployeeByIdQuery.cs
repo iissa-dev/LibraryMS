@@ -3,6 +3,6 @@
 namespace LibraryMS.Application.Features.Employee.Queries.GetEmployeeById;
 
 public sealed record GetEmployeeByIdQuery(
-    int UserId
+    int EmployeeId
     )
     : IRequest<Result<EmployeeResponseDto>>;

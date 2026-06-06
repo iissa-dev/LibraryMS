@@ -1,19 +1,31 @@
 ﻿namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
 
-public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdentityUser identityUser)
+public sealed class CreateEmployeeCommandHandler(IAppDbContext context, IIdentityUser identityUser)
     : IRequestHandler<CreateEmployeeCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        await using var transaction = await unitOfWork.BeginTransactionAsync();
+        await using var transaction = await context.BeginTransactionAsync(cancellationToken);
 
         try
         {
-            if (await unitOfWork.Employees.ExistsAsync(c => c.EmployeeCode == request.EmployeeCode))
+            if (await context.Employees.AnyAsync(c => c.EmployeeCode == request.EmployeeCode, cancellationToken))
                 return Result<int>.Failure("This Employee Number is already assigned to another employee.");
 
+            var person = new Person
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Address = request.Address,
+                CountryId = request.CountryId,
+                DateOfBirth = request.BirthDate
+            };
+            context.People.Add(person);
+            await context.SaveChangesAsync(cancellationToken);
+
+
             var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
-                 request.PhoneNumber, 1, request.FirstName, request.LastName, request.CountryId, request.BirthDate);
+                request.PhoneNumber, person.Id, request.FirstName, request.LastName, request.CountryId, request.BirthDate);
 
             if (userResult.IsFailure)
             {
@@ -23,16 +35,17 @@ public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdenti
 
             var employee = new Domain.Entities.Employee
             {
-                UserId = userResult.Data,
+                PersonId = person.Id,
                 EmployeeCode = request.EmployeeCode,
             };
 
-            unitOfWork.Employees.Add(employee);
+            context.Employees.Add(employee);
 
             Result<int>? roleResult;
             if (request.RoleId == (short)Roles.Admin)
             {
-                roleResult = await identityUser.AddToRolesAsync(request.UserName, [Roles.Admin.ToString(), Roles.Employee.ToString()]);
+                roleResult = await identityUser
+                    .AddToRolesAsync(request.UserName, [Roles.Admin.ToString(), Roles.Employee.ToString()]);
             }
             else
             {
@@ -46,7 +59,7 @@ public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdenti
                 return Result<int>.Failure(roleResult.Error);
             }
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             return Result<int>.Success(employee.Id);
         }

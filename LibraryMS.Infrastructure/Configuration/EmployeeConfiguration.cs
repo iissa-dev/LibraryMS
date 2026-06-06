@@ -9,13 +9,10 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 
         builder.HasQueryFilter(e => !e.IsDeleted);
 
-        builder.HasOne<ApplicationUser>()
+        builder.HasOne(e => e.Person)
             .WithOne()
-            .HasForeignKey<Employee>(e => e.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasIndex(e => e.UserId)
-            .IsUnique();
+            .HasForeignKey<Employee>(e => e.PersonId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(e => e.EmployeeCode)
             .HasColumnType("nvarchar(50)")

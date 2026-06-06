@@ -5,7 +5,6 @@ namespace LibraryMS.Application.Common.Interfaces;
 public interface IUnitOfWork : IDisposable
 {
     IRefreshTokenRepository RefreshTokens { get; }
-    IEmployeeRepository Employees { get; }
     IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

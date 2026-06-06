@@ -35,40 +35,31 @@ Content-Type: {{contentType}}
 
 ### 3. Get Authenticated Employee Profile
 ### Requires authentication cookie context. Automatically reads the User Id from the claims token.
-GET {{baseUrl}}/Employee/EmployeeProfile
+GET {{baseUrl}}/Employee/get-employee-profile/1
 Content-Type: {{contentType}}
 
 ### ------------------------------------------------------------------
 
 ### 4. Update Employee Information
 ### Modifies account attributes. Route parameter userId must match the request body payload UserId.
-PUT {{baseUrl}}/Employee/update-employee-info/2
+PUT {{baseUrl}}/Employee/update-employee-info/1
 Content-Type: {{contentType}}
 
 {
-  "userId": 2,
-  "firstName": "Issa",
-  "lastName": "Atieh",
-  "address": "Al-Zarqa",
-  "employeeCode": "230221",
-  "phoneNumber": "0780830732",
-  "email": "Issa@gmail.com",
-  "userName": "IIssadev",
-  "imageUrl": "",
-  "dateOfBirth": "2004-10-06",
-  "countryId": 113
+  "employeeId": 1,
+  "employeeCode": "2345234"
 }
 
 ### ------------------------------------------------------------------
 
 ### 5. Delete Employee Profile (Soft Delete)
 ### Executes a soft delete logic sequence by flagging the target employee tracking record.
-DELETE {{baseUrl}}/Employee/delete-employee/2
+DELETE {{baseUrl}}/Employee/delete-employee/1/user/10
 Content-Type: {{contentType}}
 
 ### ------------------------------------------------------------------
 
 ### 6. Restore Soft-Deleted Employee
 ### Reverts the soft delete state to grant the employee access back to system resources.
-PUT {{baseUrl}}/Employee/restore-employee/2
+PUT {{baseUrl}}/Employee/restore-employee/1/user/10
 Content-Type: {{contentType}}

@@ -13,14 +13,12 @@ public class UnitOfWork : IUnitOfWork
 
     // Proprieties
     public IRefreshTokenRepository RefreshTokens { get; }
-    public IEmployeeRepository Employees { get; }
 
-    public UnitOfWork(AppDbContext context, IRefreshTokenRepository refreshTokenRepository, IEmployeeRepository employeesRepository)
+    public UnitOfWork(AppDbContext context, IRefreshTokenRepository refreshTokenRepository)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _repositories = new ConcurrentDictionary<string, object>();
         RefreshTokens = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
-        Employees = employeesRepository ?? throw new ArgumentNullException(nameof(employeesRepository));
     }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
