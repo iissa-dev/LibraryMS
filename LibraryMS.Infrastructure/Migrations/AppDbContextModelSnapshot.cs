@@ -244,12 +244,12 @@ namespace LibraryMS.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("PersonId")
                         .IsUnique();
 
                     b.ToTable("Clients", (string)null);
@@ -349,6 +349,49 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.HasIndex("ClientId");
 
                     b.ToTable("Fines", (string)null);
+                });
+
+            modelBuilder.Entity("LibraryMS.Domain.Entities.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("People", (string)null);
                 });
 
             modelBuilder.Entity("LibraryMS.Domain.Entities.RefreshToken", b =>
@@ -479,8 +522,7 @@ namespace LibraryMS.Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -504,12 +546,10 @@ namespace LibraryMS.Infrastructure.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -518,8 +558,7 @@ namespace LibraryMS.Infrastructure.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -537,6 +576,9 @@ namespace LibraryMS.Infrastructure.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
@@ -565,6 +607,9 @@ namespace LibraryMS.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("PersonId")
+                        .IsUnique();
 
                     b.ToTable("Users", (string)null);
                 });
@@ -723,11 +768,13 @@ namespace LibraryMS.Infrastructure.Migrations
 
             modelBuilder.Entity("LibraryMS.Domain.Entities.Client", b =>
                 {
-                    b.HasOne("LibraryMS.Infrastructure.Identity.ApplicationUser", null)
+                    b.HasOne("LibraryMS.Domain.Entities.Person", "Person")
                         .WithOne()
-                        .HasForeignKey("LibraryMS.Domain.Entities.Client", "UserId")
+                        .HasForeignKey("LibraryMS.Domain.Entities.Client", "PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("LibraryMS.Domain.Entities.Employee", b =>
@@ -756,6 +803,17 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.Navigation("BorrowingRecord");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("LibraryMS.Domain.Entities.Person", b =>
+                {
+                    b.HasOne("LibraryMS.Domain.Entities.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("LibraryMS.Domain.Entities.RefreshToken", b =>
@@ -791,10 +849,18 @@ namespace LibraryMS.Infrastructure.Migrations
                     b.HasOne("LibraryMS.Domain.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryMS.Domain.Entities.Person", "Person")
+                        .WithOne()
+                        .HasForeignKey("LibraryMS.Infrastructure.Identity.ApplicationUser", "PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Country");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

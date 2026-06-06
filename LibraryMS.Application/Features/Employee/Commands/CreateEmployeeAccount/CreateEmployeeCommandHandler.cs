@@ -9,11 +9,11 @@ public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdenti
 
         try
         {
-             if (await unitOfWork.Employees.ExistsAsync(c => c.EmployeeCode == request.EmployeeCode))
-            return Result<int>.Failure("This Employee Number is already assigned to another employee.");
+            if (await unitOfWork.Employees.ExistsAsync(c => c.EmployeeCode == request.EmployeeCode))
+                return Result<int>.Failure("This Employee Number is already assigned to another employee.");
 
-           var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
-                request.PhoneNumber, request.FirstName, request.LastName, request.Address, request.CountryId, request.BirthDate);
+            var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
+                 request.PhoneNumber, 1, request.FirstName, request.LastName, request.CountryId, request.BirthDate);
 
             if (userResult.IsFailure)
             {
@@ -28,9 +28,9 @@ public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdenti
             };
 
             unitOfWork.Employees.Add(employee);
-            
+
             Result<int>? roleResult;
-            if(request.RoleId == (short)Roles.Admin)
+            if (request.RoleId == (short)Roles.Admin)
             {
                 roleResult = await identityUser.AddToRolesAsync(request.UserName, [Roles.Admin.ToString(), Roles.Employee.ToString()]);
             }
@@ -38,7 +38,7 @@ public sealed class CreateEmployeeCommandHandler(IUnitOfWork unitOfWork, IIdenti
             {
                 roleResult = await identityUser.AddUserToRoleAsync(request.UserName, Roles.Employee);
             }
-            
+
 
             if (roleResult.IsFailure)
             {

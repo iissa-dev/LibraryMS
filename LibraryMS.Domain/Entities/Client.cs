@@ -3,10 +3,12 @@
 public class Client : BaseEntity, ISoftDeleteable
 {
     public string LibraryCardNumber { get; set; } = string.Empty;
-    public int UserId { get; set; }
+    // public int UserId { get; set; } // Delete this
     public bool IsDeleted { get; set; }
     public DateTime? DeletedOn { get; set; }
     
+    public int PersonId {get; set;}
+    public Person Person {get; set;} = null!;
     public ICollection<BorrowingRecord> BorrowingRecords { get; set; } = new List<BorrowingRecord>();
     public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     public ICollection<Fine> Fines { get; set; } = new List<Fine>();

@@ -9,13 +9,10 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.HasQueryFilter(c => !c.IsDeleted);
 
-        builder.HasOne<ApplicationUser>()
-        .WithOne()
-        .HasForeignKey<Client>(c => c.UserId)
-        .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasIndex(c => c.UserId)
-            .IsUnique();
+        builder.HasOne(c => c.Person)
+            .WithOne()
+            .HasForeignKey<Client>(c => c.PersonId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(c => c.LibraryCardNumber)
             .HasColumnType("nvarchar(50)")

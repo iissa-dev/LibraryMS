@@ -17,6 +17,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, 
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
 
+    public DbSet<Person> People { get; set; }
+
     public AppDbContext(DbContextOptions options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder)

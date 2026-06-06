@@ -18,7 +18,7 @@ public class IdentityUser : IIdentityUser
     }
 
     public async Task<Result<int>> CreateUserAsync(string email, string password, string username,
-        string? phoneNumber, string firstName, string lastName, string address, int countryId, DateOnly dateOfBirth)
+        string? phoneNumber, int personId, string fName, string lName, int cId, DateOnly dateOnly)
     {
         var userExists = await _userManager.FindByEmailAsync(email);
         if (userExists != null)
@@ -31,11 +31,11 @@ public class IdentityUser : IIdentityUser
             Email = email,
             UserName = username,
             PhoneNumber = phoneNumber ?? "",
-            FirstName = firstName,
-            LastName = lastName,
-            Address = address,
-            CountryId = countryId,
-            DateOfBirth = dateOfBirth
+            PersonId = personId,
+            FirstName = fName,
+            LastName = lName,
+            CountryId = cId,
+            DateOfBirth = dateOnly
         };
 
         var result = await _userManager.CreateAsync(user, password);
@@ -101,12 +101,15 @@ public class IdentityUser : IIdentityUser
 
     public async Task<Result<CurrentUserDto>> CurrentUserByIdAsync(int userId)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        var user = await _userManager.Users
+            .IgnoreQueryFilters()
+            .SingleOrDefaultAsync(u => u.Id == userId);
         if (user == null) return Result<CurrentUserDto>.Failure("User not found");
 
         return Result<CurrentUserDto>.Success(new CurrentUserDto
         {
             UserId = user.Id,
+            PersonId = user.PersonId,
             UserName = user.UserName!,
             Email = user.Email!,
             FirstName = user.FirstName,
@@ -159,8 +162,8 @@ public class IdentityUser : IIdentityUser
         user.Delete();
 
         var result = await _userManager.UpdateAsync(user);
-        return result.Succeeded 
-        ? Result.Success 
+        return result.Succeeded
+        ? Result.Success
         : Result.Failure(result.Errors.First().Description);
     }
 
@@ -169,8 +172,8 @@ public class IdentityUser : IIdentityUser
         var user = await _userManager.Users
         .IgnoreQueryFilters()
         .FirstOrDefaultAsync(u => u.Id == userId);
-        
-        if(user is null) return Result.Failure("User not found");
+
+        if (user is null) return Result.Failure("User not found");
 
         user.UnDelete();
 
@@ -183,9 +186,9 @@ public class IdentityUser : IIdentityUser
 
     public async Task<string?> GetFullnameByIdAsync(int userId)
     {
-        var user=  await _userManager.Users
+        var user = await _userManager.Users
         .AsNoTracking()
-        .Select(u => new {fullName= $"{u.FirstName} {u.LastName}", Id = u.Id} )
+        .Select(u => new { fullName = $"{u.FirstName} {u.LastName}", Id = u.Id })
         .FirstOrDefaultAsync(u => u.Id == userId);
 
         return user?.fullName;

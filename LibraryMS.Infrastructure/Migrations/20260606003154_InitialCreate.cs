@@ -35,6 +35,8 @@ namespace LibraryMS.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Biography = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -48,13 +50,13 @@ namespace LibraryMS.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ISBN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ISBN = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Genre = table.Column<short>(type: "smallint", nullable: false),
-                    AdditionalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BookImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Genre = table.Column<short>(type: "smallint", nullable: false, defaultValue: (short)0),
+                    AdditionalDetails = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    BookImageUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -145,7 +147,10 @@ namespace LibraryMS.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookId = table.Column<int>(type: "int", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    SerialNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CopyStatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Available"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSDATETIME()")
                 },
                 constraints: table =>
@@ -160,7 +165,7 @@ namespace LibraryMS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "People",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -171,6 +176,57 @@ namespace LibraryMS.Infrastructure.Migrations
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_People", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_People_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LibraryCardNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PersonId = table.Column<int>(type: "int", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_People_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "People",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PersonId = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -194,7 +250,72 @@ namespace LibraryMS.Infrastructure.Migrations
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Users_People_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "People",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BorrowingRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    CopyId = table.Column<int>(type: "int", nullable: false),
+                    BorrowingDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSDATETIME()"),
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActualReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSDATETIME()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BorrowingRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BorrowingRecords_BookCopies_CopyId",
+                        column: x => x.CopyId,
+                        principalTable: "BookCopies",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BorrowingRecords_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reservations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    BookId = table.Column<int>(type: "int", nullable: false),
+                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReservationsStatus = table.Column<short>(type: "smallint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -283,27 +404,6 @@ namespace LibraryMS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LibraryCardNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Clients_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Employees",
                 columns: table => new
                 {
@@ -311,6 +411,8 @@ namespace LibraryMS.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -343,65 +445,6 @@ namespace LibraryMS.Infrastructure.Migrations
                         name: "FK_RefreshTokens_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BorrowingRecords",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    CopyId = table.Column<int>(type: "int", nullable: false),
-                    BorrowingDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSDATETIME()"),
-                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActualReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSDATETIME()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BorrowingRecords", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BorrowingRecords_BookCopies_CopyId",
-                        column: x => x.CopyId,
-                        principalTable: "BookCopies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BorrowingRecords_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reservations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReservationsStatus = table.Column<short>(type: "smallint", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reservations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Books_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -490,9 +533,9 @@ namespace LibraryMS.Infrastructure.Migrations
                 column: "CopyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_UserId",
+                name: "IX_Clients_PersonId",
                 table: "Clients",
-                column: "UserId",
+                column: "PersonId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -511,6 +554,11 @@ namespace LibraryMS.Infrastructure.Migrations
                 name: "IX_Fines_ClientId",
                 table: "Fines",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_People_CountryId",
+                table: "People",
+                column: "CountryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
@@ -536,6 +584,12 @@ namespace LibraryMS.Infrastructure.Migrations
                 name: "IX_Users_CountryId",
                 table: "Users",
                 column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PersonId",
+                table: "Users",
+                column: "PersonId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -591,6 +645,9 @@ namespace LibraryMS.Infrastructure.Migrations
                 name: "BorrowingRecords");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "BookCopies");
 
             migrationBuilder.DropTable(
@@ -600,7 +657,7 @@ namespace LibraryMS.Infrastructure.Migrations
                 name: "Books");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "People");
 
             migrationBuilder.DropTable(
                 name: "Countries");

@@ -2,6 +2,7 @@ namespace LibraryMS.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser<int>, ISoftDeleteable
 {
+    // Delete all of this
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
@@ -24,4 +25,7 @@ public class ApplicationUser : IdentityUser<int>, ISoftDeleteable
         IsDeleted = false;
         DeletedOn = null;
     }
+
+    public int PersonId {get; set;}
+    public Person Person {get; set;} = null!;
 }

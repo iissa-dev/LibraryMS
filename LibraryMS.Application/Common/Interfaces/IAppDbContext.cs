@@ -17,6 +17,7 @@ public interface IAppDbContext
     DbSet<RefreshToken> RefreshTokens { get; }
     DbSet<Reservation> Reservations { get; }
 
+    DbSet<Person> People {get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 }

@@ -15,7 +15,7 @@ public sealed class GetFullBorrowDetailsQueryHandler(IAppDbContext context, IIde
         if (client is null)
             return Result<PagedResult<BorrowDetails>>.Failure($"Client with Id {request.ClientId} not found");
 
-        var clientFullName = await identityUser.GetFullnameByIdAsync(client.UserId);
+        var clientFullName = await identityUser.GetFullnameByIdAsync(client.Id);
 
         var query = context.BorrowingRecords
             .AsNoTracking()
@@ -37,7 +37,7 @@ public sealed class GetFullBorrowDetailsQueryHandler(IAppDbContext context, IIde
                     },
                     Borrower = new DTOs.UserDto.UserSummaryDto
                     {
-                        UserId = client.UserId,
+                        UserId = client.Id,
                         LibraryCardNumber = client.LibraryCardNumber,
                         ClientName = clientFullName ?? "Unknown"
                     },

@@ -3,6 +3,6 @@
 namespace LibraryMS.Application.Features.Client.Queries.GetClientById;
 
 public sealed record GetClientByIdQuery(
-    int UserId
+    int ClientId
     )
     : IRequest<Result<ClientResponseDto>>;

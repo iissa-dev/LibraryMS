@@ -1,19 +1,34 @@
 ﻿namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
 
-public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdentityUser identityUser)
+public sealed class RegisterClientCommandHandler(IIdentityUser identityUser, IAppDbContext context)
     : IRequestHandler<RegisterClientCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(RegisterClientCommand request, CancellationToken cancellationToken)
     {
-        await using var transaction = await unitOfWork.BeginTransactionAsync();
+        await using var transaction = await context.BeginTransactionAsync(cancellationToken);
 
         try
         {
-            if (await unitOfWork.Clients.ExistsAsync(c => c.LibraryCardNumber == request.LibraryCardNumber))
-            return Result<int>.Failure("This Library Card Number is already assigned to another client.");
-            
-            var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
-                request.PhoneNumber, request.FirstName, request.LastName, request.Address, request.CountryId, request.BirthDate);
+            if (await context.Clients.AnyAsync(c => c.LibraryCardNumber == request.LibraryCardNumber, cancellationToken))
+                return Result<int>.Failure("This Library Card Number is already assigned to another client.");
+
+            var person = new Person
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Address = request.Address,
+                CountryId = request.CountryId,
+                DateOfBirth = request. BirthDate
+            };
+            context.People.Add(person);
+            await context.SaveChangesAsync(cancellationToken);
+
+            var userResult = await identityUser.CreateUserAsync(
+                request.Email,
+                request.Password,
+                request.UserName,
+                request.PhoneNumber,
+                person.Id, request.FirstName, request.LastName, request.CountryId, request.BirthDate);
 
             if (userResult.IsFailure)
             {
@@ -23,10 +38,10 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
 
             var client = new Domain.Entities.Client
             {
-                UserId = userResult.Data,
+                PersonId = person.Id,
                 LibraryCardNumber = request.LibraryCardNumber,
             };
-            unitOfWork.Clients.Add(client);
+            context.Clients.Add(client);
 
             var roleResult = await identityUser.AddUserToRoleAsync(request.UserName, Roles.Client);
 
@@ -36,7 +51,7 @@ public sealed class RegisterClientCommandHandler(IUnitOfWork unitOfWork, IIdenti
                 return Result<int>.Failure(roleResult.Error);
             }
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             return Result<int>.Success(client.Id);
         }

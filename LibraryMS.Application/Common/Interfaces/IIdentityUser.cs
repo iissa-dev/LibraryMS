@@ -5,8 +5,7 @@ namespace LibraryMS.Application.Common.Interfaces;
 
 public interface IIdentityUser
 {
-    Task<Result<int>> CreateUserAsync(string email, string password, string username, string? phoneNumber,
-     string firstName, string lastName, string address, int countryId, DateOnly dateOfBirth);
+    Task<Result<int>> CreateUserAsync(string email, string password, string username, string? phoneNumber, int personId, string fName, string lName, int cId, DateOnly dateOnly);
     Task<Result<int>> AddUserToRoleAsync(string username, Roles role);
     Task<Result<TokenResult>> LoginAsync(string username, string password);
     Task<Result> Logout(string refreshToken);

@@ -34,35 +34,26 @@ Content-Type: {{contentType}}
 
 ### 3. Get Authenticated Client Profile
 ### Automatically parses identity token claims from incoming HTTP request context/cookies.
-GET {{baseUrl}}/Clients/GetClientProfileByIdUserAsync
+GET {{baseUrl}}/Clients/get-client-profile/2
 Content-Type: {{contentType}}
 
 ### ------------------------------------------------------------------
 
 ### 4. Update Client Information
-### Updates demographic and account info. Route ID must match the body payload UserId.
-PUT {{baseUrl}}/Clients/update-client-info/1
+### Updates demographic and account info. Route ID must match the body payload ClientId.
+PUT {{baseUrl}}/Clients/update-client-info/2
 Content-Type: {{contentType}}
 
 {
-  "userId": 1,
-  "firstName": "Mohammad",
-  "lastName": "Atieh",
-  "address": "Al-Zarqa",
-  "libraryCardNumber": "230221",
-  "phoneNumber": "0780830732",
-  "email": "Mohammad@gmail.com",
-  "userName": "Mohammad",
-  "imageUrl": "",
-  "dateOfBirth": "1973-10-06",
-  "countryId": 113
+  "clientId": 2,
+  "libraryCardNumber": "230220"
 }
 
 ### ------------------------------------------------------------------
 
 ### 5. Delete Client Profile (Soft Delete)
 ### Flags the target client entity as deleted using the unique user primary key tracking identifier.
-DELETE {{baseUrl}}/Clients/delete-client/1
+DELETE {{baseUrl}}/Clients/delete-client/2/user/8
 Content-Type: {{contentType}}
 
 ### ------------------------------------------------------------------
@@ -70,5 +61,5 @@ Content-Type: {{contentType}}
 ### 6. Restore Soft-Deleted Client
 ### Reverses the soft delete state to re-enable database inclusion and portal access.
 ### Note: Route reflects the exact variable configuration string definition ('resotre-client').
-PUT {{baseUrl}}/Clients/resotre-client/1
+PUT {{baseUrl}}/Clients/resotre-client/2/user/8
 Content-Type: {{contentType}}

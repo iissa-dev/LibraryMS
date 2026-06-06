@@ -3,6 +3,7 @@ namespace LibraryMS.Application.DTOs.AuthDto;
 public class CurrentUserDto
 {
     public int UserId { get; set; }
+    public int PersonId { get; set; }
     public string UserName { get; set; } = string.Empty;
 
     public string Email { get; set; } = string.Empty;
