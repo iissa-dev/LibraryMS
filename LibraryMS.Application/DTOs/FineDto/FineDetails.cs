@@ -1,4 +1,4 @@
-using LibraryMS.Application.DTOs.UserDto;
+using LibraryMS.Application.DTOs.ClientDto;
 
 namespace LibraryMS.Application.DTOs.FineDto;
 
@@ -11,5 +11,5 @@ public class FineDetails
     public string Reason { get; set; } = string.Empty;
     public decimal FineAmount { get; set; }
 
-    public UserSummaryDto Borrower { get; set; } = null!;
+    public ClientSummaryDto Borrower { get; set; } = null!;
 }

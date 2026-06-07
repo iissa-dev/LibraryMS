@@ -37,7 +37,6 @@ public static class InfrastructureDependencyInjection
             });
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
         services.AddScoped<IIdentityUser, Identity.IdentityUser>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

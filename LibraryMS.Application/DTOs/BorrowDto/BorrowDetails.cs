@@ -1,5 +1,5 @@
 using LibraryMS.Application.DTOs.BookDtos;
-using LibraryMS.Application.DTOs.UserDto;
+using LibraryMS.Application.DTOs.ClientDto;
 
 namespace LibraryMS.Application.DTOs.BorrowDto;
 
@@ -7,7 +7,7 @@ public class BorrowDetails
 {
     public int BorrowId { get; set; }
     public BookSummaryDto Book { get; set; } = null!;
-    public UserSummaryDto Borrower { get; set; } = null!;
+    public ClientSummaryDto Borrower { get; set; } = null!;
 
     public DateTime BorrowDate { get; set; } = DateTime.UtcNow;
     public DateTime DueDate { get; set; }

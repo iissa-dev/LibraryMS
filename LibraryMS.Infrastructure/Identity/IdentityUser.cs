@@ -6,15 +6,14 @@ namespace LibraryMS.Infrastructure.Identity;
 public class IdentityUser : IIdentityUser
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtTokenHandler _jwtTokenHandler;
+    private readonly IAppDbContext _context;
 
-    public IdentityUser(UserManager<ApplicationUser> userManager, IJwtTokenHandler jwtTokenHandler,
-        IUnitOfWork unitOfWork)
+    public IdentityUser(UserManager<ApplicationUser> userManager, IJwtTokenHandler jwtTokenHandler, IAppDbContext context)
     {
         _userManager = userManager;
         _jwtTokenHandler = jwtTokenHandler;
-        _unitOfWork = unitOfWork;
+        _context = context;
     }
 
     public async Task<Result<int>> CreateUserAsync(string email, string password, string username,
@@ -71,14 +70,14 @@ public class IdentityUser : IIdentityUser
             return Result<TokenResult>.Failure("Invalid username or password.");
 
         var tokenResult = await _jwtTokenHandler.GenerateFullTokenResult(user.Id);
-        await _unitOfWork.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return tokenResult;
     }
 
     private async Task<Result> RevokeTokenAsync(string refreshToken)
     {
-        var token = await _unitOfWork.RefreshTokens.GetByTokenAsync(refreshToken);
+        var token = await _context.RefreshTokens.SingleOrDefaultAsync(t => t.RefreshTokenJwt.Contains(refreshToken));
 
         if (token is null) return Result.Failure("Token not found");
 
@@ -87,8 +86,8 @@ public class IdentityUser : IIdentityUser
         token.IsRevoked = true;
         token.RevokedAt = DateTime.UtcNow;
 
-        _unitOfWork.RefreshTokens.Update(token);
-        await _unitOfWork.SaveChangesAsync();
+        _context.RefreshTokens.Update(token);
+        await _context.SaveChangesAsync();
 
         return Result.Success;
     }

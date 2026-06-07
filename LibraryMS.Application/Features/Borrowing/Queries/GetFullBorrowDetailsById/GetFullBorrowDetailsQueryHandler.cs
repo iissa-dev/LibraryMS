@@ -1,6 +1,7 @@
 using LibraryMS.Application.Common.Extensions;
 using LibraryMS.Application.DTOs.BookDtos;
 using LibraryMS.Application.DTOs.BorrowDto;
+using LibraryMS.Application.DTOs.ClientDto;
 namespace LibraryMS.Application.Features.Borrowing.Queries.GetFullBorrowDetailsById;
 
 public sealed class GetFullBorrowDetailsQueryHandler(IAppDbContext context, IIdentityUser identityUser)
@@ -35,9 +36,9 @@ public sealed class GetFullBorrowDetailsQueryHandler(IAppDbContext context, IIde
                         Title = b.BookCopy.Book.Title,
                         Author = b.BookCopy.Book.BookAuthors.Select(a => a.Author.FirstName + " " + a.Author.LastName).ToList()
                     },
-                    Borrower = new DTOs.UserDto.UserSummaryDto
+                    Borrower = new ClientSummaryDto
                     {
-                        UserId = client.Id,
+                        ClientId = client.Id,
                         LibraryCardNumber = client.LibraryCardNumber,
                         ClientName = clientFullName ?? "Unknown"
                     },

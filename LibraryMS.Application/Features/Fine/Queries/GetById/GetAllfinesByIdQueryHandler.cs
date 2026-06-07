@@ -1,51 +1,50 @@
+using LibraryMS.Application.Common.Extensions;
+using LibraryMS.Application.DTOs.ClientDto;
 using LibraryMS.Application.DTOs.FineDto;
-using LibraryMS.Application.DTOs.UserDto;
 
 namespace LibraryMS.Application.Features.Fine.Queries.GetById;
 
-public sealed class GetAllfinesByIdQueryHandler(IUnitOfWork unitOfWork)
+public sealed class GetAllfinesByIdQueryHandler(IAppDbContext context)
     : IRequestHandler<GetAllfinesByIdQuery, Result<PagedResult<FineDetails>>>
 {
+    /// Get fine for some client
     public async Task<Result<PagedResult<FineDetails>>> Handle(GetAllfinesByIdQuery request, CancellationToken cancellationToken)
     {
-        // var clientInfo = await unitOfWork.Clients.GetClientWithUserInfoByClientIdAsync(request.ClientId);
-        // if (clientInfo is null)
-        //     return Result<PagedResult<FineDetails>>.Failure($"Client with Id {request.ClientId} not found");
+        var clientInfo = await context.Clients
+        .AsNoTracking()
+        .Include(c => c.Person)
+        .SingleOrDefaultAsync(c => c.Id == request.ClientId, cancellationToken);
 
-        // var (items, totalCount) = await unitOfWork.Repository<Domain.Entities.Fine>()
-        // .GetPagedProjectedAsync(
-        //     selector: f => new FineDetails
-        //     {
-        //         FineId = f.Id,
-        //         BorrowingDate = f.BorrowingRecord.BorrowingDate,
-        //         ReturnDate = f.BorrowingRecord.ActualReturnDate ?? DateTime.UtcNow,
-        //         PaymentStatus = f.PaymentStatus.ToString(),
-        //         Reason = f.Reason,
-        //         FineAmount = f.FineAmount,
-        //         Borrower = new UserSummaryDto
-        //         {
-        //             UserId = clientInfo.UserId,
-        //             LibraryCardNumber = clientInfo.LibraryCardNumber,
-        //             ClientName = $"{clientInfo.FirstName} {clientInfo.LastName}"
-        //         }
-        //     },
-        //     request.PageNumber,
-        //     request.PageSize,
-        //     predicate: f => f.ClientId == request.ClientId,
-        //     orderBy: f => f.OrderByDescending(f => f.CreatedOn),
-        //     ignoreQueryFilters: false,
-        //     cancellationToken
-        // );
+        if (clientInfo is null)
+            return Result<PagedResult<FineDetails>>.Failure($"Client with Id {request.ClientId} not found");
 
-        // var page = new PagedResult<FineDetails>
-        // {
-        //     Items = items,
-        //     TotalCount = totalCount,
-        //     PageNumber = request.PageNumber,
-        //     PageSize = request.PageSize,
-        //     TotalPages = (int)Math.Ceiling((double)totalCount / request.PageSize)
-        // };
+        var query = context.Fines
+            .AsNoTracking()
+            .Where(f => f.ClientId == request.ClientId)
+            .OrderByDescending(f => f.CreatedOn);
 
-        return Result<PagedResult<FineDetails>>.Success(new PagedResult<FineDetails>());
+        var pagedResult = await query
+            .ToPagedResultAsync(
+                request.PageNumber,
+                request.PageSize,
+                selector: f => new FineDetails
+                {
+                    FineId = f.Id,
+                    BorrowingDate = f.BorrowingRecord.BorrowingDate,
+                    ReturnDate = f.BorrowingRecord.ActualReturnDate ?? DateTime.UtcNow,
+                    PaymentStatus = f.PaymentStatus.ToString(),
+                    Reason = f.Reason,
+                    FineAmount = f.FineAmount,
+                    Borrower = new ClientSummaryDto
+                    {
+                        ClientId = clientInfo.Id,
+                        LibraryCardNumber = clientInfo.LibraryCardNumber,
+                        ClientName = $"{clientInfo.Person.FirstName} {clientInfo.Person.LastName}"
+                    }
+                },
+                cancellationToken
+            );
+
+        return Result<PagedResult<FineDetails>>.Success(pagedResult);
     }
 }
