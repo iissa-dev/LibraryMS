@@ -1,11 +1,21 @@
 @baseUrl = http://localhost:5165/api
 @contentType = application/json
 
-GET {{baseUrl}}/Fines/client/1
+
+### Get fines for client
+GET {{baseUrl}}/Fines/client/4
 Content-Type: {{contentType}}
 
 {
     "pageNumber": 1,
     "pageSize": 10,
-    "clientId": 1
+    "clientId": 4
 }
+
+### check Fines status for borrowing
+GET {{baseUrl}}/Fines/16/check
+Content-Type: {{contentType}}
+
+### Pay Fine
+PUT {{baseUrl}}/Fines/1/pay
+Content-Type: {{contentType}}

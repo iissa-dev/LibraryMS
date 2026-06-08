@@ -17,6 +17,13 @@ public sealed class FulfillReservationCommandHandler(IAppDbContext context)
             return Result.Failure("Cannt complete the reserve the reserve not ready to borrow");
         }
 
+        var hasFine = await context.Fines
+        .AnyAsync(f => f.ClientId == reservation.ClientId
+                    && f.PaymentStatus == PaymentStatus.Unpaid, cancellationToken);
+
+        if (hasFine)
+            return Result.Failure("Cannot fulfill reservation. Client has an unpaid fine and must pay it first.");
+
         var setting = await context.Settings
         .AsNoTracking()
         .FirstOrDefaultAsync(cancellationToken);

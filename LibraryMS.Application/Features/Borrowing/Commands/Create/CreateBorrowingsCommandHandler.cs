@@ -19,6 +19,13 @@ public sealed class CreateBorrowingsCommandHandler(IAppDbContext context, IPubli
 
         if (copy.CopyStatus == CopyStatus.Borrowed) return Result.Failure("This copy is already borrowed");
 
+        var hasFine = await context.Fines
+            .AnyAsync(f => f.ClientId == request.ClientId
+                        && f.PaymentStatus == PaymentStatus.Unpaid, cancellationToken);
+
+        if (hasFine)
+            return Result.Failure("Cannot borrow. Client has an unpaid fine and must pay it first.");
+
         if (copy.CopyStatus == CopyStatus.Reserved)
         {
             var activeReservation = await context.Reservations
@@ -58,7 +65,7 @@ public sealed class CreateBorrowingsCommandHandler(IAppDbContext context, IPubli
         context.BorrowingRecords.Add(borrowing);
         await context.SaveChangesAsync(cancellationToken);
 
-        var borrowedEvent = new BookBorrowedEvent(borrowing.CopyId, borrowing.ClientId, borrowing.DueDate);
+        var borrowedEvent = new BookBorrowedEvent(request.CopyId, request.ClientId, borrowing.DueDate);
         await publisher.Publish(borrowedEvent, cancellationToken);
 
         return Result.Success;

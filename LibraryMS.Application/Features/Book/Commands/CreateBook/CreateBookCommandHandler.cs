@@ -7,13 +7,13 @@ public sealed class CreateBookCommandHandler(IAppDbContext context) : IRequestHa
         var isbnExists = await context.Books
         .IgnoreQueryFilters()
         .AnyAsync(b => b.ISBN == request.ISBN, cancellationToken);
-        
+
         if (isbnExists)
             return Result<int>.Failure("The provided ISBN is already registered with another book.");
-        
-        if(request.AuthorIds.Count == 0) 
+
+        if (request.AuthorIds.Count == 0)
             return Result<int>.Failure("At least one author must be assigned to the book.");
-        
+
         var book = new Domain.Entities.Book
         {
             Title = request.Title,
@@ -25,7 +25,7 @@ public sealed class CreateBookCommandHandler(IAppDbContext context) : IRequestHa
         };
 
         book.AddBookAuthors(request.AuthorIds);
-        
+
         for (int i = 0; i < request.InitialCopiesCount; i++)
         {
             book.AddCopy();
