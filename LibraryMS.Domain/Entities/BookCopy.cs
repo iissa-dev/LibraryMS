@@ -8,14 +8,15 @@ public class BookCopy : BaseEntity, ISoftDeleteable
     public string SerialNumber { get; set; } = string.Empty;
     public CopyStatus CopyStatus { get; set; } = CopyStatus.Available;
     public Book Book { get; set; } = null!;
-    public ICollection<BorrowingRecord> BorrowingRecords { get; set; } = new List<BorrowingRecord>();
-
-    public bool IsAvailable => CopyStatus == CopyStatus.Available;
     public bool IsDeleted { get; set; }
     public DateTime? DeletedOn { get; set; }
+
+    public bool IsAvailable => CopyStatus == CopyStatus.Available;
+    public ICollection<BorrowingRecord> BorrowingRecords { get; set; } = new List<BorrowingRecord>();
+    public ICollection<Reservation> Reservations { get; set; } = [];
     public void Delete()
     {
-        if(IsDeleted) return;
+        if (IsDeleted) return;
         IsDeleted = true;
         CopyStatus = CopyStatus.Archived;
         DeletedOn = DateTime.UtcNow;

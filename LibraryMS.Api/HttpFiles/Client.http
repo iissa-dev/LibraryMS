@@ -10,17 +10,17 @@ POST {{baseUrl}}/Clients
 Content-Type: {{contentType}}
 
 {
-  "email": "Mohammad@gmail.com",
-  "password": "Mohammad1234#",
-  "firstName": "Mohammad",
+  "email": "Ahmad@gmail.com",
+  "password": "Ahmad1234#",
+  "firstName": "Ahmad",
   "lastName": "Atieh",
   "phoneNumber": "0780830732",
   "address": "Al-Zarqa",
-  "userName": "Mohammad",
+  "userName": "AhmadCl",
   "countryId": 113,
-  "birthDate": "1973-10-06",
+  "birthDate": "2004-10-06",
   "imageUrl": "",
-  "libraryCardNumber": "230221"
+  "libraryCardNumber": "230222"
 }
 
 ### ------------------------------------------------------------------

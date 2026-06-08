@@ -14,11 +14,30 @@ public sealed class ReturnBorrowingsCommandHandler(IAppDbContext context)
         if (borrowing.ActualReturnDate is not null)
             return Result.Failure("This book has already been returned");
 
+        if (borrowing.BookCopy is null) return Result.Failure("Copy not found");
+
         var setting = await context.Settings
             .FirstOrDefaultAsync(cancellationToken);
         if (setting is null) return Result.Failure("Settings not found");
 
-        borrowing.BookCopy?.MakeStatusAvailable();
+        var nextReservation = await context.Reservations
+            .Where(r => r.BookId == borrowing.BookCopy.BookId && r.ReservationsStatus == ReservationsStatus.Waiting)
+            .OrderBy(r => r.ReservationDate)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (nextReservation is not null)
+        {
+            nextReservation.ReservationsStatus = ReservationsStatus.ReadyForPickup;
+            nextReservation.BookCopyId = borrowing.CopyId;
+            context.Reservations.Update(nextReservation);
+
+            borrowing.BookCopy.CopyStatus = CopyStatus.Reserved; // for the next reserver
+        }
+        else
+        {
+            // no reservers
+            borrowing.BookCopy.MakeStatusAvailable();
+        }
 
         if (borrowing.IsLate)
         {

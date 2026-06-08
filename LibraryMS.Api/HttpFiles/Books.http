@@ -24,7 +24,7 @@ Content-Type: {{contentType}}
   "additionalDetails": "A premium guide to software architecture.",
   "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch.jpg",
   "authorIds": [1],
-  "initialCopiesCount": 5
+  "initialCopiesCount": 1
 }
 
 ### ------------------------------------------------------------------

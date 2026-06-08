@@ -6,12 +6,17 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
     {
         builder.ToTable("Reservations");
         builder.HasKey(a => a.Id);
-        
+
         builder.HasOne(r => r.Client)
             .WithMany(c => c.Reservations)
             .HasForeignKey(r => r.ClientId)
-            .OnDelete(DeleteBehavior.Cascade);   
-        
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(r => r.BookCopy)
+            .WithMany(r => r.Reservations)
+            .HasForeignKey(r => r.BookCopyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne(r => r.Book)
             .WithMany(b => b.Reservations)
             .HasForeignKey(r => r.BookId)
@@ -20,10 +25,10 @@ public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
         builder.Property(r => r.ReservationDate)
             .HasColumnType("datetime2")
             .IsRequired();
-        
+
         builder.Property(r => r.ReservationsStatus)
             .HasColumnType("smallint")
             .IsRequired();
-        
+
     }
 }

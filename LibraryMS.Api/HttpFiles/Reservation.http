@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:5165/api
+@contentType = application/json
+
+### Reserve 
+POST {{baseUrl}}/Reservations/reserve
+Content-Type: {{contentType}}
+
+{
+  "bookId": 3,
+  "clientId": 2
+}
+
+### Cancel
+PUT {{baseUrl}}/Reservations/13/cancel
+Content-Type: {{contentType}}
+
+### Get Reservations for client
+GET {{baseUrl}}/Reservations/client/2
+Content-Type: {{contentType}}
+
+### FulFill 
+PUT {{baseUrl}}/Reservations/17/fulfill
+
