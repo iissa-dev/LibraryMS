@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using LibraryMS.Infrastructure.Interceptors;
+using LibraryMS.Infrastructure.BackgroundJobs;
 
 namespace LibraryMS.Infrastructure.DependencyInjection;
 
@@ -52,6 +53,8 @@ public static class InfrastructureDependencyInjection
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
+
+        services.AddHostedService<ReservationCheckJob>();
 
         return services;
     }

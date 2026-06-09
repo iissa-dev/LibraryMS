@@ -2,7 +2,7 @@ namespace LibraryMS.Application.DTOs.ReservationDto;
 
 public class ClientReservationDto
 {
-    public int ReservationId {get; init;}
+    public int ReservationId { get; init; }
 
     public int BookId { get; init; }
     public string BookTitle { get; init; } = string.Empty;

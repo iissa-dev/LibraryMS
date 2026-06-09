@@ -7,7 +7,7 @@ POST {{baseUrl}}/Borrows/borrow
 Content-Type: {{contentType}}
 
 {
-    "clientId": 2,
+    "clientId": 1,
     "copyId": 1
 }
 

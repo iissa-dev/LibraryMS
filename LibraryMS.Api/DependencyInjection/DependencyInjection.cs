@@ -1,3 +1,6 @@
+using LibraryMS.Api.Services;
+using LibraryMS.Application.Common.Interfaces;
+
 namespace LibraryMS.Api.DependencyInjection;
 
 public static class DependencyInjection
@@ -12,7 +15,9 @@ public static class DependencyInjection
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddScoped<IAuthorizationHandler, EntityAccessHandler>();
-        services.AddHostedService<ReservationCheckJob>();
+
+        services.AddScoped<INotificationService, SignalRNotificationService>();
+        services.AddSignalR();
 
         return services;
     }

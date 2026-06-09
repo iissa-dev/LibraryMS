@@ -1,19 +1,22 @@
 using LibraryMS.Domain.Common.Events;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace LibraryMS.Application.Features.Reservations.EventHandlers;
 
-public class ReservationReadyForPickUpEventHandler(ILogger<ReservationReadyForPickUpEventHandler> logger)
+public class ReservationReadyForPickUpEventHandler(INotificationService notificationService, ILogger<ReservationReadyForPickUpEventHandler> logger)
     : INotificationHandler<ReservationReadyForPickUpEvent>
 {
     public async Task Handle(ReservationReadyForPickUpEvent notification, CancellationToken cancellationToken)
     {
-        // add emial send logic
+        logger.LogInformation("SignalR: Sending live notification to Client {ClientId}", notification.ClientId);
 
-        logger.LogInformation(
-            "NOTIFICATION SENT: Client {ClientId}, your reserved book '{BookTitle}' is ready for pick up! (Reservation ID: {ReservationId})",
-            notification.ClientId, notification.BookTitle, notification.ReservationId);
-
-        await Task.CompletedTask;
+        await notificationService.SendNotificationToClientAsync(
+            notification.ClientId,
+            title: "Book ready to pick up.",
+            message: $"Your Book \"{notification.BookTitle}\" ready to pick up.",
+            notification.ReservationId,
+            cancellationToken
+        );
     }
 }

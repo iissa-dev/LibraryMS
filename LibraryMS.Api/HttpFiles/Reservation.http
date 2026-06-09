@@ -7,7 +7,7 @@ Content-Type: {{contentType}}
 
 {
   "bookId": 1,
-  "clientId": 1
+  "clientId": 2
 }
 
 ### Cancel

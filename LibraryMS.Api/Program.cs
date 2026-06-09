@@ -1,4 +1,5 @@
 using LibraryMS.Api.DependencyInjection;
+using LibraryMS.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -30,5 +31,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 await app.RunAsync();
