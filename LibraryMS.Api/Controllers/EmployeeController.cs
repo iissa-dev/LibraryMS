@@ -8,79 +8,52 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class EmployeeController(IMediator mediator) : ControllerBase
+[Authorize(Roles = "Admin")]
+public class EmployeeController(IMediator mediator) : BaseController
 {
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Get(int pageNumber, int pageSize)
     {
         var result = await mediator.Send(new GetAllEmployeeQuery(pageNumber, pageSize));
-        if (result.IsFailure)
-            return BadRequest(result);
-
-        return Ok(result);
+        return HandleResult(result);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] CreateEmployeeCommand command)
+    public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeCommand command)
     {
         var result = await mediator.Send(command);
-        if (result.IsFailure)
-            return BadRequest(result);
-
-        return StatusCode(StatusCodes.Status201Created, result);
+        return HandleResult(result);
     }
 
     [HttpGet("get-employee-profile/{employeeId:int}")]
-    // [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetEmployeeProfileByIdUserAsync([FromRoute] int employeeId)
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<IActionResult> GetEmployeeProfileByIdAsync([FromRoute] int employeeId)
     {
         var result = await mediator.Send(new GetEmployeeByIdQuery(employeeId));
-
-        return result.IsFailure ? NotFound(result) : Ok(result);
+        return HandleResult(result);
     }
 
     [HttpPut("update-employee-info/{employeeId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> UpdateEmployeeInfoAsync([FromRoute] int employeeId, UpdateEmployeeCommand command)
     {
         if (employeeId != command.EmployeeId) return BadRequest(Result.Failure("Employee Id mismatch"));
 
         var result = await mediator.Send(command);
-
-        return result.IsSuccess ? Ok(result) : NotFound(result);
+        return HandleResult(result);
     }
 
     [HttpDelete("delete-employee/{employeeId:int}/user/{userId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteEmployeeAsync([FromRoute] int userId, [FromRoute] int employeeId)
+    public async Task<IActionResult> DeleteEmployeeAsync([FromRoute] int employeeId, [FromRoute] int userId)
     {
         var result = await mediator.Send(new DeleteEmployeeCommand(userId, employeeId));
-
-        return result.IsSuccess ? Ok(result) : NotFound(result);
+        return HandleResult(result);
     }
 
     [HttpPut("restore-employee/{employeeId:int}/user/{userId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RestoreEmployeeAsync([FromRoute] int userId, [FromRoute] int employeeId)
+    public async Task<IActionResult> RestoreEmployeeAsync([FromRoute] int employeeId, [FromRoute] int userId)
     {
         var result = await mediator.Send(new RestoreEmployeeCommand(userId, employeeId));
-
-        return result.IsSuccess ? Ok(result) : NotFound(result);
+        return HandleResult(result);
     }
 }

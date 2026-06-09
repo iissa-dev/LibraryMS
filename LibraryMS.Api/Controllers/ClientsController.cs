@@ -8,79 +8,66 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class ClientsController(IMediator mediator) : ControllerBase
+public class ClientsController(ISender sender, IAuthorizationService authService) : BaseController
 {
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Get(int pageNumber, int pageSize)
     {
-        var result = await mediator.Send(new GetAllClientQuery(pageNumber, pageSize));
-        if (result.IsFailure)
-            return BadRequest(result);
-
-        return Ok(result);
+        var result = await sender.Send(new GetAllClientQuery(pageNumber, pageSize));
+        return HandleResult(result);
     }
 
     [HttpGet("get-client-profile/{clientId}")]
-    // [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize]
     public async Task<IActionResult> GetClientProfileByIdUserAsync(int clientId)
     {
-        var result = await mediator.Send(new GetClientByIdQuery(clientId));
-        return result.IsFailure ? NotFound(result) : Ok(result);
+        var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
+        if (!authorizationResult.Succeeded)
+            return Forbid();
+
+        var result = await sender.Send(new GetClientByIdQuery(clientId));
+        return HandleResult(result);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterClientCommand command)
     {
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
         if (result.IsFailure)
             return BadRequest(result);
 
-        return StatusCode(StatusCodes.Status201Created, result);
+        return HandleResult(result);
     }
 
     [HttpPut("update-client-info/{clientId:int}")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize]
     public async Task<IActionResult> UpdateClientAsynTask([FromRoute] int clientId, UpdateClientCommand command)
     {
         if (clientId != command.ClientId) return BadRequest(Result.Failure("Client Id mismatch"));
 
-        var result = await mediator.Send(command);
-        if (result.IsFailure) return NotFound("Client profile not found or no changes made");
+        var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
+        if (!authorizationResult.Succeeded)
+            return Forbid();
 
-        return Ok(result);
+        var result = await sender.Send(command);
+        return HandleResult(result);
     }
 
     [HttpDelete("delete-client/{clientId:int}/user/{userId:int}")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteClientAsync([FromRoute] int userId, [FromRoute] int clientId)
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<IActionResult> DeleteClientAsync([FromRoute] int clientId, [FromRoute] int userId)
     {
-        var result = await mediator.Send(new DeleteClientCommand(userId, clientId));
-
-        return result.IsSuccess
-        ? Ok(result)
-        : NotFound(result);
+        var result = await sender.Send(new DeleteClientCommand(userId, clientId));
+        return HandleResult(result);
     }
 
     [HttpPut("resotre-client/{clientId:int}/user/{userId:int}")]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> RestoreClientAsync([FromRoute] int userId, [FromRoute] int clientId)
     {
-        var result = await mediator.Send(new RestoreClientCommand(userId, clientId));
-
-        return result.IsSuccess
-        ? Ok(result)
-        : NotFound(result);
+        var result = await sender.Send(new RestoreClientCommand(userId, clientId));
+        return HandleResult(result);
     }
 }

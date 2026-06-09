@@ -17,4 +17,6 @@ public interface IIdentityUser
     Task<Result> DeleteUserAsync(int UserId);
 
     Task<Result> RestoreUserAsync(int userId);
+
+    Task<int?> GetPersonIdByUserIdAsync(int userId);
 }

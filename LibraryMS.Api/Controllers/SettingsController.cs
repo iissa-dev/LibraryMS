@@ -1,17 +1,17 @@
 using LibraryMS.Application.Features.Settings.Commands;
 using LibraryMS.Application.Features.Settings.Queries;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class SettingsController(ISender sender) : ControllerBase
+[Authorize("Admin,Employee")]
+public class SettingsController(ISender sender) : BaseController
 {
     [HttpGet]
     public async Task<IActionResult> GetSettings()
     {
         var result = await sender.Send(new GetSettingsQuery());
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return HandleResult(result);
     }
 
     [HttpPut("{settingId:int}")]
@@ -21,6 +21,6 @@ public class SettingsController(ISender sender) : ControllerBase
             return BadRequest(Result.Failure("Mismatch Id"));
 
         var result = await sender.Send(command);
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return HandleResult(result);
     }
 }

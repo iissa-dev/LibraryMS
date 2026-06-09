@@ -9,63 +9,48 @@ using LibraryMS.Application.Features.BookCopies.Command.Delete;
 using LibraryMS.Application.Features.BookCopies.Command.Restore;
 using LibraryMS.Application.Features.BookCopies.Command.UpdateStatus;
 using LibraryMS.Application.Features.BookCopies.Queries.GetAllCopies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class BooksController : ControllerBase
+[Authorize(Roles = "Admin,Employee")]
+public class BooksController(ISender sender) : BaseController
 {
-    private readonly IMediator _mediator;
-
-    public BooksController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAllBooks([FromQuery] GetAllBooksQuery query)
     {
-        var result = await _mediator.Send(query);
-        if (result.IsFailure)
-            return BadRequest(result);
-
-        return Ok(result);
+        var result = await sender.Send(query);
+        return HandleResult(result);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> AddBook([FromBody] CreateBookCommand command)
     {
-        var result = await _mediator.Send(command);
-
-        if (result.IsFailure)
-            return BadRequest(result);
-
-        return StatusCode(StatusCodes.Status201Created, result);
+        var result = await sender.Send(command);
+        return HandleResult(result);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteBook([FromRoute] int id)
     {
-        var result = await _mediator.Send(new DeleteBookCommand(id));
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        var result = await sender.Send(new DeleteBookCommand(id));
+        return HandleResult(result);
     }
 
     [HttpPut("restore/{id}")]
     public async Task<IActionResult> RestoreBook([FromRoute] int id)
     {
-        var result = await _mediator.Send(new RestoreBookCommand(id));
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        var result = await sender.Send(new RestoreBookCommand(id));
+        return HandleResult(result);
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetBookById([FromRoute] int id)
     {
-        var result = await _mediator.Send(new GetByIdWithAuthorsQuery(id));
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        var result = await sender.Send(new GetByIdWithAuthorsQuery(id));
+        return HandleResult(result);
     }
 
     [HttpPut("{id}")]
@@ -74,15 +59,16 @@ public class BooksController : ControllerBase
         if (id != command.Id)
             return BadRequest("ID mismatch.");
 
-        var result = await _mediator.Send(command);
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        var result = await sender.Send(command);
+        return HandleResult(result);
     }
 
     [HttpGet("copies")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAllCopies([FromQuery] GetAllCopiesQuery query)
     {
-        var result = await _mediator.Send(query);
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        var result = await sender.Send(query);
+        return HandleResult(result);
     }
 
     [HttpPost("{bookId:int}/copies")]
@@ -90,30 +76,30 @@ public class BooksController : ControllerBase
     {
         var updatedCommand = command with { BookId = bookId };
 
-        var result = await _mediator.Send(updatedCommand);
+        var result = await sender.Send(updatedCommand);
 
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return HandleResult(result);
     }
 
     [HttpDelete("{bookId:int}/delete-copy")]
     public async Task<IActionResult> DeleteCopy([FromRoute] int bookId)
     {
-        var result = await _mediator.Send(new DeleteCopyCommand(bookId));
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        var result = await sender.Send(new DeleteCopyCommand(bookId));
+        return HandleResult(result);
     }
 
     [HttpPatch("{copyId:int}/update-status")]
     public async Task<IActionResult> UpdateStatus([FromRoute] int copyId, [FromBody] UpdateStatusCopyCommand command)
     {
         var updatedCommand = command with { BookCopyId = copyId };
-        var result = await _mediator.Send(updatedCommand);
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        var result = await sender.Send(updatedCommand);
+        return HandleResult(result);
     }
 
     [HttpPut("{copyId:int}/restore-copy")]
     public async Task<IActionResult> RestoreCopyAsync([FromRoute] int copyId)
     {
-        var result = await _mediator.Send(new RestoreCopyCommand(copyId));
-        return result.IsSuccess ? Ok(result) : BadRequest(Request);
+        var result = await sender.Send(new RestoreCopyCommand(copyId));
+        return HandleResult(result);
     }
 }

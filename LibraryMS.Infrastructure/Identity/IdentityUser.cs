@@ -166,4 +166,13 @@ public class IdentityUser : IIdentityUser
         : Result.Failure(result.Errors.First().Description);
     }
 
+    public async Task<int?> GetPersonIdByUserIdAsync(int userId)
+    {
+        var user = await _userManager.Users
+            .Where(u => u.Id == userId)
+            .Select(u => u.PersonId)
+            .FirstOrDefaultAsync();
+
+        return user;
+    }
 }

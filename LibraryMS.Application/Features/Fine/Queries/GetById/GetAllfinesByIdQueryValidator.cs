@@ -1,6 +1,6 @@
 namespace LibraryMS.Application.Features.Fine.Queries.GetById;
 
-public sealed class GetAllfinesByIdQueryValidator : AbstractValidator<GetAllfinesByIdQuery>
+public sealed class GetAllfinesByIdQueryValidator : AbstractValidator<GetAllFinesByIdQuery>
 {
     public GetAllfinesByIdQueryValidator()
     {

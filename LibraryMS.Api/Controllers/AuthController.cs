@@ -3,11 +3,10 @@ using LibraryMS.Application.Features.Auth.Commands.Logout;
 using LibraryMS.Application.Features.Auth.Commands.RefreshToken;
 using LibraryMS.Application.Features.Auth.Queries.Login;
 using LibraryMS.Application.Features.Auth.Queries.User;
+using Microsoft.AspNetCore.Authorization;
 namespace LibraryMS.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController(IMediator mediator, IWebHostEnvironment hostEnvironment) : ControllerBase
+public class AuthController(ISender sender, IWebHostEnvironment hostEnvironment) : BaseController
 {
     private void SetRefreshTokenCookie(string refreshToken)
     {
@@ -21,26 +20,28 @@ public class AuthController(IMediator mediator, IWebHostEnvironment hostEnvironm
     }
 
     [HttpPost("LoginAsync")]
+    [AllowAnonymous]
     public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginDto)
     {
-        var result = await mediator.Send(new LoginQuery(loginDto.UserName, loginDto.Password));
+        var result = await sender.Send(new LoginQuery(loginDto.UserName, loginDto.Password));
         if (result.IsFailure) return Unauthorized(new { error = result.Error });
 
         SetRefreshTokenCookie(result.Data!.RefreshToken);
 
-        return Ok(result);
+        return HandleResult(result);
     }
 
     [HttpPut("Logout")]
+    [AllowAnonymous]
     public async Task<IActionResult> Logout()
     {
         var refreshToken = Request.Cookies[ApiConstant.RefreshTokenKey];
         if (refreshToken is null) return BadRequest(Result.Failure("Invalid Refresh Token Or you are not login"));
 
-        var result = await mediator.Send(new LogoutCommand(refreshToken));
+        var result = await sender.Send(new LogoutCommand(refreshToken));
 
         Response.Cookies.Delete(ApiConstant.RefreshTokenKey); // Clean Revoked Cookies
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return HandleResult(result);
     }
 
     [HttpPut("Refresh")]
@@ -49,20 +50,21 @@ public class AuthController(IMediator mediator, IWebHostEnvironment hostEnvironm
         var refreshToken = Request.Cookies[ApiConstant.RefreshTokenKey];
         if (refreshToken is null) return BadRequest(Result.Failure("Invalid Refresh Token Or you are not login"));
 
-        var result = await mediator.Send(new RefreshTokenCommand(refreshToken));
+        var result = await sender.Send(new RefreshTokenCommand(refreshToken));
 
         if (result.IsFailure) return BadRequest(result);
 
         SetRefreshTokenCookie(result.Data!.RefreshToken);
 
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return HandleResult(result);
     }
 
     [HttpGet("Current")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetCurrentUserAsync()
     {
-        var result = await mediator.Send(new CurrentUserQuery(User.GetUserId()));
+        var result = await sender.Send(new CurrentUserQuery(User.GetUserId()));
 
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return HandleResult(result);
     }
 }

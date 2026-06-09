@@ -9,3 +9,4 @@ global using LibraryMS.Application.DependencyInjection;
 global using LibraryMS.Infrastructure.DependencyInjection;
 global using FluentValidation;
 global using Microsoft.AspNetCore.Diagnostics;
+global using LibraryMS.Api.Common.Authorization;

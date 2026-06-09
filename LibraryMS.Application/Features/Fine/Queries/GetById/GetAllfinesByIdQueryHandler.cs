@@ -5,10 +5,10 @@ using LibraryMS.Application.DTOs.FineDto;
 namespace LibraryMS.Application.Features.Fine.Queries.GetById;
 
 public sealed class GetAllfinesByIdQueryHandler(IAppDbContext context)
-    : IRequestHandler<GetAllfinesByIdQuery, Result<PagedResult<FineDetails>>>
+    : IRequestHandler<GetAllFinesByIdQuery, Result<PagedResult<FineDetails>>>
 {
     /// Get fine for some client
-    public async Task<Result<PagedResult<FineDetails>>> Handle(GetAllfinesByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedResult<FineDetails>>> Handle(GetAllFinesByIdQuery request, CancellationToken cancellationToken)
     {
         var clientInfo = await context.Clients
         .AsNoTracking()
