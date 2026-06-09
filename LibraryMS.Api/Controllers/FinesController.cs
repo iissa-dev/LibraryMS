@@ -1,7 +1,6 @@
 using LibraryMS.Application.Features.Fine.Commands.PayFine;
 using LibraryMS.Application.Features.Fine.Queries.CheckFineStatus;
 using LibraryMS.Application.Features.Fine.Queries.GetById;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 

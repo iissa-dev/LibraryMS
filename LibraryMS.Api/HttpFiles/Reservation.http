@@ -6,8 +6,8 @@ POST {{baseUrl}}/Reservations/reserve
 Content-Type: {{contentType}}
 
 {
-  "bookId": 3,
-  "clientId": 2
+  "bookId": 1,
+  "clientId": 1
 }
 
 ### Cancel

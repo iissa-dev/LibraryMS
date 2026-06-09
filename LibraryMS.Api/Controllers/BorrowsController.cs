@@ -1,7 +1,6 @@
 using LibraryMS.Application.Features.Borrowing.Commands.Create;
 using LibraryMS.Application.Features.Borrowing.Commands.Return;
 using LibraryMS.Application.Features.Borrowing.Queries.GetFullBorrowDetailsById;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 

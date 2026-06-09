@@ -3,7 +3,6 @@ using LibraryMS.Application.Features.Auth.Commands.Logout;
 using LibraryMS.Application.Features.Auth.Commands.RefreshToken;
 using LibraryMS.Application.Features.Auth.Queries.Login;
 using LibraryMS.Application.Features.Auth.Queries.User;
-using Microsoft.AspNetCore.Authorization;
 namespace LibraryMS.Api.Controllers;
 
 public class AuthController(ISender sender, IWebHostEnvironment hostEnvironment) : BaseController

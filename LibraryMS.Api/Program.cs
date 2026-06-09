@@ -1,18 +1,11 @@
-using LibraryMS.Api.Common.Authorization;
-using Microsoft.AspNetCore.Authorization;
+using LibraryMS.Api.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services
-    .AddProblemDetails()
-    .AddExceptionHandler<GlobalExceptionHandler>()
-    .AddSwaggerGen()
-    .AddOpenApi()
     .AddInfrastructure(builder.Configuration)
     .AddApplication()
-    .AddControllers();
-
-    builder.Services.AddScoped<IAuthorizationHandler, EntityAccessHandler>();
+    .AddPresentation();
 }
 // Serilog Config
 builder.Host.UseSerilog((context, configuration) =>

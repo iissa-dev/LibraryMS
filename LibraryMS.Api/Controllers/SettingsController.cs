@@ -1,6 +1,5 @@
 using LibraryMS.Application.Features.Settings.Commands;
 using LibraryMS.Application.Features.Settings.Queries;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 

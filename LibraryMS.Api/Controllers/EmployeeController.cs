@@ -4,7 +4,6 @@ using LibraryMS.Application.Features.Employee.Commands.Restore;
 using LibraryMS.Application.Features.Employee.Commands.Update;
 using LibraryMS.Application.Features.Employee.Queries.GetAllEmployee;
 using LibraryMS.Application.Features.Employee.Queries.GetEmployeeById;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 

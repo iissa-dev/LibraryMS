@@ -1,6 +1,4 @@
 using LibraryMS.Application.Common.Interfaces;
-using LibraryMS.Infrastructure.Identity;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryMS.Api.Common.Authorization;

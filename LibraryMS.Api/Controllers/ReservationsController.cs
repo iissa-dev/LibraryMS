@@ -2,7 +2,6 @@ using LibraryMS.Application.Features.Reservations.Commands.Cancel;
 using LibraryMS.Application.Features.Reservations.Commands.Fulfill;
 using LibraryMS.Application.Features.Reservations.Commands.Reserve;
 using LibraryMS.Application.Features.Reservations.Queries.GetById;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 

@@ -9,7 +9,6 @@ using LibraryMS.Application.Features.BookCopies.Command.Delete;
 using LibraryMS.Application.Features.BookCopies.Command.Restore;
 using LibraryMS.Application.Features.BookCopies.Command.UpdateStatus;
 using LibraryMS.Application.Features.BookCopies.Queries.GetAllCopies;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 

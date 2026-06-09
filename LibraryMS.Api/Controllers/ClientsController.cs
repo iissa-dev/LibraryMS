@@ -4,7 +4,6 @@ using LibraryMS.Application.Features.Client.Commands.RestoreClient;
 using LibraryMS.Application.Features.Client.Commands.UpdateClient;
 using LibraryMS.Application.Features.Client.Queries.GetAllClient;
 using LibraryMS.Application.Features.Client.Queries.GetClientById;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 

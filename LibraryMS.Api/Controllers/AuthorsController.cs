@@ -4,7 +4,6 @@ using LibraryMS.Application.Features.Author.Commands.Restore;
 using LibraryMS.Application.Features.Author.Commands.Update;
 using LibraryMS.Application.Features.Author.Queries.GetAuthorById;
 using LibraryMS.Application.Features.Author.Queries.GetAuthors;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LibraryMS.Api.Controllers;
 
