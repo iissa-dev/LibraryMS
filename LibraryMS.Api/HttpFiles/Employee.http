@@ -10,13 +10,13 @@ POST {{baseUrl}}/Employee
 Content-Type: {{contentType}}
 
 {
-  "email": "Issa@gmail.com",
+  "email": "IssaEm@gmail.com",
   "password": "Issa1234#",
-  "firstName": "Issa",
+  "firstName": "IssaEm",
   "lastName": "Atieh",
   "phoneNumber": "0780830732",
   "address": "Al-Zarqa",
-  "userName": "Issa",
+  "userName": "IssaEm",
   "countryId": 113,
   "birthDate": "1973-10-06",
   "imageUrl": "",

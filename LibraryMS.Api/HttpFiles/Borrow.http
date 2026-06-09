@@ -7,8 +7,8 @@ POST {{baseUrl}}/Borrows/borrow
 Content-Type: {{contentType}}
 
 {
-    "clientId": 4,
-    "copyId": 7
+    "clientId": 1,
+    "copyId": 1
 }
 
 ### Return Borrow
@@ -16,16 +16,16 @@ POST {{baseUrl}}/Borrows/return
 Content-Type: {{contentType}}
 
 {
-    "borrowingId": 16,
-    "copyId": 7 
+    "borrowingId": 1,
+    "copyId": 1
 }
 
 ### Get Full Borrow Details
-GET {{baseUrl}}/Borrows/client/3
+GET {{baseUrl}}/Borrows/client/1
 Content-Type: {{contentType}}
 
 {
     "pageNumber": 1,
     "pageSize": 10,
-    "clientId": 3
+    "clientId": 1
 }

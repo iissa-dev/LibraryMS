@@ -1,4 +1,6 @@
+using LibraryMS.Application.Common.Extensions;
 using LibraryMS.Domain.Common.Events;
+using LibraryMS.Domain.Common.Specifications;
 
 namespace LibraryMS.Application.Features.Borrowing.Commands.Create;
 
@@ -10,9 +12,7 @@ public sealed class CreateBorrowingsCommandHandler(IAppDbContext context, IPubli
         if (!await context.Clients.AnyAsync(c => c.Id == request.ClientId, cancellationToken))
             return Result.Failure("Client not found");
 
-        var setting = await context.Settings
-            .FirstOrDefaultAsync(cancellationToken);
-        if (setting is null) return Result.Failure("Settings not found");
+        var setting = await context.GetApplicationSettingsAsync(cancellationToken);
 
         var copy = await context.BookCopies.FindAsync(request.CopyId, cancellationToken);
         if (copy is null) return Result.Failure("Copy not found");
@@ -20,8 +20,8 @@ public sealed class CreateBorrowingsCommandHandler(IAppDbContext context, IPubli
         if (copy.CopyStatus == CopyStatus.Borrowed) return Result.Failure("This copy is already borrowed");
 
         var hasFine = await context.Fines
-            .AnyAsync(f => f.ClientId == request.ClientId
-                        && f.PaymentStatus == PaymentStatus.Unpaid, cancellationToken);
+            .Specify(new HasUnpaidFinesSpecification(request.ClientId))
+            .AnyAsync(cancellationToken);
 
         if (hasFine)
             return Result.Failure("Cannot borrow. Client has an unpaid fine and must pay it first.");
@@ -44,10 +44,11 @@ public sealed class CreateBorrowingsCommandHandler(IAppDbContext context, IPubli
                 context.Reservations.Update(activeReservation);
             }
         }
-        else if (copy.CopyStatus == CopyStatus.Available)
+        else if (copy.IsAvailable)
         {
             var hasWaitingQueue = await context.Reservations
-                .AnyAsync(r => r.BookId == copy.BookId && r.ReservationsStatus == ReservationsStatus.Waiting, cancellationToken);
+                .Specify(new HasWaitingQueueSpecification(copy.BookId))
+                .AnyAsync(cancellationToken);
 
             if (hasWaitingQueue)
                 return Result.Failure("Cannot borrow directly; there are clients on the waiting list for this book. Please place a reservation.");

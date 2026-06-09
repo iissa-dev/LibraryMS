@@ -1,3 +1,6 @@
+using LibraryMS.Application.Common.Extensions;
+using LibraryMS.Domain.Common.Specifications;
+
 namespace LibraryMS.Application.Features.Borrowing.Commands.Return;
 
 public sealed class ReturnBorrowingsCommandHandler(IAppDbContext context)
@@ -16,12 +19,10 @@ public sealed class ReturnBorrowingsCommandHandler(IAppDbContext context)
 
         if (borrowing.BookCopy is null) return Result.Failure("Copy not found");
 
-        var setting = await context.Settings
-            .FirstOrDefaultAsync(cancellationToken);
-        if (setting is null) return Result.Failure("Settings not found");
+        var setting = await context.GetApplicationSettingsAsync(cancellationToken);
 
         var nextReservation = await context.Reservations
-            .Where(r => r.BookId == borrowing.BookCopy.BookId && r.ReservationsStatus == ReservationsStatus.Waiting)
+            .Specify(new HasWaitingQueueSpecification(borrowing.BookCopy.BookId))
             .OrderBy(r => r.ReservationDate)
             .FirstOrDefaultAsync(cancellationToken);
 

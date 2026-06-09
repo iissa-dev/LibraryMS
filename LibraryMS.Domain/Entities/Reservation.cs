@@ -9,6 +9,7 @@ public class Reservation : BaseEntity
     public int? BookCopyId { get; set; }
     public DateTime ReservationDate { get; set; } = DateTime.UtcNow;
     public ReservationsStatus ReservationsStatus { get; set; } = ReservationsStatus.Waiting;
+    public bool ReadyToBorrow => ReservationsStatus == ReservationsStatus.ReadyForPickup || ReservationsStatus == ReservationsStatus.Notified;
 
     public Client Client { get; set; } = null!;
     public Book Book { get; set; } = null!;
@@ -24,5 +25,16 @@ public class Reservation : BaseEntity
             throw new DomainException("Connot cancel a completed reservation");
 
         ReservationsStatus = ReservationsStatus.Cancelled;
+    }
+
+    public void Fulfill(BookCopy copy)
+    {
+        if (!ReadyToBorrow)
+        {
+            throw new DomainException("Reservation is not ready to be fulfilled.");
+        }
+
+        ReservationsStatus = ReservationsStatus.Completed;
+        copy.UpdateStatus(CopyStatus.Borrowed);
     }
 }

@@ -1,3 +1,6 @@
+using LibraryMS.Application.Common.Extensions;
+using LibraryMS.Domain.Common.Specifications;
+
 namespace LibraryMS.Application.Features.Reservations.Commands.Reserve;
 
 public sealed class ReserveCommandHandler(IAppDbContext context)
@@ -34,9 +37,8 @@ public sealed class ReserveCommandHandler(IAppDbContext context)
                         && c.CopyStatus == CopyStatus.Available, cancellationToken);
 
         var hasWaitingQueue = await context.Reservations
-            .AnyAsync(r => r.BookId == request.BookId
-                        && r.ReservationsStatus == ReservationsStatus.Waiting,
-                        cancellationToken);
+            .Specify(new HasWaitingQueueSpecification(request.BookId))
+            .AnyAsync(cancellationToken);
 
         if (hasAvailableCopy && !hasWaitingQueue)
             return Result.Failure("There is an available copy currently on the shelf. You cannot reserve it, please borrow it directly.");

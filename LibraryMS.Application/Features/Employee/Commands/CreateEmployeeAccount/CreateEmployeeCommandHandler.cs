@@ -25,7 +25,7 @@ public sealed class CreateEmployeeCommandHandler(IAppDbContext context, IIdentit
 
 
             var userResult = await identityUser.CreateUserAsync(request.Email, request.Password, request.UserName,
-                request.PhoneNumber, person.Id, request.FirstName, request.LastName, request.CountryId, request.BirthDate);
+                request.PhoneNumber, person.Id);
 
             if (userResult.IsFailure)
             {

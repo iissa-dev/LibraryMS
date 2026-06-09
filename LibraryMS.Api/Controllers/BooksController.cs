@@ -23,7 +23,7 @@ public class BooksController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("books")]
+    [HttpGet]
     public async Task<IActionResult> GetAllBooks([FromQuery] GetAllBooksQuery query)
     {
         var result = await _mediator.Send(query);

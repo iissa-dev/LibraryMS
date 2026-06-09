@@ -6,7 +6,7 @@
 
 ### 1. Get Paginated Books List
 ### Retrieves a filtered, sorted, and projected list of books.
-GET {{baseUrl}}/Books/books?PageNumber=1&PageSize=10
+GET {{baseUrl}}/Books?PageNumber=1&PageSize=10
 Content-Type: {{contentType}}
 
 ### ------------------------------------------------------------------

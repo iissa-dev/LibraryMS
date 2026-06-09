@@ -1,3 +1,6 @@
+using LibraryMS.Application.Common.Extensions;
+using LibraryMS.Domain.Common.Specifications;
+
 namespace LibraryMS.Application.Features.Reservations.Commands.Fulfill;
 
 public sealed class FulfillReservationCommandHandler(IAppDbContext context)
@@ -11,24 +14,19 @@ public sealed class FulfillReservationCommandHandler(IAppDbContext context)
         if (reservation is null)
             return Result.Failure("Reserve not found");
 
-        if (reservation.ReservationsStatus != ReservationsStatus.ReadyForPickup &&
-            reservation.ReservationsStatus != ReservationsStatus.Notified)
+        if (!reservation.ReadyToBorrow)
         {
             return Result.Failure("Cannt complete the reserve the reserve not ready to borrow");
         }
 
         var hasFine = await context.Fines
-        .AnyAsync(f => f.ClientId == reservation.ClientId
-                    && f.PaymentStatus == PaymentStatus.Unpaid, cancellationToken);
+        .Specify(new HasUnpaidFinesSpecification(reservation.ClientId))
+        .AnyAsync(cancellationToken);
 
         if (hasFine)
             return Result.Failure("Cannot fulfill reservation. Client has an unpaid fine and must pay it first.");
 
-        var setting = await context.Settings
-        .AsNoTracking()
-        .FirstOrDefaultAsync(cancellationToken);
-
-        if (setting is null) return Result.Failure("No settings");
+        var setting = await context.GetApplicationSettingsAsync(cancellationToken);
 
         reservation.ReservationsStatus = ReservationsStatus.Completed;
         context.Reservations.Update(reservation);
@@ -39,8 +37,7 @@ public sealed class FulfillReservationCommandHandler(IAppDbContext context)
             .SingleOrDefaultAsync(c => c.Id == reservation.BookCopyId, cancellationToken);
         if (copy is not null)
         {
-            copy.CopyStatus = CopyStatus.Borrowed;
-            context.BookCopies.Update(copy);
+            reservation.Fulfill(copy);
 
             var borrowingRecord = new BorrowingRecord
             {

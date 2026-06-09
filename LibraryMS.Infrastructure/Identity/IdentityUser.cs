@@ -17,7 +17,7 @@ public class IdentityUser : IIdentityUser
     }
 
     public async Task<Result<int>> CreateUserAsync(string email, string password, string username,
-        string? phoneNumber, int personId, string fName, string lName, int cId, DateOnly dateOnly)
+        string? phoneNumber, int personId)
     {
         var userExists = await _userManager.FindByEmailAsync(email);
         if (userExists != null)
@@ -30,11 +30,7 @@ public class IdentityUser : IIdentityUser
             Email = email,
             UserName = username,
             PhoneNumber = phoneNumber ?? "",
-            PersonId = personId,
-            FirstName = fName,
-            LastName = lName,
-            CountryId = cId,
-            DateOfBirth = dateOnly
+            PersonId = personId
         };
 
         var result = await _userManager.CreateAsync(user, password);
@@ -111,13 +107,6 @@ public class IdentityUser : IIdentityUser
             PersonId = user.PersonId,
             UserName = user.UserName!,
             Email = user.Email!,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Address = user.Address,
-            PhoneNumber = user.PhoneNumber,
-            ImageUrl = user.ImageUrl,
-            DateOfBirth = user.DateOfBirth,
-            Country = user.Country?.Name ?? "Not Found"
         });
     }
 
@@ -138,14 +127,8 @@ public class IdentityUser : IIdentityUser
         var user = await _userManager.FindByIdAsync(dto.UserId.ToString());
         if (user is null) return Result.Failure("User not found");
 
-        user.FirstName = dto.FirstName;
-        user.LastName = dto.LastName;
         user.Email = dto.Email;
-        user.Address = dto.Address;
-        user.DateOfBirth = dto.DateOfBirth;
         user.UserName = dto.UserName;
-        user.ImageUrl = dto.ImageUrl;
-        user.CountryId = dto.CountryId;
         user.PhoneNumber = dto.PhoneNumber;
 
         var result = await _userManager.UpdateAsync(user);
@@ -183,13 +166,4 @@ public class IdentityUser : IIdentityUser
         : Result.Failure(result.Errors.First().Description);
     }
 
-    public async Task<string?> GetFullnameByIdAsync(int userId)
-    {
-        var user = await _userManager.Users
-        .AsNoTracking()
-        .Select(u => new { fullName = $"{u.FirstName} {u.LastName}", Id = u.Id })
-        .FirstOrDefaultAsync(u => u.Id == userId);
-
-        return user?.fullName;
-    }
 }

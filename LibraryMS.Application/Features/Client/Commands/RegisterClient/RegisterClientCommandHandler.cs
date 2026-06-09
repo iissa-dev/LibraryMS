@@ -18,7 +18,7 @@ public sealed class RegisterClientCommandHandler(IIdentityUser identityUser, IAp
                 LastName = request.LastName,
                 Address = request.Address,
                 CountryId = request.CountryId,
-                DateOfBirth = request. BirthDate
+                DateOfBirth = request.BirthDate
             };
             context.People.Add(person);
             await context.SaveChangesAsync(cancellationToken);
@@ -28,7 +28,7 @@ public sealed class RegisterClientCommandHandler(IIdentityUser identityUser, IAp
                 request.Password,
                 request.UserName,
                 request.PhoneNumber,
-                person.Id, request.FirstName, request.LastName, request.CountryId, request.BirthDate);
+                person.Id);
 
             if (userResult.IsFailure)
             {

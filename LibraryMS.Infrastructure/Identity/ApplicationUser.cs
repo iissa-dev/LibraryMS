@@ -2,15 +2,6 @@ namespace LibraryMS.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser<int>, ISoftDeleteable
 {
-    // Delete all of this
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
-    public DateOnly DateOfBirth { get; set; }
-    public int CountryId { get; set; }
-    public string? ImageUrl { get; set; }
-
-    public Country? Country { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedOn { get; set; }
 
@@ -26,6 +17,6 @@ public class ApplicationUser : IdentityUser<int>, ISoftDeleteable
         DeletedOn = null;
     }
 
-    public int PersonId {get; set;}
-    public Person Person {get; set;} = null!;
+    public int PersonId { get; set; }
+    public Person Person { get; set; } = null!;
 }

@@ -10,13 +10,13 @@ POST {{baseUrl}}/Clients
 Content-Type: {{contentType}}
 
 {
-  "email": "Ahmad@gmail.com",
-  "password": "Ahmad1234#",
-  "firstName": "Ahmad",
+  "email": "Issa@gmail.com",
+  "password": "Issa1234#",
+  "firstName": "Issa",
   "lastName": "Atieh",
   "phoneNumber": "0780830732",
   "address": "Al-Zarqa",
-  "userName": "AhmadCl",
+  "userName": "IssadevCl",
   "countryId": 113,
   "birthDate": "2004-10-06",
   "imageUrl": "",

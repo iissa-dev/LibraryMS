@@ -1,3 +1,6 @@
+using LibraryMS.Application.Common.Extensions;
+using LibraryMS.Domain.Common.Specifications;
+
 namespace LibraryMS.Application.Features.Reservations.Commands.Cancel;
 
 public sealed class CancelCommandHandler(IAppDbContext context)
@@ -17,11 +20,11 @@ public sealed class CancelCommandHandler(IAppDbContext context)
         context.Reservations.Update(reserveExisting);
 
         // check if the reserve happen
-        if (previousStatus == ReservationsStatus.ReadyForPickup || previousStatus == ReservationsStatus.Notified)
+        if (reserveExisting.ReadyToBorrow)
         {
             // check for any waiting reserve for the same book
             var nextReservation = await context.Reservations
-                .Where(r => r.BookId == reserveExisting.BookId && r.ReservationsStatus == ReservationsStatus.Waiting)
+                .Specify(new HasWaitingQueueSpecification(reserveExisting.BookId))
                 .OrderBy(r => r.ReservationDate)
                 .FirstOrDefaultAsync(cancellationToken);
 
