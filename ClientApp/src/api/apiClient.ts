@@ -1,11 +1,11 @@
-import dayjs from "dayjs";
-import type { TokenResult, ProblemDetails } from "../types/index";
+// import dayjs from "dayjs";
+import type {  ProblemDetails } from "../types/index";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL;
 const baseURL = `${API_BASE_URL}/api`;
-let refreshPromise: Promise<TokenResult> | null = null;
+// let refreshPromise: Promise<TokenResult> | null = null;
 
 const apiClient = axios.create({
   baseURL,

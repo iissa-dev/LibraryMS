@@ -4,7 +4,6 @@ import type {
   PagedResult,
   ResponseBookDto,
   PaginationParams,
-  CreateBookDto,
 } from "../../../types";
 import { bookService } from "../services/bookService";
 import useGenericMutation from "../../../hooks/useGenericMutation";

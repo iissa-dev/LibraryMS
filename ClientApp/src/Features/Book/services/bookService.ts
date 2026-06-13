@@ -1,6 +1,5 @@
 import apiClient from "../../../api/apiClient";
 import type {
-  CreateBookDto,
   PagedResult,
   PaginationParams,
   ResponseBookDto,

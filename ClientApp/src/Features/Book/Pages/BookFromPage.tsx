@@ -48,12 +48,8 @@ const BookFromPage = ({ readOnly = false }) => {
     if (readOnly) return;
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const previewUrl = reader.result as string;
-        setImagePreview(previewUrl);
-      };
-      reader.readAsDataURL(file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
     }
   };
   const handleRemoveImage = () => {
@@ -94,6 +90,10 @@ const BookFromPage = ({ readOnly = false }) => {
     }
   };
 
+  const isBlobUrl = imagePreview?.startsWith("blob:");
+  const finalImageSrc = isBlobUrl
+    ? imagePreview
+    : `${API_BASE_URL}${imagePreview}`;
   return (
     <div>
       <span
@@ -156,7 +156,7 @@ const BookFromPage = ({ readOnly = false }) => {
               {imagePreview ? (
                 <>
                   <img
-                    src={`${API_BASE_URL}${imagePreview}`}
+                    src={finalImageSrc || ""}
                     alt="Book Cover Image"
                     className="w-full h-full object-cover"
                   />

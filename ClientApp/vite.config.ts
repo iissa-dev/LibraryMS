@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     outDir: "../LibraryMS.Api/wwwroot",
-    emptyOutDir: true,
+    emptyOutDir: false,
   },
   server: {
     proxy: {

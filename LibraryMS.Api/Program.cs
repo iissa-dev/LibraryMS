@@ -36,4 +36,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationHub>("/hubs/notifications");
 
+app.MapFallbackToFile("index.html");
 await app.RunAsync();
