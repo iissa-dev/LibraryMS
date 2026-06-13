@@ -3,9 +3,9 @@ using LibraryMS.Application.DTOs.AuthorDto;
 
 namespace LibraryMS.Application.Features.Author.Queries.GetAuthors;
 
-public sealed class GetAuthorsQueryHandler(IAppDbContext context) : IRequestHandler<GetAuthorsQuery, Result<PagedResult<AuthorDto>>>
+public sealed class GetAuthorsQueryHandler(IAppDbContext context) : IRequestHandler<GetAuthorsQuery, Result<PagedResult<AuthorResponseDto>>>
 {
-    public async Task<Result<PagedResult<AuthorDto>>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedResult<AuthorResponseDto>>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
     {
         var query = context.Authors.AsNoTracking();
 
@@ -13,16 +13,14 @@ public sealed class GetAuthorsQueryHandler(IAppDbContext context) : IRequestHand
             .ToPagedResultAsync(
                 pageNumber: request.PageNumber,
                 pageSize: request.PageSize,
-                selector: a => new AuthorDto
+                selector: a => new AuthorResponseDto
                 {
                     Id = a.Id,
-                    FirstName = a.FirstName,
-                    LastName = a.LastName,
-                    Biography = a.Biography
+                    FullName = $"{a.FirstName} {a.LastName}"
                 },
                 cancellationToken: cancellationToken
             );
-            
-        return Result<PagedResult<AuthorDto>>.Success(pagedResult);
+
+        return Result<PagedResult<AuthorResponseDto>>.Success(pagedResult);
     }
 }

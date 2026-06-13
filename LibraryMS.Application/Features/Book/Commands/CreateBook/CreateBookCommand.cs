@@ -1,4 +1,6 @@
-﻿namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
 
 public sealed record CreateBookCommand(
     string Title,
@@ -6,7 +8,7 @@ public sealed record CreateBookCommand(
     DateTime PublishDate,
     short Genre,
     string AdditionalDetails,
-    string? BookImageUrl,
+    IFormFile? BookImageUrl,
     List<int> AuthorIds,
     int InitialCopiesCount
 ) : IRequest<Result<int>>;

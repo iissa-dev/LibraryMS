@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace LibraryMS.Infrastructure.BackgroundJobs;
+namespace LibraryMS.Infrastructure.Services;
 
 public class ReservationCheckJob(IServiceProvider provider, ILogger<ReservationCheckJob> logger)
     : BackgroundService

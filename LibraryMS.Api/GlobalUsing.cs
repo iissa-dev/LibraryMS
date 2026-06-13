@@ -10,5 +10,4 @@ global using LibraryMS.Infrastructure.DependencyInjection;
 global using FluentValidation;
 global using Microsoft.AspNetCore.Diagnostics;
 global using LibraryMS.Api.Common.Authorization;
-global using LibraryMS.Infrastructure.BackgroundJobs;
 global using Microsoft.AspNetCore.Authorization;

@@ -1,6 +1,6 @@
 ﻿namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
 
-public sealed class CreateBookCommandHandler(IAppDbContext context) : IRequestHandler<CreateBookCommand, Result<int>>
+public sealed class CreateBookCommandHandler(IAppDbContext context, IFileService fileService) : IRequestHandler<CreateBookCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
@@ -14,6 +14,11 @@ public sealed class CreateBookCommandHandler(IAppDbContext context) : IRequestHa
         if (request.AuthorIds.Count == 0)
             return Result<int>.Failure("At least one author must be assigned to the book.");
 
+        var imageUrl = "";
+        if (request.BookImageUrl != null)
+        {
+            imageUrl = await fileService.UploadImageAsync(request.BookImageUrl, "books");
+        }
         var book = new Domain.Entities.Book
         {
             Title = request.Title,
@@ -21,7 +26,7 @@ public sealed class CreateBookCommandHandler(IAppDbContext context) : IRequestHa
             PublishDate = request.PublishDate,
             Genre = (Genre)request.Genre,
             AdditionalDetails = request.AdditionalDetails,
-            BookImageUrl = request.BookImageUrl,
+            BookImageUrl = imageUrl ?? "",
         };
 
         book.AddBookAuthors(request.AuthorIds);

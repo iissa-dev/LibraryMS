@@ -54,7 +54,7 @@ public class AuthorsController(ISender sender) : BaseController
     }
 
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public async Task<IActionResult> GetAuthors([FromQuery] GetAuthorsQuery query)
     {
         var result = await sender.Send(query);

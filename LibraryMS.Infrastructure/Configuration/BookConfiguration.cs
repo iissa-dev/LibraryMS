@@ -30,7 +30,7 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
 
 
         builder.Property(b => b.BookImageUrl)
-            .HasMaxLength(500)
+            .HasColumnType("nvarchar(max)")
             .IsRequired(false);
 
         builder.Property(b => b.IsDeleted)

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using LibraryMS.Infrastructure.Interceptors;
-using LibraryMS.Infrastructure.BackgroundJobs;
+using LibraryMS.Infrastructure.Services;
 
 namespace LibraryMS.Infrastructure.DependencyInjection;
 
@@ -42,6 +42,7 @@ public static class InfrastructureDependencyInjection
         services.AddScoped<IIdentityUser, Identity.IdentityUser>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+        services.AddScoped<IFileService, FileService>();
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {

@@ -12,7 +12,7 @@ using LibraryMS.Application.Features.BookCopies.Queries.GetAllCopies;
 
 namespace LibraryMS.Api.Controllers;
 
-[Authorize(Roles = "Admin,Employee")]
+// [Authorize(Roles = "Admin,Employee")]
 public class BooksController(ISender sender) : BaseController
 {
     [HttpGet]
@@ -24,7 +24,7 @@ public class BooksController(ISender sender) : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddBook([FromBody] CreateBookCommand command)
+    public async Task<IActionResult> AddBook([FromForm] CreateBookCommand command)
     {
         var result = await sender.Send(command);
         return HandleResult(result);

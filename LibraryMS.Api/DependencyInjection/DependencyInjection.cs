@@ -19,6 +19,17 @@ public static class DependencyInjection
         services.AddScoped<INotificationService, SignalRNotificationService>();
         services.AddSignalR();
 
+        services.AddCors(options =>
+        {
+            options.AddPolicy("ReactAppPolicy", policy =>
+            {
+                policy.WithOrigins("http://localhost:5173/")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+            });
+        });
+
         return services;
     }
 }

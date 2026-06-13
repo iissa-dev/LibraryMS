@@ -17,12 +17,12 @@ POST {{baseUrl}}/Books
 Content-Type: {{contentType}}
 
 {
-  "title": "Clean Architecture in C#",
-  "isbn": "978-3-16-148410-4",
+  "title": "Clean Architecture in React",
+  "isbn": "978-3-16-148410-5",
   "publishDate": "2026-05-11T00:00:00Z",
   "genre": 11,
   "additionalDetails": "A premium guide to software architecture.",
-  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch.jpg",
+  "bookImageUrl": "",
   "authorIds": [1],
   "initialCopiesCount": 1
 }
@@ -38,18 +38,18 @@ Content-Type: {{contentType}}
 
 ### 4. Update Book Details
 ### Updates an existing book. Ensure that the route ID matches the body ID parameter.
-PUT {{baseUrl}}/Books/11
+PUT {{baseUrl}}/Books/2
 Content-Type: {{contentType}}
 
 {
-  "id": 11,
+  "id": 2,
   "title": "Clean Architecture in C#",
   "isbn": "978-3-16-148410-4",
   "publishDate": "2026-05-11T00:00:00",
   "genre": 11,
   "additionalDetails": "An updated premium guide to software architecture Asp.net.",
-  "bookImageUrl": "https://cloudinary.com/libraryms/clean-arch-updated.jpg",
-  "authorIds": [1, 2]
+  "bookImageUrl": "../../ClientApp/src/assets/Images/testImage.jpg",
+  "authorIds": [1]
 }
 
 ### ------------------------------------------------------------------
