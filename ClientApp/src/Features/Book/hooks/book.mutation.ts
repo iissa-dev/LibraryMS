@@ -9,12 +9,28 @@ import { bookService } from "../services/bookService";
 import useGenericMutation from "../../../hooks/useGenericMutation";
 
 const bookKey = "books";
-export const useGetBooks = (params: PaginationParams) => {
+export type BooksParams = PaginationParams & {
+  searchByTitle?: string;
+  searchByGenre?: number;
+  deletedData?: boolean;
+};
+
+export const useGetBooks = (params: BooksParams) => {
   return useQuery<PagedResult<ResponseBookDto[]>, ProblemDetails>({
     queryKey: [bookKey, params],
     queryFn: () => bookService.books(params),
     staleTime: Infinity,
     gcTime: 1000 * 60 * 30,
+  });
+};
+
+export const useGetBookById = (id: number, options?: any) => {
+  return useQuery<ResponseBookDto, ProblemDetails>({
+    queryKey: ["book-by-id"],
+    queryFn: () => bookService.getById(id),
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 30,
+    ...options,
   });
 };
 
@@ -37,4 +53,15 @@ export const useAddBook = (onClose: () => void) => {
   );
 
   return mutaion;
+};
+
+export const useUpdateBook = (id: number, onClose: () => void) => {
+  const mutation = useGenericMutation<FormData, void>(
+    (data) => bookService.update(id, data),
+    [bookKey],
+    "Book has been updated successfully.",
+    onClose,
+  );
+
+  return mutation;
 };

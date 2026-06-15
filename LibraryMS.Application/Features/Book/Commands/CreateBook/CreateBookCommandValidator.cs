@@ -18,7 +18,7 @@ public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCom
 
         RuleFor(x => x.AuthorIds)
             .NotEmpty().WithMessage("At least one author is is required")
-            .Must(authorIds => authorIds != null && authorIds.All((id => id > 0)))
+            .Must(authorIds => authorIds != null && authorIds.All(id => id > 0))
             .WithMessage("Invalid Author Id detected.");
 
         RuleFor(x => x.InitialCopiesCount)

@@ -2,24 +2,30 @@ import { ArrowBigLeft, UploadCloud, X } from "lucide-react";
 import MainPageTitle from "../../../components/MainPageTitle";
 import { useBookForm } from "../hooks/useBookForm";
 import { useLocation, useParams } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { AuthorResponseDto, ResponseBookDto } from "../../../types";
 import { useNavigate } from "react-router-dom";
 import { INPUTS } from "../constants/bookInputs.constant";
 import MultiAuthorSelect from "../components/MultiAuthorSelectProps";
 import { Controller } from "react-hook-form";
 import GenreList from "../../../components/GenreList";
-import { useAddBook } from "../hooks/book.mutation";
+import {
+  useAddBook,
+  useGetBookById,
+  useUpdateBook,
+} from "../hooks/book.mutation";
 import { API_BASE_URL } from "../../../api/apiClient";
+import { GenreMapping } from "../../../constants/Genre";
 
 const BookFromPage = ({ readOnly = false }) => {
-  // We have to re fetch the data in update or view mode if the state is empty because location only work inside the browser
   const { bookId } = useParams<{ bookId: string }>();
   const location = useLocation();
+  const navigation = useNavigate();
+  const [isOpen, setIsOpen] = useState(true);
+
   let isUpdateMode = Boolean(bookId) && !readOnly;
   let isViewMode = Boolean(bookId) && readOnly;
-  const [isOpen, setIsOpen] = useState(true);
-  const navigation = useNavigate();
+  const mode = isUpdateMode ? "Edit" : isViewMode ? "View" : "Add";
 
   const handleClose = () => {
     setIsOpen(false);
@@ -27,22 +33,57 @@ const BookFromPage = ({ readOnly = false }) => {
   };
 
   const addMutation = useAddBook(handleClose);
+  const updateMutation = useUpdateBook(Number(bookId), handleClose);
 
-  const mode = isUpdateMode ? "Edit" : isViewMode ? "View" : "Add";
+  const needsFetch = (mode === "Edit" || mode === "View") && !location.state;
 
-  const data: ResponseBookDto = location.state?.currentBook ?? {};
+  const {
+    data: fetchedData,
+    isLoading,
+    error,
+  } = useGetBookById(Number(bookId), {
+    enabled: needsFetch,
+    retry: false,
+  });
 
-  const { register, control, handleSubmit } = useBookForm({
+  const data: ResponseBookDto =
+    location.state?.currentBook ?? fetchedData ?? {};
+
+  const { register, control, handleSubmit, reset } = useBookForm({
     isOpen,
     mode,
     data,
   });
 
-  // Handle image logic
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     isUpdateMode || isViewMode ? data.bookImageUrl : null,
   );
+
+  useEffect(() => {
+    if (needsFetch && !isLoading) {
+      if (error || !fetchedData || Object.keys(fetchedData).length === 0) {
+        navigation("/404-not-found", { replace: true });
+      }
+    }
+  }, [fetchedData, isLoading, error, needsFetch, navigation]);
+
+  useEffect(() => {
+    if (fetchedData) {
+      const { genre, ...restOfData } = fetchedData;
+      reset({ genre: GenreMapping(genre.toString()), ...restOfData });
+      if (fetchedData.bookImageUrl) {
+        setImagePreview(fetchedData.bookImageUrl);
+      }
+    }
+  }, [fetchedData, reset]);
+
+  useEffect(() => {
+    if (data.bookImageUrl) {
+      setImagePreview(data.bookImageUrl);
+    }
+  }, [data.bookImageUrl]);
+  // Handle image logic
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (readOnly) return;
@@ -65,6 +106,27 @@ const BookFromPage = ({ readOnly = false }) => {
     if (readOnly) return;
 
     if (mode === "Edit") {
+      const { authors, genre, initalCopies, ...restOfFormData } = formData;
+      const apiData = new FormData();
+
+      apiData.append("id", restOfFormData.id);
+      apiData.append("title", restOfFormData.title);
+      apiData.append("isbn", restOfFormData.isbn);
+      apiData.append("publishDate", restOfFormData.publishDate);
+      apiData.append("genre", Number(genre).toString());
+      apiData.append("additionalDetails", restOfFormData.additionalDetails);
+      const authorIds = (authors || []).map(
+        (author: AuthorResponseDto) => author.id,
+      );
+      authorIds.forEach((id: number) =>
+        apiData.append("authorIds", id.toString()),
+      );
+
+      if (fileInputRef.current?.files?.[0]) {
+        apiData.append("bookImageUrl", fileInputRef.current?.files?.[0]);
+      } else if (!imagePreview) apiData.append("bookImageUrl", "");
+
+      updateMutation.mutate(apiData);
     } else if (mode === "Add") {
       const { authors, genre, initalCopies, ...restOfFormData } = formData;
       const apiData = new FormData();
@@ -94,6 +156,14 @@ const BookFromPage = ({ readOnly = false }) => {
   const finalImageSrc = isBlobUrl
     ? imagePreview
     : `${API_BASE_URL}${imagePreview}`;
+
+  if (needsFetch && isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64 text-text-secondary font-bold">
+        Loading Book Details...
+      </div>
+    );
+  }
   return (
     <div>
       <span
@@ -255,7 +325,13 @@ const BookFromPage = ({ readOnly = false }) => {
           </div>
           {!isViewMode && (
             <div className="col-span-2 flex justify-end gap-2">
-              <button className="secondary-button">Cancel</button>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
               <button type="submit" className="main-button">
                 Save Book
               </button>

@@ -11,10 +11,28 @@ public class GetAllBooksQueryHandler(IAppDbContext context)
         CancellationToken cancellationToken)
     {
         var query = context.Books
-        .AsNoTracking()
-        .OrderByDescending(b => b.CreatedOn);
+        .AsNoTracking();
 
-        var pagedBook = await query.ToPagedResultAsync(
+        if (request.DeletedData.HasValue && request.DeletedData.Value)
+        {
+            query = query.IgnoreQueryFilters()
+            .Where(b => b.IsDeleted);
+        }
+
+        if (request.SearchByGenre is not null)
+        {
+            query = query.Where(b => b.Genre == (Genre)request.SearchByGenre);
+        }
+
+        if (request.SearchByTitle is not null)
+        {
+            query = query.Where(b => b.Title.Contains(request.SearchByTitle.Trim()));
+        }
+
+
+        var pagedBook = await query
+        .OrderByDescending(b => b.CreatedOn)
+        .ToPagedResultAsync(
             request.PageNumber,
             request.PageSize,
             ResponseBookDto.Projection,

@@ -18,4 +18,12 @@ export const bookService = {
         "Content-Type": "multipart/form-data",
       },
     }),
+  getById: (id: number): Promise<ResponseBookDto> =>
+    apiClient.get(`${controllerName}${id}`),
+  update: (id: number, params: FormData): Promise<void> =>
+    apiClient.put(`${controllerName}${id}`, params, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
 };

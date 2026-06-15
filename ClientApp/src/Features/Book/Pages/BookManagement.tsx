@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MainPageTitle from "../../../components/MainPageTitle";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import MainSearch from "../../../components/MainSearch";
 import BookCardList from "../components/BookCardList";
 import CardStatisticsList from "../../../components/CardStatisticsList";
@@ -8,11 +8,24 @@ import { useNavigate } from "react-router-dom";
 import GenreList from "../../../components/GenreList";
 
 const BookManagement = () => {
-  const [search, setSearch] = useState("");
+  const [showDeletedData, setShowDeletedData] = useState(false);
+  const [filterByTitle, setFilterByTitle] = useState("");
+  const [filterByGenre, setFilterByGenre] = useState<number | undefined>();
+  const [pageNumber, setPageNumber] = useState(1);
   const navigate = useNavigate();
   const handleAddNewBook = () => {
     navigate("/book/new");
   };
+
+  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    setFilterByGenre(selectedValue === "" ? undefined : Number(selectedValue));
+    setPageNumber(1);
+  };
+
+  useEffect(() => {
+    setPageNumber(1);
+  }, [filterByTitle, showDeletedData]); 
   return (
     <div>
       {/* Top of page */}
@@ -30,14 +43,34 @@ const BookManagement = () => {
         <div className="main-card flex mb-4 flex-col md:flex-row">
           <div className="flex md:items-center gap-4 flex-1 flex-col md:flex-row">
             <MainSearch
-              search={search}
-              placeholder="Search books by title or author..."
-              setSearch={setSearch}
+              search={filterByTitle}
+              placeholder="Search books by title..."
+              setSearch={setFilterByTitle}
             />
             {/* filter */}
-            <GenreList />
+            <GenreList
+              value={filterByGenre ?? ""}
+              onChange={handleGenreChange}
+            />
+            <div className="flex">
+              <input
+                type="checkbox"
+                id="show-deleted-data"
+                className="hidden"
+                onChange={() => setShowDeletedData(!showDeletedData)}
+              />
+              <label
+                htmlFor="show-deleted-data"
+                title="Deleted Books"
+                className="cursor-pointer select-none transition-colors duration-200"
+              >
+                <Trash2
+                  className={showDeletedData ? "text-red" : "text-neutral"}
+                />
+              </label>
+            </div>
           </div>
-          <button
+          <button 
             onClick={handleAddNewBook}
             className="flex gap-1 items-center main-button mt-4 md:mt-0 w-fit"
             type="button"
@@ -47,40 +80,14 @@ const BookManagement = () => {
           </button>
         </div>
         {/* Books Card */}
-        <div className="mb-6 border-b border-border">
-          <BookCardList pageNumber={1} pageSize={10} />
-        </div>
-
-        {/* Pagenations */}
-        <div className="flex justify-between items-center flex-col md:flex-row">
-          <div className="text-[12px] text-text-secondary mb-4 md:mb-0">
-            Showing 1 to 5 of 12,400 books
-          </div>
-          <div className="flex gap-4 items-center">
-            <input className="main-button" type="button" value={"Previous"} />
-            <input
-              className="bg-text-secondary text-white md:py-1.5 md:px-4 p-1 rounded-md cursor-pointer"
-              type="button"
-              value={"1"}
-            />
-            <input
-              className="bg-text-secondary text-white md:py-1.5 md:px-4 p-1 rounded-md cursor-pointer"
-              type="button"
-              value={"2"}
-            />
-            <input
-              className="bg-text-secondary text-white md:py-1.5 md:px-4 p-1 rounded-md cursor-pointer"
-              type="button"
-              value={"3"}
-            />
-            <span>...</span>
-            <input
-              className="bg-text-secondary text-white md:py-1.5 md:px-4 p-1 rounded-md cursor-pointer"
-              type="button"
-              value={"25"}
-            />
-            <input className="main-button" type="button" value={"Next"} />
-          </div>
+        <div>
+          <BookCardList
+            searchByTitle={filterByTitle}
+            searchByGenre={filterByGenre}
+            deletedData={showDeletedData}
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+          />
         </div>
       </main>
     </div>

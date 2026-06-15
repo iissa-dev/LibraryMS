@@ -21,9 +21,6 @@ public sealed class UpdateBookCommandValidator : AbstractValidator<UpdateBookCom
         RuleFor(x => x.AdditionalDetails)
             .MaximumLength(1000).WithMessage("Additional details cannot exceed 1000 characters.");
 
-        RuleFor(x => x.BookImageUrl)
-            .MaximumLength(500).WithMessage("Book image URL cannot exceed 500 characters.");
-
         RuleFor(x => x.AuthorIds)
             .NotEmpty().WithMessage("At least one author must be selected.");
     }

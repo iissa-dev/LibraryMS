@@ -13,6 +13,8 @@ public class ResponseBookDto
     public string? AdditionalDetails { get; set; }
     public string? BookImageUrl { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public List<AuthorResponseDto> Authors { get; set; } = [];
 
     public static Expression<Func<Book, ResponseBookDto>> Projection =>
@@ -25,6 +27,7 @@ public class ResponseBookDto
             Genre = book.Genre.ToString(),
             AdditionalDetails = book.AdditionalDetails,
             BookImageUrl = book.BookImageUrl,
+            IsDeleted = book.IsDeleted,
             Authors = book.BookAuthors.Select(a => new AuthorResponseDto
             {
                 Id = a.AuthorId,

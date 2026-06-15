@@ -53,7 +53,7 @@ public class BooksController(ISender sender) : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromBody] UpdateBookCommand command)
+    public async Task<IActionResult> UpdateBook([FromRoute] int id, [FromForm] UpdateBookCommand command)
     {
         if (id != command.Id)
             return BadRequest("ID mismatch.");

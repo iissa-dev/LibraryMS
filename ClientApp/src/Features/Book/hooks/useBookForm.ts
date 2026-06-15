@@ -55,5 +55,5 @@ export const useBookForm = ({ isOpen, mode, data }: Params) => {
     }
   }, [isOpen, mode, reset]);
 
-  return { register, handleSubmit, control };
+  return { register, handleSubmit, control, reset };
 };

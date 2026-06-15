@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace LibraryMS.Application.Features.Book.Commands.UpdateBook;
 
 public sealed record UpdateBookCommand(
@@ -7,5 +9,5 @@ public sealed record UpdateBookCommand(
     DateTime PublishDate,
     short Genre,
     string AdditionalDetails,
-    string BookImageUrl,
+    IFormFile? BookImageUrl,
     List<int> AuthorIds) : IRequest<Result>;
