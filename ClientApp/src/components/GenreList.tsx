@@ -24,6 +24,7 @@ const GenreList = forwardRef<HTMLSelectElement, Params>(
           value={value}
           defaultValue={defaultValue}
         >
+          <option value={""}>All Genres</option>
           {GENRES.map((genre) => (
             <option key={genre.value} value={genre.value}>
               {genre.name}

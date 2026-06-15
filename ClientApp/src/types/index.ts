@@ -24,6 +24,7 @@ export interface BaseBookDto {
 export interface ResponseBookDto extends BaseBookDto {
   id: number;
   authors: AuthorResponseDto[];
+  isDeleted: boolean;
 }
 
 export interface CreateBookDto extends BaseBookDto {

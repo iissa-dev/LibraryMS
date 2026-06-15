@@ -59,12 +59,12 @@ export function usePopup() {
     return createPortal(
       <>
         <div
-          className="fixed inset-0 backdrop-blur-sm z-2000"
+          className="fixed inset-0 backdrop-blur-sm bg-white/10 z-2000"
           onClick={() => handle(false)}
         />
 
         <div className="fixed inset-0 flex justify-center items-center z-2001 pointer-events-none p-4">
-          <div className="bg-card border border-border p-8 w-full max-w-sm rounded-2xl shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
+          <div className="bg-card border bg-white border-border p-8 w-full max-w-sm rounded-2xl shadow-2xl pointer-events-auto animate-in zoom-in-95 duration-200">
             <div className="flex flex-col items-center text-center mb-6">
               <div className={`text-4xl mb-4 ${iconColor} opacity-90`}>
                 {handleTypeIcon(state.type)}
@@ -82,7 +82,7 @@ export function usePopup() {
               {state.mode === "confirm" && (
                 <button
                   onClick={() => handle(false)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-border text-sub font-bold text-sm hover:bg-muted/50 transition-all"
+                  className="cursor-pointer flex-1 px-4 py-2.5 rounded-xl border border-border text-sub font-bold text-sm hover:bg-muted/50 transition-all"
                 >
                   Cancel
                 </button>
@@ -90,7 +90,7 @@ export function usePopup() {
 
               <button
                 onClick={() => handle(true)}
-                className={`flex-1 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all ${
+                className={`cursor-pointer flex-1 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all ${
                   state.type === "danger"
                     ? "bg-red text-white shadow-red/20 hover:bg-danger/90"
                     : "bg-primary text-white shadow-primary/20 hover:bg-primary/90"
