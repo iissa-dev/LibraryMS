@@ -1,6 +1,6 @@
 ﻿namespace LibraryMS.Application.Features.Employee.Commands.CreateEmployeeAccount;
 
-public sealed class CreateEmployeeCommandHandler(IAppDbContext context, IIdentityUser identityUser)
+public sealed class CreateEmployeeCommandHandler(IAppDbContext context, IIdentityUser identityUser, ICodeGeneratorService codeGenerator)
     : IRequestHandler<CreateEmployeeCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
@@ -9,9 +9,6 @@ public sealed class CreateEmployeeCommandHandler(IAppDbContext context, IIdentit
 
         try
         {
-            if (await context.Employees.AnyAsync(c => c.EmployeeCode == request.EmployeeCode, cancellationToken))
-                return Result<int>.Failure("This Employee Number is already assigned to another employee.");
-
             var person = new Person
             {
                 FirstName = request.FirstName,
@@ -33,10 +30,11 @@ public sealed class CreateEmployeeCommandHandler(IAppDbContext context, IIdentit
                 return Result<int>.Failure(userResult.Error);
             }
 
+            var employeeCode = codeGenerator.GenerateEmployeeNumber();
             var employee = new Domain.Entities.Employee
             {
                 PersonId = person.Id,
-                EmployeeCode = request.EmployeeCode,
+                EmployeeCode = employeeCode,
             };
 
             context.Employees.Add(employee);

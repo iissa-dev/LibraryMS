@@ -11,6 +11,5 @@ public sealed record CreateEmployeeCommand(
     int CountryId,
     DateOnly BirthDate,
     string? ImageUrl,
-    string EmployeeCode,
     short RoleId
 ) : IRequest<Result<int>>;

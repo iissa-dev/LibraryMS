@@ -18,7 +18,6 @@ public sealed class CreateEmployeeCommandValidator : AbstractValidator<CreateEmp
         RuleFor(c => c.UserName).NotEmpty().WithMessage("Username is required");
         RuleFor(c => c.CountryId).NotEmpty().WithMessage("CountryId is required");
         RuleFor(c => c.BirthDate).NotEmpty().WithMessage("BirthDate is required");
-        RuleFor(c => c.EmployeeCode).NotEmpty().WithMessage("EmployeeCode is required");
         RuleFor(e => e.RoleId).Must(role => Enum.IsDefined(typeof(Roles), (Roles)role))
         .WithMessage("Invalid Role Selected");
     }
