@@ -1,118 +1,115 @@
-// import dayjs from "dayjs";
-import type {  ProblemDetails } from "../types/index";
-import axios from "axios";
-// import { jwtDecode } from "jwt-decode";
+import type { ProblemDetails, Result } from "../types/index";
+import axios, {
+  AxiosError,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
+import { getAccessToken, handleGlobalLogout } from "./auth";
+import { refreshAccessToken } from "./refreshClient";
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL;
 const baseURL = `${API_BASE_URL}/api`;
-// let refreshPromise: Promise<TokenResult> | null = null;
 
 const apiClient = axios.create({
   baseURL,
-  withCredentials: false,
+  withCredentials: true,
 });
 
-// apiClient.interceptors.request.use(async (req) => {
-//   const stored = localStorage.getItem("authToken");
+// ==========================================
+// 1. Request Interceptor
+// ==========================================
+apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = getAccessToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
 
-//   if (!stored) return req;
+  return config;
+});
 
-//   let authToken: TokenResult;
-//   try {
-//     authToken = JSON.parse(stored);
-//   } catch {
-//     localStorage.removeItem("authToken");
-//     return req;
-//   }
-
-//   if (!authToken.accessToken) return req;
-
-//   const decoded: { exp?: number } = jwtDecode(authToken.accessToken);
-//   const isExpired = dayjs().isAfter(dayjs.unix(decoded.exp ?? 0));
-
-//   if (!isExpired) {
-//     req.headers.Authorization = `Bearer ${authToken.accessToken}`;
-//     return req;
-//   }
-
-//   // Refresh token
-//   if (!refreshPromise) {
-//     refreshPromise = axios
-//       .post<TokenResult>(
-//         `${baseURL}/Auth/refresh`,
-//         {},
-//         { withCredentials: true },
-//       )
-//       .then((res) => {
-//         localStorage.setItem("authToken", JSON.stringify(res.data));
-//         return res.data;
-//       })
-//       .finally(() => {
-//         refreshPromise = null;
-//       });
-//   }
-
-//   const newToken = await refreshPromise;
-
-//   req.headers.Authorization = `Bearer ${newToken.accessToken}`;
-//   return req;
-// });
-
+// ==========================================
+// 2. Response Interceptor
+// ==========================================
 apiClient.interceptors.response.use(
-  (response) => {
-    if (response.status < 200 || response.status >= 300) {
-      return Promise.reject(response);
+  (response: AxiosResponse) => {
+    const body = response.data;
+    // Handle global API response using the Result Pattern
+    if (body && typeof body === "object" && "isSuccess" in body) {
+      if (body.isSuccess) return body.data; // Return raw un-wrapped data on success
+
+      // Forward application failures to the error block below
+      return Promise.reject({
+        title: "Application Error",
+        detail: body.error ?? "Operation failed",
+        status: 400,
+      });
     }
-    const data = response.data;
-    if (data && typeof data === "object" && "isSuccess" in data) {
-      if (data.isSuccess) return data.data;
-      else throw data.error;
-    }
-    return response;
+    return body;
   },
-  (error) => {
-    let customizedError: ProblemDetails = {
-      title: "Internal server error",
-      status: "500",
-      detail: "Cannt connection to saver, try later",
-      errors: {},
-    };
 
-    if (error.response) {
-      const responseData = error.response.data;
+  async (error: AxiosError<any>) => {
+    const originalRequest = error.config as
+      | (InternalAxiosRequestConfig & { _retry?: boolean })
+      | undefined;
 
-      // handle ProblemDetails
-      if (
-        responseData &&
-        typeof responseData === "object" &&
-        "title" in responseData
-      ) {
-        const validationMessages = Object.values(responseData.errors)
-          .flat()
-          .join(" | ");
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
 
-        customizedError.detail = validationMessages || customizedError.detail;
-      } else if (
-        // handle Result pattern
-        responseData &&
-        typeof responseData === "object" &&
-        "isSuccess" in responseData
-      ) {
-        customizedError = {
-          title: "Application Error",
-          status: error.response.status.toString(),
-          detail: responseData.error || "Operation failed",
-          errors: {},
-        };
+      try {
+        const newToken = await refreshAccessToken();
+
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return apiClient(originalRequest);
+      } catch (error) {
+        handleGlobalLogout();
+        return Promise.reject({
+          title: "Session Expired",
+          detail: "Your session has expired. Please log in again.",
+          status: 401,
+        });
       }
-    } else if (error.request) {
-      customizedError.title = "Network error";
-      customizedError.detail = "No internet connection or server is shutdown";
-      customizedError.status = "0";
-      customizedError.errors = {};
     }
 
-    return Promise.reject(customizedError);
+    if (
+      error.response?.data &&
+      typeof error.response?.data === "object" &&
+      "title" in error.response?.data
+    ) {
+      const problem = error.response?.data as ProblemDetails;
+
+      const validationErrors = Object.values(problem.errors ?? {})
+        .flat()
+        .join(" | ");
+      const errorDetail =
+        validationErrors || problem.detail || "Something went wrong.";
+
+      return Promise.reject({
+        title: problem?.title ?? "Unexpected Error",
+        detail: errorDetail,
+        status: problem?.status ?? error.response?.status ?? 500,
+      });
+    }
+
+    if (
+      error.response?.data &&
+      typeof error.response.data === "object" &&
+      "isSuccess" in error.response.data
+    ) {
+      const problem = error.response?.data as Result;
+      return Promise.reject({
+        title: "Application Error",
+        detail: problem.error || "Operation failed",
+        status: error.response.status || 400,
+      });
+    }
+
+    return Promise.reject({
+      title: "Network Error",
+      detail: error.message || "Cannot connect to server.",
+      status: error.response?.status || 0,
+    });
   },
 );
 

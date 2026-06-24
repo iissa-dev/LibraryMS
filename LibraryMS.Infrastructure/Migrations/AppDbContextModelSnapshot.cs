@@ -107,6 +107,9 @@ namespace LibraryMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IsDeleted", "Genre", "CreatedOn")
+                        .HasDatabaseName("IX_Books_IsDeleted_CreatedOn");
+
                     b.ToTable("Books", (string)null);
                 });
 

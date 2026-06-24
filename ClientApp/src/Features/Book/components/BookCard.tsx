@@ -22,6 +22,10 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
       state: { currentBook: book },
     });
   };
+
+  const handleViewCopy = () => {
+    navigation(`/bookInventory/view/${book.id}`);
+  };
   return (
     <div className="w-full flex flex-col bg-white border border-border shadow-sm rounded-card overflow-hidden transition-all duration-300 hover:shadow-md">
       {/* Image */}
@@ -89,6 +93,13 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
             type="button"
           >
             View History
+          </button>
+          <button
+            onClick={handleViewCopy}
+            className="cursor-pointer text-primary font-semibold hover:underline bg-primary/5 px-2 py-1 rounded transition-all"
+            type="button"
+          >
+            View Copies
           </button>
         </div>
       </div>

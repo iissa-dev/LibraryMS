@@ -5,7 +5,6 @@ public sealed class CreateBookCommandValidator : AbstractValidator<CreateBookCom
     public CreateBookCommandValidator()
     {
         RuleFor(x => x.Title).NotEmpty().WithMessage("Title is required");
-        RuleFor(x => x.ISBN).NotEmpty().WithMessage("ISBN is required");
         RuleFor(x => x.PublishDate)
             .NotEmpty().WithMessage("PublishDate is required")
             .LessThan(DateTime.Now).WithMessage("PublishDate cannot be in the future");

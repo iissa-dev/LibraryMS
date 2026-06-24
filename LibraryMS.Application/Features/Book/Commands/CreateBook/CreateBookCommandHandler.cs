@@ -1,15 +1,9 @@
 ﻿namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
 
-public sealed class CreateBookCommandHandler(IAppDbContext context, IFileService fileService) : IRequestHandler<CreateBookCommand, Result<int>>
+public sealed class CreateBookCommandHandler(IAppDbContext context, IFileService fileService, ICodeGeneratorService codeGenerator) : IRequestHandler<CreateBookCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
-        var isbnExists = await context.Books
-        .IgnoreQueryFilters()
-        .AnyAsync(b => b.ISBN == request.ISBN, cancellationToken);
-
-        if (isbnExists)
-            return Result<int>.Failure("The provided ISBN is already registered with another book.");
 
         if (request.AuthorIds.Count == 0)
             return Result<int>.Failure("At least one author must be assigned to the book.");
@@ -19,10 +13,11 @@ public sealed class CreateBookCommandHandler(IAppDbContext context, IFileService
         {
             imageUrl = await fileService.UploadImageAsync(request.BookImageUrl, "books");
         }
+        var isbn = codeGenerator.GenerateIsbn();
         var book = new Domain.Entities.Book
         {
             Title = request.Title,
-            ISBN = request.ISBN,
+            ISBN = isbn,
             PublishDate = request.PublishDate,
             Genre = (Genre)request.Genre,
             AdditionalDetails = request.AdditionalDetails,
@@ -33,7 +28,8 @@ public sealed class CreateBookCommandHandler(IAppDbContext context, IFileService
 
         for (int i = 0; i < request.InitialCopiesCount; i++)
         {
-            book.AddCopy();
+            var serialNumber = codeGenerator.GenerateSerialNumber(book.ISBN);
+            book.AddCopy(serialNumber);
         }
 
         context.Books.Add(book);

@@ -1,4 +1,6 @@
-﻿namespace LibraryMS.Domain.Entities;
+﻿using LibraryMS.Domain.Exceptions;
+
+namespace LibraryMS.Domain.Entities;
 
 public class Book : BaseEntity, ISoftDeleteable
 {
@@ -39,12 +41,15 @@ public class Book : BaseEntity, ISoftDeleteable
         }
     }
 
-    public void AddCopy()
+    public void AddCopy(string serialNumber)
     {
+        if (Copies.Any(c => c.SerialNumber == serialNumber))
+            throw new DomainException("This serial number already exists for this book.");
+
         var copy = new BookCopy
         {
             CopyStatus = CopyStatus.Available,
-            SerialNumber = $"{this.ISBN}-{Guid.NewGuid().ToString()[..8].ToUpper()}" // Generate a unique serial number for the copy
+            SerialNumber = serialNumber
         };
         Copies.Add(copy);
     }

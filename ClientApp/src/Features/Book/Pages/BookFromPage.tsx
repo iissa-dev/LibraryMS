@@ -131,21 +131,20 @@ const BookFromPage = ({ readOnly = false }) => {
       const { authors, genre, initalCopies, ...restOfFormData } = formData;
       const apiData = new FormData();
 
-      apiData.append("title", restOfFormData.title);
-      apiData.append("isbn", restOfFormData.isbn);
-      apiData.append("publishDate", restOfFormData.publishDate);
-      apiData.append("initalCopies", initalCopies);
-      apiData.append("genre", Number(genre).toString());
-      apiData.append("additionalDetails", restOfFormData.additionalDetails);
+      apiData.append("Title", restOfFormData.title);
+      apiData.append("PublishDate", restOfFormData.publishDate);
+      apiData.append("InitialCopiesCount", initalCopies);
+      apiData.append("Genre", Number(genre).toString());
+      apiData.append("AdditionalDetails", restOfFormData.additionalDetails);
       const authorIds = (authors || []).map(
         (author: AuthorResponseDto) => author.id,
       );
       authorIds.forEach((id: number) =>
-        apiData.append("authorIds", id.toString()),
+        apiData.append("AuthorIds", id.toString()),
       );
 
       if (fileInputRef.current?.files?.[0]) {
-        apiData.append("bookImageUrl", fileInputRef.current?.files?.[0]);
+        apiData.append("BookImageUrl", fileInputRef.current?.files?.[0]);
       }
 
       addMutation.mutate(apiData);

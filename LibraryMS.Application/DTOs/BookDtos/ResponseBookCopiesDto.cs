@@ -7,7 +7,6 @@ public class ResponseBookCopiesDto
     public string Title { get; set; } = string.Empty;
     public string Isbn { get; set; } = string.Empty;
 
-    public bool IsAvailable { get; set; }
     public string SerialNumber { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
 }

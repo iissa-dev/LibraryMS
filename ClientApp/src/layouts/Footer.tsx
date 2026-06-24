@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <div className="mt-4 flex items-center justify-between mb-4 md:mb-0 flex-col md:flex-row">
       <div className="text-xs font-mono text-neutral/60 justify-center gap-1.5">
-        &copy; {currentYear.year()} Librarian Portal. All Rights Reserved.
+        &copy; {currentYear.year()} Lexicon Systems. All Rights Reserved.
       </div>
       <div className="text-xs font-mono text-neutral/60 justify-center gap-1.5">
         Crafted with{"  "}

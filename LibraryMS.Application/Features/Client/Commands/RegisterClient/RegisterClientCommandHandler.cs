@@ -1,6 +1,6 @@
 ﻿namespace LibraryMS.Application.Features.Client.Commands.RegisterClient;
 
-public sealed class RegisterClientCommandHandler(IIdentityUser identityUser, IAppDbContext context)
+public sealed class RegisterClientCommandHandler(IIdentityUser identityUser, IAppDbContext context, ICodeGeneratorService codeGenerator)
     : IRequestHandler<RegisterClientCommand, Result<int>>
 {
     public async Task<Result<int>> Handle(RegisterClientCommand request, CancellationToken cancellationToken)
@@ -9,9 +9,6 @@ public sealed class RegisterClientCommandHandler(IIdentityUser identityUser, IAp
 
         try
         {
-            if (await context.Clients.AnyAsync(c => c.LibraryCardNumber == request.LibraryCardNumber, cancellationToken))
-                return Result<int>.Failure("This Library Card Number is already assigned to another client.");
-
             var person = new Person
             {
                 FirstName = request.FirstName,
@@ -36,10 +33,12 @@ public sealed class RegisterClientCommandHandler(IIdentityUser identityUser, IAp
                 return Result<int>.Failure(userResult.Error);
             }
 
+
+            var libraryCardNumber = codeGenerator.GenerateLibraryCardNumber();
             var client = new Domain.Entities.Client
             {
                 PersonId = person.Id,
-                LibraryCardNumber = request.LibraryCardNumber,
+                LibraryCardNumber = libraryCardNumber,
             };
             context.Clients.Add(client);
 

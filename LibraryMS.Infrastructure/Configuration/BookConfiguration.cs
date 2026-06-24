@@ -48,5 +48,8 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
         builder.HasMany(b => b.Reservations)
             .WithOne(r => r.Book)
             .HasForeignKey(r => r.BookId);
+
+        builder.HasIndex(b => new { b.IsDeleted, b.Genre, b.CreatedOn })
+            .HasDatabaseName("IX_Books_IsDeleted_CreatedOn");
     }
 }

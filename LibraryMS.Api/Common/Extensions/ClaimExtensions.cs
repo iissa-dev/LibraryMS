@@ -9,11 +9,27 @@ public static class ClaimExtensions
         var userClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
             ?? throw new UnauthorizedAccessException("User not found or not logged in.");
 
-        if(!int.TryParse(userClaim, out int loggedInUserId))
+        if (!int.TryParse(userClaim, out int loggedInUserId))
         {
             throw new UnauthorizedAccessException("Invalid user identifier in token");
         }
 
         return loggedInUserId;
+    }
+
+    public static string GetUserRole(this ClaimsPrincipal user)
+    {
+        var userClaim = user.FindFirstValue(ClaimTypes.Role)
+            ?? throw new UnauthorizedAccessException("User not found or not logged in.");
+
+        return userClaim;
+    }
+
+    public static string GetUserName(this ClaimsPrincipal user)
+    {
+        var userClaim = user.Identity?.Name
+        ?? throw new UnauthorizedAccessException("User not found or not logged in.");
+
+        return userClaim;
     }
 }

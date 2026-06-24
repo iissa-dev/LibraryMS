@@ -7,7 +7,6 @@ global using LibraryMS.Domain.Common;
 global using Microsoft.EntityFrameworkCore;
 global using LibraryMS.Infrastructure.Data;
 global using LibraryMS.Infrastructure.Identity;
-global using LibraryMS.Infrastructure.Repositories;
 global using LibraryMS.Infrastructure.SeedData;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;

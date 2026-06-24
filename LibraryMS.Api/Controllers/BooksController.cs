@@ -12,7 +12,7 @@ using LibraryMS.Application.Features.BookCopies.Queries.GetAllCopies;
 
 namespace LibraryMS.Api.Controllers;
 
-// [Authorize(Roles = "Admin,Employee")]
+[Authorize(Roles = "Admin,Employee")]
 public class BooksController(ISender sender) : BaseController
 {
     [HttpGet]
@@ -63,7 +63,7 @@ public class BooksController(ISender sender) : BaseController
     }
 
     [HttpGet("copies")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> GetAllCopies([FromQuery] GetAllCopiesQuery query)
     {
         var result = await sender.Send(query);

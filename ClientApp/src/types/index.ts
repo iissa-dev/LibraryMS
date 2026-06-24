@@ -14,7 +14,7 @@ export interface AuthorDto {
 // ======== Book DTOs ========
 export interface BaseBookDto {
   title: string;
-  isbn: string;
+  isbn?: string;
   publishDate: number;
   genre: number;
   additionalDetails?: string;
@@ -40,12 +40,12 @@ export interface UpdateBookDto extends BaseBookDto {
 export interface Result<T = void> {
   data?: T;
   isSuccess: boolean;
-  IsFailure: boolean;
+  isFailure: boolean;
   error?: string;
 }
 
 export interface TokenResult {
-  useId: number;
+  userId: number;
   accessToken: string;
   userName: string;
   role: "Admin" | "Employee" | "Client";
@@ -65,7 +65,7 @@ export interface ProblemDetails {
   title: string;
   detail: string;
   status: string;
-  errors: Record<string, string[]>;
+  errors?: Record<string, string[]>;
 }
 
 // ======== Pagination Params ========
@@ -73,3 +73,45 @@ export type PaginationParams<T = {}> = {
   pageNumber: number;
   pageSize: number;
 } & T; // to add more params
+
+// ======== Login ========
+export interface LoginDto {
+  userName: string;
+  password: string;
+}
+
+// ======== Register Dto ========
+
+export interface RegisterDto {
+  email: string;
+  userName: string;
+  password: string;
+  phoneNumber?: string;
+  address: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  imageUrl: string;
+  countryId: number;
+}
+
+// ======== BookCopies Dto ========
+export interface ResponseBookCopiesDto {
+  bookCopyId: number;
+  bookId: number;
+  title: string;
+  isbn: string;
+  serialNumber: string;
+  status: string;
+}
+
+// ======== Client Dto ========
+export interface ClientResponseDto {
+  clientId: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  libraryCardNumber: string;
+  createdOn: string;
+  country: string;
+}

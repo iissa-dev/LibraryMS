@@ -18,6 +18,5 @@ public sealed class RegisterClientCommandValidator : AbstractValidator<RegisterC
         RuleFor(c => c.UserName).NotEmpty().WithMessage("Username is required");
         RuleFor(c => c.CountryId).NotEmpty().WithMessage("CountryId is required");
         RuleFor(c => c.BirthDate).NotEmpty().WithMessage("BirthDate is required");
-        RuleFor(c => c.LibraryCardNumber).NotEmpty().WithMessage("LibraryCardNumber is required");
     }
 }

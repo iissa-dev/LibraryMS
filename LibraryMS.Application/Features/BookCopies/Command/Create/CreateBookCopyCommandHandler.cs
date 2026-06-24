@@ -1,6 +1,6 @@
 namespace LibraryMS.Application.Features.BookCopies.Command.Create;
 
-public sealed class CreateBookCopyCommandHandler(IAppDbContext context)
+public sealed class CreateBookCopyCommandHandler(IAppDbContext context, ICodeGeneratorService codeGenerator)
     : IRequestHandler<CreateBookCopyCommand, Result>
 {
     public async Task<Result> Handle(CreateBookCopyCommand request, CancellationToken cancellationToken)
@@ -13,7 +13,8 @@ public sealed class CreateBookCopyCommandHandler(IAppDbContext context)
 
         for (int i = 0; i < request.InitialCopiesCount; i++)
         {
-            book.AddCopy();
+            var serialNumber = codeGenerator.GenerateSerialNumber(book.ISBN);
+            book.AddCopy(serialNumber);
         }
 
         await context.SaveChangesAsync(cancellationToken);

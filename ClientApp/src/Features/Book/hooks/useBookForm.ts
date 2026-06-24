@@ -7,7 +7,6 @@ import { GenreMapping } from "../../../constants/Genre";
 type FormValue = {
   id?: number;
   title: string;
-  isbn: string;
   initalCopies?: number;
   genre: number;
   authors: AuthorResponseDto[];
@@ -24,7 +23,6 @@ type Params = {
 
 const initialDefaultValues: FormValue = {
   title: "",
-  isbn: "",
   initalCopies: 0,
   genre: 1,
   authors: [],

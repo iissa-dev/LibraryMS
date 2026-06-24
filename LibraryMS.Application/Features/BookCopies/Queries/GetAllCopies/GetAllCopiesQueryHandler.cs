@@ -9,10 +9,20 @@ public sealed class GetAllCopiesQueryHandler(IAppDbContext context)
     public async Task<Result<PagedResult<ResponseBookCopiesDto>>> Handle(GetAllCopiesQuery request, CancellationToken cancellationToken)
     {
         var query = context.BookCopies
-            .AsNoTracking()
-            .OrderByDescending(bc => bc.CreatedOn);
-        
-        var pagedResult = await context.BookCopies
+            .AsNoTracking();
+
+        if (request.BookId.HasValue)
+        {
+            query = query.Where(bc => bc.BookId == request.BookId);
+        }
+
+        if (request.FilterByStatus.HasValue)
+        {
+            query = query.Where(bc => bc.CopyStatus == (CopyStatus)request.FilterByStatus.Value);
+        }
+
+        var pagedResult = await query
+        .OrderByDescending(bc => bc.CreatedOn)
         .ToPagedResultAsync(
             request.PageNumber,
             request.PageSize,
@@ -22,7 +32,6 @@ public sealed class GetAllCopiesQueryHandler(IAppDbContext context)
                 BookId = bc.BookId,
                 Title = bc.Book.Title,
                 Isbn = bc.Book.ISBN,
-                IsAvailable = bc.IsAvailable,
                 SerialNumber = bc.SerialNumber,
                 Status = bc.CopyStatus.ToString()
             },

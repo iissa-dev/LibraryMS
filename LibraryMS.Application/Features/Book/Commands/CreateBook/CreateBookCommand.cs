@@ -4,7 +4,6 @@ namespace LibraryMS.Application.Features.Book.Commands.CreateBook;
 
 public sealed record CreateBookCommand(
     string Title,
-    string ISBN,
     DateTime PublishDate,
     short Genre,
     string AdditionalDetails,

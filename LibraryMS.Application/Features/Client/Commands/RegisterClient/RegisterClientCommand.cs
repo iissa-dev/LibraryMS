@@ -10,6 +10,4 @@ public sealed record RegisterClientCommand(
     string UserName,
     int CountryId,
     DateOnly BirthDate,
-    string? ImageUrl,
-    string LibraryCardNumber
-) : IRequest<Result<int>>;
+    string? ImageUrl) : IRequest<Result<int>>;

@@ -9,28 +9,30 @@ public class AuthController(ISender sender, IWebHostEnvironment hostEnvironment)
 {
     private void SetRefreshTokenCookie(string refreshToken)
     {
+        var isProd = hostEnvironment.IsProduction();
         Response.Cookies.Append(ApiConstant.RefreshTokenKey, refreshToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = hostEnvironment.IsProduction(), // Set Secure flag in production
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.UtcNow.AddDays(7)
+            Secure = isProd, // Set Secure flag in production
+            SameSite = isProd ? SameSiteMode.Strict : SameSiteMode.Lax,
+            Expires = DateTime.UtcNow.AddDays(7),
+            Path = "/"
         });
     }
 
-    [HttpPost("LoginAsync")]
+    [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginDto)
     {
         var result = await sender.Send(new LoginQuery(loginDto.UserName, loginDto.Password));
-        if (result.IsFailure) return Unauthorized(new { error = result.Error });
+        if (result.IsFailure) return Unauthorized(result);
 
         SetRefreshTokenCookie(result.Data!.RefreshToken);
 
         return HandleResult(result);
     }
 
-    [HttpPut("Logout")]
+    [HttpPut("logout")]
     [AllowAnonymous]
     public async Task<IActionResult> Logout()
     {
@@ -43,7 +45,8 @@ public class AuthController(ISender sender, IWebHostEnvironment hostEnvironment)
         return HandleResult(result);
     }
 
-    [HttpPut("Refresh")]
+    [HttpPost("Refresh")]
+    [AllowAnonymous]
     public async Task<IActionResult> RefreshTokenAsync()
     {
         var refreshToken = Request.Cookies[ApiConstant.RefreshTokenKey];
@@ -65,5 +68,12 @@ public class AuthController(ISender sender, IWebHostEnvironment hostEnvironment)
         var result = await sender.Send(new CurrentUserQuery(User.GetUserId()));
 
         return HandleResult(result);
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    public IActionResult Me()
+    {
+        return Ok(new { userId = User.GetUserId(), role = User.GetUserRole(), username = User.GetUserName() });
     }
 }

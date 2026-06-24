@@ -6,6 +6,7 @@ public sealed class DeleteBookCommandHandler(IAppDbContext context) : IRequestHa
     public async Task<Result> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
     {
         var book = await context.Books
+        .IgnoreQueryFilters()
         .Include(b => b.Copies)
         .FirstOrDefaultAsync(b => b.Id == request.Id, cancellationToken);
 

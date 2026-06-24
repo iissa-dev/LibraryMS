@@ -23,10 +23,10 @@ public static class DependencyInjection
         {
             options.AddPolicy("ReactAppPolicy", policy =>
             {
-                policy.WithOrigins("http://localhost:5173/")
+                policy.WithOrigins("http://localhost:5173")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowAnyOrigin();
+                .AllowCredentials();
             });
         });
 

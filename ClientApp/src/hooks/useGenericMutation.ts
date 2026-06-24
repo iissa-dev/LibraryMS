@@ -6,7 +6,7 @@ const useGenericMutation = <TInput, TOutput>(
   mutationFn: (data: TInput) => Promise<TOutput>,
   queryKey: string[],
   successMessage: string,
-  onClose?: () => void,
+  onAction?: () => void,
 ) => {
   const queryClient = useQueryClient();
 
@@ -19,7 +19,7 @@ const useGenericMutation = <TInput, TOutput>(
           queryClient.invalidateQueries({ queryKey: [key] }),
         ),
       );
-      if (onClose) onClose();
+      if (onAction) onAction();
     },
     onError: async (error: any) => {
       const apiError = error as ProblemDetails;

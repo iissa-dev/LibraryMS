@@ -69,7 +69,7 @@ Content-Type: {{contentType}}
 ### ------------------------------------------------------------------
 
 ### 7. Get All Copies
-GET {{baseUrl}}/Books/copies?BookId=10&OnlyAvailable=true&PageNumber=1&PageSize=20
+GET {{baseUrl}}/Books/copies?FilterByStatus=1&PageNumber=1&PageSize=20&BookId=12
 Content-Type: {{contentType}}
 
 ### 8. Insert new Copy

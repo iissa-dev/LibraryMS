@@ -7,7 +7,7 @@
 ### 1. Account Login
 ### Authenticates credentials. On success, the server appends a secure HTTP-Only Cookie 
 ### containing the Refresh Token, which the HTTP Client engine automatically captures.
-POST {{baseUrl}}/Auth/LoginAsync
+POST {{baseUrl}}/Auth/login
 Content-Type: {{contentType}}
 
 {

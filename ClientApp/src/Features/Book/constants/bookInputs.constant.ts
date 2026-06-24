@@ -8,14 +8,6 @@ export const INPUTS = [
     showOnlyInAddMode: false,
   },
   {
-    id: "isbn-number",
-    label: "ISBN Number",
-    placeholder: "971-x-xxxx-xxxx-x",
-    name: "isbn",
-    gridOrder: "md:col-span-1 col-span-2",
-    showOnlyInAddMode: false,
-  },
-  {
     id: "inital-copy",
     label: "Total Copies",
     placeholder: "1",
