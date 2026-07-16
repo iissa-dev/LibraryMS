@@ -4,7 +4,7 @@ using LibraryMS.Application.Features.Borrowing.Queries.GetFullBorrowDetailsById;
 
 namespace LibraryMS.Api.Controllers;
 
-public class BorrowsController(ISender sender, IAuthorizationService authService) : BaseController
+public class BorrowsController(ISender sender) : BaseController
 {
     [HttpPost("borrow")]
     [Authorize(Roles = "Admin,Employee")]
@@ -22,16 +22,10 @@ public class BorrowsController(ISender sender, IAuthorizationService authService
         return HandleResult(result);
     }
 
-    [HttpGet("client/{clientId}")]
-    [Authorize]
-    public async Task<IActionResult> GetFullBorrowDetails(int clientId, GetFullBorrowDetailsQuery query)
+    [HttpGet("get-full-borrow-details")]
+    // [Authorize]
+    public async Task<IActionResult> GetFullBorrowDetails([FromQuery] GetFullBorrowDetailsQuery query)
     {
-        if (clientId != query.ClientId) return BadRequest(Result.Failure("Mismatch ClientId"));
-
-        var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
-        if (!authorizationResult.Succeeded)
-            return Forbid();
-
         var result = await sender.Send(query);
         return HandleResult(result);
     }

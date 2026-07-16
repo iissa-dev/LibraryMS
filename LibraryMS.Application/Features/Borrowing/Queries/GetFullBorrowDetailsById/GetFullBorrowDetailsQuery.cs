@@ -4,5 +4,5 @@ namespace LibraryMS.Application.Features.Borrowing.Queries.GetFullBorrowDetailsB
 public sealed record GetFullBorrowDetailsQuery(
     int PageNumber,
     int PageSize,
-    int ClientId
+    int? ClientId
 ) : IRequest<Result<PagedResult<BorrowDetails>>>;

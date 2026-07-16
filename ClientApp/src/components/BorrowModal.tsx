@@ -3,19 +3,29 @@ import { useGetClientById } from "../Features/Client/hooks/client.mutation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { useBorrow } from "../Features/Borrows/hooks/borrow.mutation";
+import { useCreateBorrow } from "../Features/Borrows/hooks/borrow.mutation";
+import {
+  useFullfillReserve,
+  useReserve,
+} from "../Features/Reservations/hooks/reserve.mutation";
 
 type BorrowModalProps = {
-  bookCopyId: number;
+  bookCopyId?: number;
+  bookId?: number;
+  reserveId?: number;
   bookTitle: string;
   serialNumber: string;
+  modalMode: "borrow" | "reserve" | "fulfill";
   onClose: () => void;
 };
 
 const BorrowModal = ({
   bookCopyId,
+  bookId,
+  reserveId,
   bookTitle,
   serialNumber,
+  modalMode,
   onClose,
 }: BorrowModalProps) => {
   const [clientId, setClientId] = useState<number>(0);
@@ -48,7 +58,9 @@ const BorrowModal = ({
     onClose();
   };
 
-  const borrowMutation = useBorrow({ onClose: handleCloseAndReset });
+  const borrowMutation = useCreateBorrow({ onClose: handleCloseAndReset });
+  const reserveMutation = useReserve({ onClose: handleCloseAndReset });
+  const fulfill = useFullfillReserve();
 
   useEffect(() => {
     if (isError && error) {
@@ -57,11 +69,22 @@ const BorrowModal = ({
   }, [isError]);
 
   const handleBorrow = () => {
-    if (clientId > 0 && bookCopyId > 0) {
+    if (clientId > 0 && bookCopyId && bookCopyId > 0) {
       borrowMutation.mutate({ clientId: clientId, copyId: bookCopyId });
     }
   };
 
+  const handleReserve = () => {
+    if (clientId > 0 && bookId && bookId > 0) {
+      reserveMutation.mutate({ bookId: bookId, clientId: clientId });
+    }
+  };
+
+  const handleFulfill = () => {
+    if (clientId > 0 && reserveId) {
+      fulfill.mutate({ reserveId, clientId });
+    }
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-background-secondary rounded-xl shadow-xl border border-border p-6 w-full max-w-md relative">
@@ -71,7 +94,10 @@ const BorrowModal = ({
         >
           <X size={20} />
         </button>
-        <h3 className="text-lg font-bold text-secondary">Borrow Book Copy</h3>
+        <h3 className="text-lg font-bold text-secondary">
+          {modalMode === "borrow" && "Borrow Book Copy"}
+          {modalMode === "reserve" && "Reserve Book Copy"}
+        </h3>
         <p className="text-sm text-text-secondary mb-4 border-b border-border pb-2">
           Assign a physical copy to a registered member.
         </p>
@@ -83,7 +109,7 @@ const BorrowModal = ({
             <p className="uppercase text-primary font-semibold">
               Active Inventory
             </p>
-            <p className="font-bold">{bookTitle}</p>
+            <p className="font-bold text-text">{bookTitle}</p>
             <p className="text-text-secondary text-[12px]">{serialNumber}</p>
           </div>
         </div>
@@ -117,7 +143,7 @@ const BorrowModal = ({
               Searching for member...
             </p>
           ) : isError ? (
-            <p className="text-sm text-red-500 text-center font-semibold">
+            <p className="text-sm text-red text-center font-semibold">
               {error.detail}
             </p>
           ) : clientInfo ? (
@@ -146,13 +172,33 @@ const BorrowModal = ({
           </p>
         </div>
         <div className="mt-6 flex flex-row-reverse gap-4">
-          <button
-            onClick={handleBorrow}
-            type="button"
-            className="main-button flex gap-1 items-center text-sm"
-          >
-            Confirm Borrow <ArrowRight size={15} className="font-bold" />
-          </button>
+          {modalMode === "borrow" && (
+            <button
+              onClick={handleBorrow}
+              type="button"
+              className="main-button flex gap-1 items-center text-sm"
+            >
+              Confirm Borrow <ArrowRight size={15} className="font-bold" />
+            </button>
+          )}
+          {modalMode === "reserve" && (
+            <button
+              onClick={handleReserve}
+              type="button"
+              className="main-button flex gap-1 items-center text-sm"
+            >
+              Confirm Reserve <ArrowRight size={15} className="font-bold" />
+            </button>
+          )}
+          {modalMode === "fulfill" && (
+            <button
+              onClick={handleFulfill}
+              type="button"
+              className="main-button flex gap-1 items-center text-sm"
+            >
+              Fulfill <ArrowRight size={15} className="font-bold" />
+            </button>
+          )}
           <input
             onClick={handleCloseAndReset}
             type="button"

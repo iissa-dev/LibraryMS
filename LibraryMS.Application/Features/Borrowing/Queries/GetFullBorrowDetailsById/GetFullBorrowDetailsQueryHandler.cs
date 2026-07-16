@@ -9,19 +9,18 @@ public sealed class GetFullBorrowDetailsQueryHandler(IAppDbContext context)
 {
     public async Task<Result<PagedResult<BorrowDetails>>> Handle(GetFullBorrowDetailsQuery request, CancellationToken cancellationToken)
     {
-        var client = await context.Clients
-            .AsNoTracking()
-            .Include(c => c.Person)
-            .FirstOrDefaultAsync(c => c.Id == request.ClientId, cancellationToken);
-
-        if (client is null)
-            return Result<PagedResult<BorrowDetails>>.Failure($"Client with Id {request.ClientId} not found");
         var query = context.BorrowingRecords
-            .AsNoTracking()
-            .Where(b => b.ClientId == request.ClientId)
-            .OrderByDescending(b => b.CreatedOn);
+            .AsNoTracking();
 
-        var pagedResult = await context.BorrowingRecords
+        if (request.ClientId.HasValue)
+        {
+            query = query.Where(b => b.ClientId == request.ClientId);
+        }
+
+        var pagedResult = await query
+            .IgnoreQueryFilters()
+            .OrderByDescending(b => b.CreatedOn)
+            .ThenByDescending(b => b.Id)
             .ToPagedResultAsync(
                 request.PageNumber,
                 request.PageSize,
@@ -32,14 +31,17 @@ public sealed class GetFullBorrowDetailsQueryHandler(IAppDbContext context)
                     {
                         BookId = b.BookCopy.BookId,
                         Title = b.BookCopy.Book.Title,
-                        Author = b.BookCopy.Book.BookAuthors.Select(a => a.Author.FirstName + " " + a.Author.LastName).ToList()
+                        Author = new List<string>() // don't fetch it here to prevent duplicate
                     },
                     Borrower = new ClientSummaryDto
                     {
-                        ClientId = client.Id,
-                        LibraryCardNumber = client.LibraryCardNumber,
-                        ClientName = $"{client.Person.FirstName} {client.Person.LastName}" ?? "Unknown"
+                        ClientId = b.ClientId,
+                        LibraryCardNumber = b.Client.LibraryCardNumber,
+                        ClientName = b.Client.Person != null
+                            ? b.Client.Person.FirstName + " " + b.Client.Person.LastName
+                            : "Unknown"
                     },
+                    CopyId = b.CopyId,
                     BorrowDate = b.BorrowingDate,
                     DueDate = b.DueDate,
                     ReturnDate = b.ActualReturnDate,
@@ -48,6 +50,28 @@ public sealed class GetFullBorrowDetailsQueryHandler(IAppDbContext context)
                 },
                 cancellationToken
             );
+
+        // Get the authors
+        if (pagedResult.Items != null && pagedResult.Items.Any())
+        {
+            var bookIds = pagedResult.Items
+                .Select(d => d.Book.BookId)
+                .Distinct()
+                .ToList();
+
+            var bookAuthorsMap = await context.BookAuthors
+                .AsNoTracking()
+                .Where(ba => bookIds.Contains(ba.BookId))
+                .Select(ba => new { ba.BookId, AuthorName = ba.Author.FirstName + " " + ba.Author.LastName })
+                .ToListAsync(cancellationToken);
+
+            foreach (var item in pagedResult.Items)
+            {
+                item.Book.Author = bookAuthorsMap
+                    .Where(ba => ba.BookId == item.Book.BookId)
+                    .Select(ba => ba.AuthorName);
+            }
+        }
 
         return Result<PagedResult<BorrowDetails>>.Success(pagedResult);
     }

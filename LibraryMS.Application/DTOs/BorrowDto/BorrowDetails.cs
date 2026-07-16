@@ -9,6 +9,7 @@ public class BorrowDetails
     public BookSummaryDto Book { get; set; } = null!;
     public ClientSummaryDto Borrower { get; set; } = null!;
 
+    public int CopyId { get; set; }
     public DateTime BorrowDate { get; set; } = DateTime.UtcNow;
     public DateTime DueDate { get; set; }
     public DateTime? ReturnDate { get; set; }

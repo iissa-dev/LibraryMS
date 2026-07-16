@@ -29,10 +29,9 @@ public sealed class CreateBorrowingsCommandHandler(IAppDbContext context, IPubli
         if (copy.CopyStatus == CopyStatus.Reserved)
         {
             var activeReservation = await context.Reservations
-                .FirstOrDefaultAsync(r => r.BookCopyId == copy.Id &&
-                    (r.ReservationsStatus == ReservationsStatus.ReadyForPickup ||
-                    r.ReservationsStatus == ReservationsStatus.Notified),
-                    cancellationToken);
+                .Specify(new HasActiveReservation(request.CopyId))
+                .SingleOrDefaultAsync(cancellationToken);
+                
             if (activeReservation is not null)
             {
                 if (activeReservation.ClientId != request.ClientId)
