@@ -38,12 +38,12 @@ const Login = () => {
   return (
     <div className="flex min-h-screen justify-center items-center flex-col bg-background mx-2 md:mx-0 relative">
       <div className="bg-primary p-2 rounded-md shadow-[0_0_10px] shadow-slate-300">
-        <BookOpenText className="text-white " size={30} />
+        <BookOpenText className="text-white" size={30} />
       </div>
-      <p className="font-bold text-xl mt-2">Lexicon Systems</p>
+      <p className="font-bold text-xl mt-2 text-text">Lexicon Systems</p>
 
       <div className="main-card mt-5 bg-background-secondary z-10">
-        <h2 className="font-bold text-2xl mb-1">Welcome Back</h2>
+        <h2 className="font-bold text-2xl mb-1 text-text">Welcome Back</h2>
         <p className="text-text-secondary text-[12px]">
           Please enter your details to access the librarian portal
         </p>
@@ -51,7 +51,7 @@ const Login = () => {
         <form className="mt-5" onSubmit={handleSubmit}>
           <div>
             <label
-              className="text-[12px] font-bold select-none"
+              className="text-[12px] font-bold select-none text-text"
               htmlFor="username"
             >
               USERNAME
@@ -67,7 +67,7 @@ const Login = () => {
           </div>
           <div className="mt-4">
             <label
-              className="text-[12px] font-bold select-none"
+              className="text-[12px] font-bold select-none text-text"
               htmlFor="password"
             >
               PASSWORD

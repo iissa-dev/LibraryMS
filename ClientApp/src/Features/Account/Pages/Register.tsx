@@ -23,7 +23,7 @@ const Register = () => {
   return (
     <div className="flex min-h-screen justify-center items-center flex-col bg-background m-2 md:m-0 relative">
       <div className="main-card border-t-4 border-t-primary">
-        <h2 className="font-bold md:text-2xl mb-1">Create Reader Account</h2>
+        <h2 className="font-bold md:text-2xl mb-1 text-text">Create Reader Account</h2>
         <p className="text-text-secondary text-sm md:text-[16px] text-wrap">
           Register to browse the catalog and manage your loans
         </p>
@@ -36,7 +36,7 @@ const Register = () => {
           {INPUTS.map((input) => (
             <div key={input.id} className={`${input.gridOrder}`}>
               <label
-                className="text-[12px] font-bold select-none"
+                className="text-[12px] font-bold select-none text-text"
                 htmlFor={input.id}
               >
                 {input.placeholder}
@@ -59,7 +59,7 @@ const Register = () => {
             />
           </div>
           <div className="border-t border-text py-5 col-span-2 flex items-center gap-2 justify-center">
-            <p className="text-sm">Already have an account?</p>{" "}
+            <p className="text-sm text-text">Already have an account?</p>{" "}
             <p
               onClick={() => {
                 navigate("/login");
