@@ -50,10 +50,13 @@ apiClient.interceptors.response.use(
       | (InternalAxiosRequestConfig & { _retry?: boolean })
       | undefined;
 
+    const isLogin = error.config?.url?.includes("/Auth/login");
+    const body = error.response?.data;
     if (
       error.response?.status === 401 &&
       originalRequest &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !isLogin
     ) {
       originalRequest._retry = true;
 
@@ -72,12 +75,8 @@ apiClient.interceptors.response.use(
       }
     }
 
-    if (
-      error.response?.data &&
-      typeof error.response?.data === "object" &&
-      "title" in error.response?.data
-    ) {
-      const problem = error.response?.data as ProblemDetails;
+    if (body && typeof body === "object" && "title" in body) {
+      const problem = body as ProblemDetails;
 
       const validationErrors = Object.values(problem.errors ?? {})
         .flat()
@@ -92,16 +91,12 @@ apiClient.interceptors.response.use(
       });
     }
 
-    if (
-      error.response?.data &&
-      typeof error.response.data === "object" &&
-      "isSuccess" in error.response.data
-    ) {
+    if (body && typeof body === "object" && "isSuccess" in body) {
       const problem = error.response?.data as Result;
       return Promise.reject({
         title: "Application Error",
         detail: problem.error || "Operation failed",
-        status: error.response.status || 400,
+        status: error.response?.status || 400,
       });
     }
 

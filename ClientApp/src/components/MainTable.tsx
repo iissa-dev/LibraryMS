@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, type LucideProps } from "lucide-react";
-import type { ForwardRefExoticComponent, RefAttributes } from "react";
+import { type ForwardRefExoticComponent, type RefAttributes } from "react";
 
 type actionParams = {
   Icon: ForwardRefExoticComponent<
@@ -25,6 +25,7 @@ function getStatusStyle(value: string) {
 
   switch (status) {
     case "available":
+    case "completed":
       return {
         style: "bg-green/30 rounded-2xl px-2 py-1 text-green text-[12px]",
         label: status.charAt(0).toUpperCase() + status.slice(1),
@@ -39,6 +40,20 @@ function getStatusStyle(value: string) {
   }
 }
 
+function formatData(key: string, value: string) {
+  if (
+    key.toLowerCase().includes("created") ||
+    key.toLowerCase().includes("date")
+  ) {
+    return new Date(value).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  return value;
+}
 const MainTable = <T extends Record<string, any>>({
   tableHeader,
   tableData,
@@ -50,7 +65,7 @@ const MainTable = <T extends Record<string, any>>({
   hasNextPage,
   hasPreviousPage,
   setPageNumber,
-}: tableParams<T>) => {
+}: tableParams<T>) => {  
   const hasActions = actions;
   const totalColumns = hasActions ? tableHeader.length + 1 : tableHeader.length;
   const hanleShowId = (str: string) => {
@@ -70,7 +85,7 @@ const MainTable = <T extends Record<string, any>>({
       <div className="overflow-x-scroll rounded-md">
         <table className="w-full">
           {/* Header */}
-          <thead>
+          <thead className="text-text">
             <tr>
               {tableHeader &&
                 tableHeader.map((h, i) => {
@@ -79,7 +94,7 @@ const MainTable = <T extends Record<string, any>>({
                   return (
                     <th
                       key={i}
-                      className="px-6 py-4 text-xs font-bold uppercase tracking-widest bg-border"
+                      className="px-6 py-4 text-xs font-bold uppercase tracking-widest bg-border "
                     >
                       {h}
                     </th>
@@ -94,14 +109,17 @@ const MainTable = <T extends Record<string, any>>({
           </thead>
 
           {/* Body */}
-          <tbody className="border-t-transparent border-border border">
+          <tbody className="border-t-transparent border-border border text-text text-nowrap">
             {tableData &&
               tableData.map((row, i) => (
-                <tr key={i} className="text-center border-b border-border">
+                <tr
+                  key={i}
+                  className="text-center border-b border-border transition-all duration-300 hover:bg-background-secondary"
+                >
                   {Object.entries(row).map(([key, cell], j) => {
                     if (hanleShowId(key)) return null;
                     const status = getStatusStyle(String(cell));
-
+                    const value = formatData(key, cell);
                     return (
                       <td key={j} className="px-6 py-4 text-[12px] font-medium">
                         {key.toLowerCase().includes("status") ? (
@@ -109,7 +127,7 @@ const MainTable = <T extends Record<string, any>>({
                             {status?.label}
                           </span>
                         ) : (
-                          <span>{cell}</span>
+                          <span>{value}</span>
                         )}
                       </td>
                     );
@@ -131,7 +149,7 @@ const MainTable = <T extends Record<string, any>>({
             {tableData.length === 0 && (
               <tr className="text-center text-text-secondary">
                 <td className="p-2" colSpan={totalColumns}>
-                  Copies not found!
+                  Entities not found!
                 </td>
               </tr>
             )}
@@ -143,7 +161,7 @@ const MainTable = <T extends Record<string, any>>({
       <div className="flex justify-between items-center">
         <p className="px-6 py-4 text-[12px] font-medium text-text-secondary">
           Showing <span>{pageNumber}</span> to <span>{totalPages}</span> of{" "}
-          <span>{totalEntries}</span> copies
+          <span>{totalEntries}</span> entities
         </p>
         <div>
           <button

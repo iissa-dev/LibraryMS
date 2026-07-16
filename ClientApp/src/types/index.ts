@@ -104,7 +104,11 @@ export interface ResponseBookCopiesDto {
   serialNumber: string;
   status: string;
 }
-
+export interface BookSummaryDto {
+  bookId: number;
+  title: string;
+  author: string[];
+}
 // ======== Client Dto ========
 export interface ClientResponseDto {
   clientId: number;
@@ -114,4 +118,32 @@ export interface ClientResponseDto {
   libraryCardNumber: string;
   createdOn: string;
   country: string;
+}
+export interface ClientSummaryDto {
+  clientId: number;
+  clientName: string;
+  libraryCardNumber: string;
+}
+// ======== Borrow Dto ========
+export interface BorrowDetails {
+  borrowId: number;
+  book: BookSummaryDto;
+  borrower: ClientSummaryDto;
+  borrowDate: Date;
+  copyId: number;
+  dueDate: Date;
+  returnDate?: Date;
+  status: string;
+  fineAmount: number;
+}
+
+// ======== Reservation Dto ========
+export interface ClientReservationDto {
+  reservationId: number;
+  bookId: number;
+  bookTitle: string;
+  reservationDate: Date;
+  statusName: string;
+  bookCopyId: number;
+  queuePosition: number;
 }

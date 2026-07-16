@@ -37,8 +37,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
 
   // init auth
-
   useEffect(() => {
+    const storedToken = getStoredToken();
+    if (!storedToken) {
+      setLoading(false);
+      return;
+    }
     const init = async () => {
       try {
         const res: User | any = await apiClient.get<User>("/Auth/me");

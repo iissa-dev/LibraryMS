@@ -23,7 +23,7 @@ public static class DependencyInjection
         {
             options.AddPolicy("ReactAppPolicy", policy =>
             {
-                policy.WithOrigins("http://localhost:5173")
+                policy.WithOrigins("http://localhost:5173", "http://192.168.100.45:5173", "https://barstool-grower-churn.ngrok-free.dev")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();

@@ -10,9 +10,10 @@ export default defineConfig({
     emptyOutDir: false,
   },
   server: {
+    // allowedHosts: true,
+    host: true,
     proxy: {
       "/api": {
-        target: "",
         changeOrigin: true,
         secure: false,
       },

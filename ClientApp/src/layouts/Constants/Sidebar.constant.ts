@@ -1,4 +1,10 @@
-import { LayoutDashboard, LibraryBig, Warehouse } from "lucide-react";
+import {
+  Handshake,
+  LayoutDashboard,
+  LibraryBig,
+  Users,
+  Warehouse,
+} from "lucide-react";
 
 export const SIDEBAR_ITEMS = [
   { path: "/", label: "Dashboard", icons: LayoutDashboard, onlyAdmin: false },
@@ -7,11 +13,23 @@ export const SIDEBAR_ITEMS = [
     label: "Book Management",
     icons: LibraryBig,
     onlyAdmin: false,
-    },
+  },
   {
     path: "/bookInventory",
     label: "Book Inventory",
     icons: Warehouse,
+    onlyAdmin: false,
+  },
+  {
+    path: "/loans",
+    label: "Loans",
+    icons: Handshake,
+    onlyAdmin: false,
+  },
+  {
+    path: "/member",
+    label: "Members",
+    icons: Users,
     onlyAdmin: false,
   },
 ] as const;

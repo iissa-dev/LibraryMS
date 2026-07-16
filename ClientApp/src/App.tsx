@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Dashboard from "./Features/Dashboard/Pages/Dashboard";
 import BookManagement from "./Features/Book/Pages/BookManagement";
 import NotFoundPage from "./Util/NotFoundPage";
-import BookFromPage from "./Features/Book/Pages/BookFromPage";
+import BookFormPage from "./Features/Book/Pages/BookFromPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Login from "./Features/Account/Pages/Login";
@@ -11,14 +11,28 @@ import { AuthProvider } from "./context/AuthContext";
 import Register from "./Features/Account/Pages/Register";
 import BookCopy from "./Features/BookCopy/pages/BookCopy";
 import PrivateRoute from "./Util/PrivateRoute";
+import Borrow from "./Features/Borrows/pages/Borrow";
+import DarkModeButton from "./components/DarkModeButton";
+import Members from "./Features/Client/pages/Members";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster position="bottom-right" />
-
+      <Toaster
+        position="bottom-right"
+        containerStyle={{ backgroundColor: "" }}
+        toastOptions={{
+          style: {
+            backgroundColor: "var(--color-background)",
+            color: "var(--color-text)",
+          },
+        }}
+      />
+      <div className="hidden">
+        <DarkModeButton />
+      </div>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -45,7 +59,7 @@ function App() {
               path="/book/new"
               element={
                 <PrivateRoute>
-                  <BookFromPage />
+                  <BookFormPage />
                 </PrivateRoute>
               }
             />
@@ -53,7 +67,7 @@ function App() {
               path="/bookManagement/view/:bookId"
               element={
                 <PrivateRoute>
-                  <BookFromPage readOnly={true} />
+                  <BookFormPage readOnly={true} />
                 </PrivateRoute>
               }
             />
@@ -61,7 +75,7 @@ function App() {
               path="/bookManagement/edit/:bookId"
               element={
                 <PrivateRoute allowdRoles={["admin", "employee"]}>
-                  <BookFromPage />
+                  <BookFormPage />
                 </PrivateRoute>
               }
             />
@@ -81,7 +95,24 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route
+              path="/loans"
+              element={
+                <PrivateRoute>
+                  <Borrow />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="member"
+              element={
+                <PrivateRoute>
+                  <Members />
+                </PrivateRoute>
+              }
+            />
           </Route>
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>

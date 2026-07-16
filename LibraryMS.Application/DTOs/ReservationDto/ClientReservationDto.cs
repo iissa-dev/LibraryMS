@@ -6,7 +6,6 @@ public class ClientReservationDto
 
     public int BookId { get; init; }
     public string BookTitle { get; init; } = string.Empty;
-    public IEnumerable<string> AuthorName { get; init; } = [];
 
     public DateTime ReservationDate { get; init; }
     public string StatusName { get; init; } = string.Empty;

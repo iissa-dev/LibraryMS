@@ -22,7 +22,7 @@ export const useRegister = ({ method }: Params) => {
 
 export const useGetClientById = (id: number, enabled: boolean) => {
   return useQuery<ClientResponseDto, ProblemDetails>({
-    queryKey: ["get-client-profile"],
+    queryKey: ["get-client-profile", id],
     queryFn: () => clientService.getByClientId(id),
     enabled: enabled,
     retry: false,

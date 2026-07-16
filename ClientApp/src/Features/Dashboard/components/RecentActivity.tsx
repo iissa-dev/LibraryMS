@@ -39,10 +39,8 @@ const RecentActivity = () => {
             </div>
             {/* action */}
             <div>
-              <p className="text-[16px] text-text-secondary">
-                {item.actionName}
-              </p>
-              <span className="text-[12px] text-neutral block">
+              <p className="text-[16px] text-text">{item.actionName}</p>
+              <span className="text-[12px] text-text-secondary block">
                 {item.duration}
               </span>
             </div>

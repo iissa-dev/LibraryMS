@@ -30,7 +30,7 @@ const UpComingDueDates = () => {
         {UPCOMING_LIST.map((item, i) => (
           <div
             key={i}
-            className="bg-neutral/20 flex flex-col mb-2 p-2 rounded-sm"
+            className="bg-neutral/20 flex flex-col mb-2 p-2 rounded-sm text-text-secondary  "
           >
             <p className="text-primary font-bold text-[12px] uppercase">
               {item.date}
