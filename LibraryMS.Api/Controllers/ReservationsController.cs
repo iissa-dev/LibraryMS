@@ -8,12 +8,12 @@ namespace LibraryMS.Api.Controllers;
 public class ReservationsController(ISender sender, IAuthorizationService authService) : BaseController
 {
     [HttpPost("reserve")]
-    [Authorize(Roles = "Client")]
+    [Authorize]
     public async Task<IActionResult> ReserveAsync([FromBody] ReserveCommand command)
     {
         var authorizationResult = await authService.AuthorizeAsync(User, command.ClientId, new EntityAccessRequirement());
-        if (!authorizationResult.Succeeded)
-            return Forbid();
+        // if (!authorizationResult.Succeeded)
+        //     return Forbid();
 
         var result = await sender.Send(command);
         return HandleResult(result);
@@ -27,19 +27,19 @@ public class ReservationsController(ISender sender, IAuthorizationService authSe
         return HandleResult(result);
     }
 
-    [HttpPut("{reserveId:int}/fulfill")]
+    [HttpPut("fulfill")]
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> FulFillAsync([FromRoute] int reserveId)
+    public async Task<IActionResult> FulFillAsync([FromBody] FulfillReservationCommand command)
     {
-        var result = await sender.Send(new FulfillReservationCommand(reserveId));
+        var result = await sender.Send(command);
         return HandleResult(result);
     }
 
-    [HttpGet("client/{clientId:int}")]
+    [HttpGet()]
     [Authorize]
-    public async Task<IActionResult> GetAllClientReservationAsync([FromRoute] int clientId)
+    public async Task<IActionResult> GetAllClientReservationAsync([FromQuery] GetAllClientReservationQuery query)
     {
-        var result = await sender.Send(new GetAllClientReservationQuery(clientId));
+        var result = await sender.Send(query);
         return HandleResult(result);
     }
 }

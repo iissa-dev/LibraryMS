@@ -19,10 +19,8 @@ public sealed class CancelCommandHandler(IAppDbContext context)
         reserveExisting.CancelReservation(); // update status
         context.Reservations.Update(reserveExisting);
 
-        // check if the reserve happen
         if (reserveExisting.ReadyToBorrow)
         {
-            // check for any waiting reserve for the same book
             var nextReservation = await context.Reservations
                 .Specify(new HasWaitingQueueSpecification(reserveExisting.BookId))
                 .OrderBy(r => r.ReservationDate)

@@ -16,7 +16,7 @@ public sealed class FulfillReservationCommandHandler(IAppDbContext context)
 
         if (!reservation.ReadyToBorrow)
         {
-            return Result.Failure("Cannt complete the reserve the reserve not ready to borrow");
+            return Result.Failure("Cannot complete the reservation. The reservation is not ready to borrow.");
         }
 
         var hasFine = await context.Fines
@@ -28,27 +28,31 @@ public sealed class FulfillReservationCommandHandler(IAppDbContext context)
 
         var setting = await context.GetApplicationSettingsAsync(cancellationToken);
 
-        reservation.ReservationsStatus = ReservationsStatus.Completed;
-        context.Reservations.Update(reservation);
-
         // Borrow the Book
 
         var copy = await context.BookCopies
             .SingleOrDefaultAsync(c => c.Id == reservation.BookCopyId, cancellationToken);
-        if (copy is not null)
+
+        if (copy is null) return Result.Failure("Book copy associated with this reservation was not found.");
+
+        var activeReservation = await context.Reservations
+            .Specify(new HasActiveReservation(copy.Id))
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (activeReservation is not null && activeReservation.ClientId != request.ClientId)
+            return Result.Failure("This copy is reserved for another client in the waiting list.");
+
+        reservation.Fulfill(copy);
+
+        var borrowingRecord = new BorrowingRecord
         {
-            reservation.Fulfill(copy);
+            ClientId = reservation.ClientId,
+            CopyId = copy.Id,
+            BorrowingDate = DateTime.UtcNow,
+            DueDate = DateTime.UtcNow.AddDays(setting.DefaultBorrowDays)
+        };
 
-            var borrowingRecord = new BorrowingRecord
-            {
-                ClientId = reservation.ClientId,
-                CopyId = copy.Id,
-                BorrowingDate = DateTime.UtcNow,
-                DueDate = DateTime.UtcNow.AddDays(setting.DefaultBorrowDays)
-            };
-
-            context.BorrowingRecords.Add(borrowingRecord);
-        }
+        context.BorrowingRecords.Add(borrowingRecord);
 
         await context.SaveChangesAsync(cancellationToken);
         return Result.Success;
