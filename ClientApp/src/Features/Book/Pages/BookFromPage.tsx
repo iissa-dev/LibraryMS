@@ -17,7 +17,7 @@ import {
 import { API_BASE_URL } from "../../../api/apiClient";
 import { GenreMapping } from "../../../constants/Genre";
 
-const BookFromPage = ({ readOnly = false }) => {
+const BookFormPage = ({ readOnly = false }) => {
   const { bookId } = useParams<{ bookId: string }>();
   const location = useLocation();
   const navigation = useNavigate();
@@ -227,7 +227,7 @@ const BookFromPage = ({ readOnly = false }) => {
                   <img
                     src={finalImageSrc || ""}
                     alt="Book Cover Image"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full  object-contain"
                   />
                   {/* Remvoe Image Button */}
 
@@ -342,4 +342,4 @@ const BookFromPage = ({ readOnly = false }) => {
   );
 };
 
-export default BookFromPage;
+export default BookFormPage;

@@ -27,9 +27,9 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
     navigation(`/bookInventory/view/${book.id}`);
   };
   return (
-    <div className="w-full flex flex-col bg-white border border-border shadow-sm rounded-card overflow-hidden transition-all duration-300 hover:shadow-md">
+    <div className="w-full flex flex-col bg-background-secondary border border-border shadow-sm rounded-card overflow-hidden transition-all duration-300 hover:shadow-md">
       {/* Image */}
-      <div className="relative w-full h-64 bg-neutral/10 overflow-hidden">
+      <div className="relative w-full h-64 bg-border/50 overflow-hidden">
         <span
           className={`absolute top-4 right-4 z-10 text-[12px] p-1 rounded-md ${book.isDeleted ? " text-red bg-red/30" : "text-green bg-green/30"}`}
         >
@@ -71,7 +71,7 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
           <div className="flex items-center gap-3">
             <button
               onClick={handleEditClick}
-              className="cursor-pointer text-text-secondary hover:text-blue-600 transition-colors duration-200"
+              className="cursor-pointer text-text-secondary hover:text-primary transition-colors duration-200"
               type="button"
               title="Edit Book"
             >
@@ -79,7 +79,7 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
             </button>
             <button
               onClick={() => onDelete && onDelete(book.id)}
-              className="cursor-pointer text-text-secondary hover:text-red-600 transition-colors duration-200"
+              className="cursor-pointer text-text-secondary hover:text-red transition-colors duration-200"
               type="button"
               title="Delete Book"
             >

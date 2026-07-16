@@ -25,7 +25,7 @@ const BookManagement = () => {
 
   useEffect(() => {
     setPageNumber(1);
-  }, [filterByTitle, showDeletedData]); 
+  }, [filterByTitle, showDeletedData]);
   return (
     <div>
       {/* Top of page */}
@@ -65,12 +65,12 @@ const BookManagement = () => {
                 className="cursor-pointer select-none transition-colors duration-200"
               >
                 <Trash2
-                  className={showDeletedData ? "text-red" : "text-neutral"}
+                  className={showDeletedData ? "text-red" : "text-text"}
                 />
               </label>
             </div>
           </div>
-          <button 
+          <button
             onClick={handleAddNewBook}
             className="flex gap-1 items-center main-button mt-4 md:mt-0 w-fit"
             type="button"

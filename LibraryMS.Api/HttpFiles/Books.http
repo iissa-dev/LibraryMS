@@ -63,7 +63,7 @@ Content-Type: {{contentType}}
 
 ### 6. Restore Deleted Book
 ### Reverts the soft delete state, making the book available in active queries again.
-PUT {{baseUrl}}/Books/restore/10
+PUT {{baseUrl}}/Books/restore/1
 Content-Type: {{contentType}}
 
 ### ------------------------------------------------------------------
@@ -93,5 +93,5 @@ Content-Type: {{contentType}}
 }
 
 ### 11. Rstore Copy
-PUT {{baseUrl}}/Books/43/restore-copy
+PUT {{baseUrl}}/Books/1/restore-copy
 Content-Type: {{contentType}}
