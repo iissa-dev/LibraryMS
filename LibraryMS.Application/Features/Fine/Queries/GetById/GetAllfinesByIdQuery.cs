@@ -5,5 +5,5 @@ namespace LibraryMS.Application.Features.Fine.Queries.GetById;
 public sealed record GetAllFinesByIdQuery(
     int PageNumber,
     int PageSize,
-    int ClientId
+    int? ClientId
 ) : IRequest<Result<PagedResult<FineDetails>>>;

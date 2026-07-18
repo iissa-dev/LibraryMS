@@ -147,3 +147,15 @@ export interface ClientReservationDto {
   bookCopyId: number;
   queuePosition: number;
 }
+
+// ======== Fines Dto ========
+
+export interface FineDetailes {
+  fineId: number;
+  borrowingDate: Date;
+  returnDate: Date;
+  paymentStatus: string;
+  reason: string;
+  fineAmount: number;
+  borrower: ClientSummaryDto;
+}

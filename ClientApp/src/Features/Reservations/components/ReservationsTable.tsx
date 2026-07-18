@@ -10,7 +10,7 @@ import { PopupType } from "../../../types/popup.types";
 import type { ClientReservationDto } from "../../../types";
 import BorrowModal from "../../../components/BorrowModal";
 
-const ReservationsTable = ({ clientId }: { clientId: number }) => {
+const ReservationsTable = ({ clientId }: { clientId?: number }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const { confirm, Modal } = usePopup();
   const { data: reservationsData } = useGetReservationsByClientId({

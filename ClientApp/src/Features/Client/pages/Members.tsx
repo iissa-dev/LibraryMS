@@ -4,19 +4,23 @@ import { useParams } from "react-router-dom";
 import BorrowTable from "../../Borrows/pages/BorrowTable";
 import { useGetClientById } from "../hooks/client.mutation";
 import ReservationsTable from "../../Reservations/components/ReservationsTable";
+import FineTable from "../../Fine/components/fineTable";
 
 type TapsName = "borrowing" | "reservation" | "fine";
 const Members = () => {
   const { clientId } = useParams();
 
   const [search, setSearch] = useState(clientId ?? "");
+  const ClientId = clientId
+    ? Number(clientId)
+    : search
+      ? Number(search)
+      : undefined;
+
   const enabledSearch = search ? true : clientId ? true : false;
 
   const [activeTap, setActiveTap] = useState<TapsName>("borrowing");
-  const { data: clientInfo } = useGetClientById(
-    clientId ? Number(clientId) : search ? Number(search) : 0,
-    enabledSearch,
-  );
+  const { data: clientInfo } = useGetClientById(ClientId ?? 0, enabledSearch);
   return (
     <div>
       <MainSearch
@@ -93,30 +97,18 @@ const Members = () => {
         <div>
           {activeTap === "borrowing" && (
             <div>
-              <BorrowTable
-                clientId={
-                  clientId
-                    ? Number(clientId)
-                    : search
-                      ? Number(search)
-                      : undefined
-                }
-              />
+              <BorrowTable clientId={ClientId} />
             </div>
           )}
         </div>
         <div>
           {activeTap === "reservation" && (
             <div>
-              <ReservationsTable
-                clientId={
-                  clientId ? Number(clientId) : search ? Number(search) : 0
-                }
-              />
+              <ReservationsTable clientId={ClientId} />
             </div>
           )}
         </div>
-        <div>{activeTap === "fine" && <div>Borrowing History</div>}</div>
+        <div>{activeTap === "fine" && <FineTable clientId={ClientId} />}</div>
       </div>
     </div>
   );

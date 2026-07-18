@@ -26,11 +26,17 @@ function getStatusStyle(value: string) {
   switch (status) {
     case "available":
     case "completed":
+    case "paid":
       return {
         style: "bg-green/30 rounded-2xl px-2 py-1 text-green text-[12px]",
         label: status.charAt(0).toUpperCase() + status.slice(1),
       };
 
+    case "unpaid":
+      return {
+        style: "bg-red/30 rounded-2xl px-2 py-1 text-red text-[12px]",
+        label: status.charAt(0).toUpperCase() + status.slice(1),
+      };
     default:
       return {
         style:
@@ -65,7 +71,7 @@ const MainTable = <T extends Record<string, any>>({
   hasNextPage,
   hasPreviousPage,
   setPageNumber,
-}: tableParams<T>) => {  
+}: tableParams<T>) => {
   const hasActions = actions;
   const totalColumns = hasActions ? tableHeader.length + 1 : tableHeader.length;
   const hanleShowId = (str: string) => {

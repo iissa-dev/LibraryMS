@@ -4,18 +4,12 @@ using LibraryMS.Application.Features.Fine.Queries.GetById;
 
 namespace LibraryMS.Api.Controllers;
 
-public class FinesController(ISender sender, IAuthorizationService authService) : BaseController
+public class FinesController(ISender sender) : BaseController
 {
-    [HttpGet("client/{clientId}")]
+    [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetAllFinesById([FromRoute] int clientId, [FromQuery] GetAllFinesByIdQuery query)
+    public async Task<IActionResult> GetAllFinesById([FromQuery] GetAllFinesByIdQuery query)
     {
-        var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
-        if (!authorizationResult.Succeeded)
-            return Forbid();
-
-        if (clientId != query.ClientId) return BadRequest(Result.Failure("Mismatch ClientId"));
-
         var result = await sender.Send(query);
         return HandleResult(result);
     }

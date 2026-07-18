@@ -10,20 +10,16 @@ public sealed class GetAllfinesByIdQueryHandler(IAppDbContext context)
     /// Get fine for some client
     public async Task<Result<PagedResult<FineDetails>>> Handle(GetAllFinesByIdQuery request, CancellationToken cancellationToken)
     {
-        var clientInfo = await context.Clients
-        .AsNoTracking()
-        .Include(c => c.Person)
-        .SingleOrDefaultAsync(c => c.Id == request.ClientId, cancellationToken);
-
-        if (clientInfo is null)
-            return Result<PagedResult<FineDetails>>.Failure($"Client with Id {request.ClientId} not found");
-
         var query = context.Fines
-            .AsNoTracking()
-            .Where(f => f.ClientId == request.ClientId)
-            .OrderByDescending(f => f.CreatedOn);
+            .AsNoTracking();
+
+        if (request.ClientId.HasValue)
+        {
+            query = query.Where(f => f.ClientId == request.ClientId);
+        }
 
         var pagedResult = await query
+            .OrderByDescending(f => f.CreatedOn)
             .ToPagedResultAsync(
                 request.PageNumber,
                 request.PageSize,
@@ -37,9 +33,9 @@ public sealed class GetAllfinesByIdQueryHandler(IAppDbContext context)
                     FineAmount = f.FineAmount,
                     Borrower = new ClientSummaryDto
                     {
-                        ClientId = clientInfo.Id,
-                        LibraryCardNumber = clientInfo.LibraryCardNumber,
-                        ClientName = $"{clientInfo.Person.FirstName} {clientInfo.Person.LastName}"
+                        ClientId = f.ClientId,
+                        LibraryCardNumber = f.Client.LibraryCardNumber,
+                        ClientName = f.Client.Person.FirstName + " " + f.Client.Person.LastName
                     }
                 },
                 cancellationToken
