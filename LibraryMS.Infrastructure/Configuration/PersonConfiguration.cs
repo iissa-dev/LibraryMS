@@ -7,7 +7,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.ToTable("People");
         builder.HasKey(p => p.Id);
 
-        builder.HasOne(u => u.Country)
+        builder.HasOne(p => p.Country)
             .WithMany()
             .HasForeignKey(p => p.CountryId)
             .OnDelete(DeleteBehavior.Restrict);

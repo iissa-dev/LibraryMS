@@ -6,6 +6,7 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
     {
         builder.ToTable("Employees");
         builder.HasKey(a => a.Id);
+        builder.HasIndex(e => e.PersonId).IsUnique();
 
         builder.HasQueryFilter(e => !e.IsDeleted);
 

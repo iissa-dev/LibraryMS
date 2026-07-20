@@ -6,6 +6,7 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
     {
         builder.ToTable("Users");
         builder.HasKey(f => f.Id);
+        builder.HasIndex(u => u.PersonId).IsUnique();
 
         builder.HasQueryFilter(u => !u.IsDeleted);
 

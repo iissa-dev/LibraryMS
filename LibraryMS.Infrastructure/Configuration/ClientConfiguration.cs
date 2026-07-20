@@ -7,6 +7,8 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
         builder.ToTable("Clients");
         builder.HasKey(a => a.Id);
 
+        builder.HasIndex(c => c.PersonId);
+
         builder.HasQueryFilter(c => !c.IsDeleted);
 
         builder.HasOne(c => c.Person)
@@ -15,13 +17,12 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(c => c.LibraryCardNumber)
-            .HasColumnType("nvarchar(50)")
             .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(c => c.IsDeleted)
             .HasColumnType("bit")
-            .HasDefaultValue(0)
+            .HasDefaultValue(false)
             .IsRequired();
     }
 }
