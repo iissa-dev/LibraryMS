@@ -7,7 +7,7 @@ import type {
 
 const controllerName = "/Reservations/";
 
-export type fulfillType = {
+export type reserveParams = {
   reserveId: number;
   clientId: number;
 };
@@ -23,9 +23,9 @@ export const reserveService = {
       bookId,
       clientId,
     }),
-  cancel: (reserveId: number): Promise<void> =>
-    apiClient.put(`${controllerName}${reserveId}/cancel`),
-  fulfuill: (data: fulfillType): Promise<void> =>
+  cancel: (params: reserveParams): Promise<void> =>
+    apiClient.put(`${controllerName}cancel`, { ...params }),
+  fulfuill: (data: reserveParams): Promise<void> =>
     apiClient.put(`${controllerName}fulfill`, {
       ...data,
     }),

@@ -12,14 +12,16 @@ public sealed class UpdateBookCommandHandler(IAppDbContext context, IFileService
             return Result.Failure("Book not found.");
 
         var imageUrl = "";
-        if (request.BookImageUrl is null)
+        if (request.BookImageUrl is not null)
         {
-            if (book.BookImageUrl is not null)
+            if (!string.IsNullOrEmpty(book.BookImageUrl))
                 fileService.DeleteImage(book.BookImageUrl);
+
+            imageUrl = await fileService.UploadImageAsync(request.BookImageUrl, "books");
         }
         else
         {
-            imageUrl = await fileService.UploadImageAsync(request.BookImageUrl, "books");
+            imageUrl = book.BookImageUrl; // keep the old one
         }
         book.UpdateBookDetails(request.Title,
             request.ISBN,

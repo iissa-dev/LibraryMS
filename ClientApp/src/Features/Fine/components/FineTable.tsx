@@ -28,6 +28,7 @@ const FineTable = ({ clientId }: { clientId?: number }) => {
       borrowingDate: item.borrowingDate,
       returnDate: item.returnDate,
       reason: item.reason,
+      fineAmount: item.fineAmount.toString() + "$",
       paymentStatus: item.paymentStatus,
     };
   });
@@ -51,6 +52,7 @@ const FineTable = ({ clientId }: { clientId?: number }) => {
           "borrowing Date",
           "return date",
           "reason",
+          "Amount",
           "paymentStatus",
         ]}
         actions={[

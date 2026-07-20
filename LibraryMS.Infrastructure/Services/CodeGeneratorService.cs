@@ -2,6 +2,7 @@ namespace LibraryMS.Infrastructure.Services;
 
 public class CodeGeneratorService : ICodeGeneratorService
 {
+    private readonly Random random = new();
     public string GenerateEmployeeNumber()
     {
         var year = DateTime.UtcNow.Year;
@@ -11,8 +12,6 @@ public class CodeGeneratorService : ICodeGeneratorService
     public string GenerateIsbn()
     {
         // For more info visit https://en.wikipedia.org/wiki/ISBN
-        var random = new Random();
-
         // Global prefix, so far 978 or 979 have been made availabe by GS1
         var prefix = "978";
 

@@ -32,4 +32,10 @@ public static class ClaimExtensions
 
         return userClaim;
     }
+
+    public static string? GetClientId(this ClaimsPrincipal user)
+    {
+        var clientIdClaim = user.FindFirst("ClientId")?.Value;
+        return clientIdClaim;
+    }
 }

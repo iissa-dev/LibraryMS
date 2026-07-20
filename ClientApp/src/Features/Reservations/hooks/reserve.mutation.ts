@@ -6,7 +6,7 @@ import type {
 } from "../../../types";
 import {
   reserveService,
-  type fulfillType,
+  type reserveParams,
   type ReservationType,
 } from "../services/reserveService";
 import useGenericMutation from "../../../hooks/useGenericMutation";
@@ -43,7 +43,7 @@ export const useReserve = ({ onClose }: { onClose: () => void }) => {
 };
 
 export const useCancelReserve = () => {
-  const mutation = useGenericMutation<number, void>(
+  const mutation = useGenericMutation<reserveParams, void>(
     (reserveId) => reserveService.cancel(reserveId),
     [reserveKey],
     "Reserve Cancel",
@@ -53,7 +53,7 @@ export const useCancelReserve = () => {
 };
 
 export const useFullfillReserve = () => {
-  const mutation = useGenericMutation<fulfillType, void>(
+  const mutation = useGenericMutation<reserveParams, void>(
     (data) => reserveService.fulfuill(data),
     [reserveKey],
     "Fulfill Reserve Successfully",

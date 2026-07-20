@@ -49,6 +49,8 @@ export interface TokenResult {
   accessToken: string;
   userName: string;
   role: "Admin" | "Employee" | "Client";
+  clientId?: number;
+  personId: number;
 }
 
 export interface PagedResult<T> {

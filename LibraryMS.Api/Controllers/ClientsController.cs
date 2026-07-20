@@ -44,11 +44,12 @@ public class ClientsController(ISender sender, IAuthorizationService authService
     [Authorize]
     public async Task<IActionResult> UpdateClientAsynTask([FromRoute] int clientId, UpdateClientCommand command)
     {
-        if (clientId != command.ClientId) return BadRequest(Result.Failure("Client Id mismatch"));
+        // client Id should send if the client login not  the employee 
+        // if (clientId != command.ClientId) return BadRequest(Result.Failure("Client Id mismatch"));
 
-        var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
-        if (!authorizationResult.Succeeded)
-            return Forbid();
+        // var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
+        // if (!authorizationResult.Succeeded)
+        //     return Forbid();
 
         var result = await sender.Send(command);
         return HandleResult(result);

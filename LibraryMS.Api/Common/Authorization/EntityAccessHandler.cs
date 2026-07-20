@@ -3,35 +3,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryMS.Api.Common.Authorization;
 
-public class EntityAccessHandler(IAppDbContext context, IIdentityUser identityUser)
+public class EntityAccessHandler
     : AuthorizationHandler<EntityAccessRequirement, int>
 {
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext ctx, EntityAccessRequirement requirement, int clientId)
+    protected override Task HandleRequirementAsync(
+        AuthorizationHandlerContext ctx,
+        EntityAccessRequirement requirement,
+        int clientId)
     {
-        var userId = ctx.User.GetUserId();
-
-        var isStaff = ctx.User.IsInRole("Admin") || ctx.User.IsInRole("Employee");
-        if (isStaff)
+        var role = ctx.User.GetUserRole();
+        if (role == "Admin" || role == "Employee")
         {
             ctx.Succeed(requirement);
-            return;
+            return Task.CompletedTask;
         }
 
-        var client = await context.Clients
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == clientId);
-
-        if (client is null)
-        {
-            ctx.Fail();
-            return;
-        }
-
-        var userPersonId = await identityUser.GetPersonIdByUserIdAsync(userId);
-
-        if (userPersonId == client.PersonId)
+        var clientIdClaim = ctx.User.GetClientId();
+        if (clientIdClaim is not null && int.TryParse(clientIdClaim, out int result) && result == clientId)
             ctx.Succeed(requirement);
         else
             ctx.Fail();
+
+        return Task.CompletedTask;
     }
 }

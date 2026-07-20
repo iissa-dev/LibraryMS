@@ -14,7 +14,7 @@ public class Reservation : BaseEntity
     public Client Client { get; set; } = null!;
     public Book Book { get; set; } = null!;
 
-    public BookCopy BookCopy { get; set; } = null!;
+    public BookCopy? BookCopy { get; set; }
 
     public void CancelReservation()
     {

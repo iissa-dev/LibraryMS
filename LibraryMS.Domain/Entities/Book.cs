@@ -2,7 +2,7 @@
 
 namespace LibraryMS.Domain.Entities;
 
-public class Book : BaseEntity, ISoftDeleteable
+public class Book : SoftDeleteableEntity
 {
     public string Title { get; set; } = string.Empty;
     public string ISBN { get; set; } = string.Empty;
@@ -16,9 +16,7 @@ public class Book : BaseEntity, ISoftDeleteable
     public ICollection<BookCopy> Copies { get; set; } = new List<BookCopy>();
     public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 
-    public bool IsDeleted { get; set; }
-    public DateTime? DeletedOn { get; set; }
-    public void Delete()
+    public override void Delete()
     {
         IsDeleted = true;
         DeletedOn = DateTime.UtcNow;
@@ -30,7 +28,7 @@ public class Book : BaseEntity, ISoftDeleteable
         }
     }
 
-    public void UnDelete()
+    public override void UnDelete()
     {
         IsDeleted = false;
         DeletedOn = null;

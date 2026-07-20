@@ -38,8 +38,9 @@ public class ReservationCheckJob(IServiceProvider provider, ILogger<ReservationC
         var readyReservations = await context.Reservations
             .Include(r => r.Book)
             .Include(r => r.BookCopy)
-            .Where(r => r.ReservationsStatus == ReservationsStatus.ReadyForPickup
-                        && r.BookCopy.CopyStatus == CopyStatus.Reserved)
+            .Where(r => r.BookCopy != null
+                    && r.ReservationsStatus == ReservationsStatus.ReadyForPickup
+                    && r.BookCopy.CopyStatus == CopyStatus.Reserved)
             .ToListAsync(cancellationToken);
 
         if (!readyReservations.Any()) return;

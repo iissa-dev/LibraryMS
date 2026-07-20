@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
 using LibraryMS.Application.DTOs.AuthDto;
@@ -56,7 +57,7 @@ public class JwtTokenHandler : IJwtTokenHandler
     private async Task<Result<TokenResult>> GenerateFullTokenResultInternal(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
-
+        var role = roles.FirstOrDefault() ?? nameof(Roles.Client);
         var accessToken = GenerateAccessTokenInternal(user, roles.FirstOrDefault() ?? nameof(Roles.Client));
 
         var refreshToken = new RefreshToken
@@ -68,14 +69,27 @@ public class JwtTokenHandler : IJwtTokenHandler
 
         _context.RefreshTokens.Add(refreshToken);
 
-        return Result<TokenResult>.Success(new TokenResult
+        var result = new TokenResult
         {
             UserId = user.Id,
             AccessToken = accessToken,
             RefreshToken = refreshToken.RefreshTokenJwt,
             UserName = user.UserName!,
-            Role = roles.FirstOrDefault() ?? nameof(Roles.Client)
-        });
+            Role = role,
+            PersonId = user.PersonId,
+            ClientId = null
+        };
+
+        if (role == nameof(Roles.Client))
+        {
+            var client = await _context
+                .Clients.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.PersonId == user.PersonId);
+            if (client is not null)
+                result.ClientId = client.Id;
+        }
+
+        return Result<TokenResult>.Success(result);
     }
 
     private string GenerateAccessTokenInternal(ApplicationUser user, string role)
@@ -84,8 +98,17 @@ public class JwtTokenHandler : IJwtTokenHandler
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.UserName!),
-            new(ClaimTypes.Role, role)
+            new(ClaimTypes.Role, role),
+            new("PersonId", user.PersonId.ToString())
         };
+
+        if (role == nameof(Roles.Client))
+        {
+            var client = _context.Clients
+                .FirstOrDefault(c => c.PersonId == user.PersonId);
+            if (client is not null)
+                claims.Add(new("ClientId", client.Id.ToString()));
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]!));
 

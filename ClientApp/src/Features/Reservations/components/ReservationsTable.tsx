@@ -32,7 +32,7 @@ const ReservationsTable = ({ clientId }: { clientId?: number }) => {
     );
     if (!ok || !id) return;
 
-    cancelMutation.mutate(id);
+    cancelMutation.mutate({ clientId: Number(clientId), reserveId: id });
   };
   return (
     <div>
@@ -58,7 +58,6 @@ const ReservationsTable = ({ clientId }: { clientId?: number }) => {
             action: (data: ClientReservationDto) => {
               setOpenFulfill(true);
               setCurrentBorrowInfo(data);
-              console.log(data);
             },
           },
         ]}
@@ -79,7 +78,6 @@ const ReservationsTable = ({ clientId }: { clientId?: number }) => {
           modalMode={"fulfill"}
           onClose={() => setOpenFulfill(false)}
           reserveId={currentBorrowInfo?.reservationId}
-        
         />
       )}
     </div>

@@ -23,7 +23,7 @@ public class BorrowsController(ISender sender) : BaseController
     }
 
     [HttpGet("get-full-borrow-details")]
-    // [Authorize]
+    [Authorize]
     public async Task<IActionResult> GetFullBorrowDetails([FromQuery] GetFullBorrowDetailsQuery query)
     {
         var result = await sender.Send(query);

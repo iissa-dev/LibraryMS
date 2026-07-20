@@ -11,19 +11,21 @@ public class ReservationsController(ISender sender, IAuthorizationService authSe
     [Authorize]
     public async Task<IActionResult> ReserveAsync([FromBody] ReserveCommand command)
     {
-        var authorizationResult = await authService.AuthorizeAsync(User, command.ClientId, new EntityAccessRequirement());
-        // if (!authorizationResult.Succeeded)
-        //     return Forbid();
+        var authResult = await authService.AuthorizeAsync(User, command.ClientId, new EntityAccessRequirement());
+        if (!authResult.Succeeded) return Forbid();
 
         var result = await sender.Send(command);
         return HandleResult(result);
     }
 
-    [HttpPut("{reserveId:int}/cancel")]
-    [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> CancelAsync([FromRoute] int reserveId)
+    [HttpPut("cancel")]
+    [Authorize]
+    public async Task<IActionResult> CancelAsync([FromBody] CancelCommand command)
     {
-        var result = await sender.Send(new CancelCommand(reserveId));
+        var authResult = await authService.AuthorizeAsync(User, command.ClientId, new EntityAccessRequirement());
+        if (!authResult.Succeeded) return Forbid();
+
+        var result = await sender.Send(command);
         return HandleResult(result);
     }
 
@@ -35,7 +37,7 @@ public class ReservationsController(ISender sender, IAuthorizationService authSe
         return HandleResult(result);
     }
 
-    [HttpGet()]
+    [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetAllClientReservationAsync([FromQuery] GetAllClientReservationQuery query)
     {

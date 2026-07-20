@@ -3,7 +3,7 @@ using LibraryMS.Application.Features.Settings.Queries;
 
 namespace LibraryMS.Api.Controllers;
 
-[Authorize("Admin,Employee")]
+[Authorize(Roles = "Admin,Employee")]
 public class SettingsController(ISender sender) : BaseController
 {
     [HttpGet]

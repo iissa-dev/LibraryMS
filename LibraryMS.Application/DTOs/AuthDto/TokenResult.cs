@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace LibraryMS.Application.DTOs.AuthDto;
+﻿namespace LibraryMS.Application.DTOs.AuthDto;
 
 public class TokenResult
 {
@@ -10,4 +8,7 @@ public class TokenResult
     public string RefreshToken { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+
+    public int? ClientId { get; set; }
+    public int PersonId { get; set; }
 }
