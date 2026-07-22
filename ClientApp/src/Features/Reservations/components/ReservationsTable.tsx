@@ -59,6 +59,7 @@ const ReservationsTable = ({ clientId }: { clientId?: number }) => {
               setOpenFulfill(true);
               setCurrentBorrowInfo(data);
             },
+            allowdRoles: ["Admin", "Employee"],
           },
         ]}
         tableData={reservationsData?.items ?? []}

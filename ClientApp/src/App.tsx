@@ -98,7 +98,7 @@ function App() {
             <Route
               path="/loans"
               element={
-                <PrivateRoute>
+                <PrivateRoute allowdRoles={["admin", "employee"]}>
                   <Borrow />
                 </PrivateRoute>
               }

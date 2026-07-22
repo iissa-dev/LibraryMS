@@ -4,6 +4,7 @@ using LibraryMS.Application.Features.Client.Commands.RestoreClient;
 using LibraryMS.Application.Features.Client.Commands.UpdateClient;
 using LibraryMS.Application.Features.Client.Queries.GetAllClient;
 using LibraryMS.Application.Features.Client.Queries.GetClientById;
+using LibraryMS.Domain.Enums;
 
 namespace LibraryMS.Api.Controllers;
 
@@ -21,9 +22,12 @@ public class ClientsController(ISender sender, IAuthorizationService authService
     [Authorize]
     public async Task<IActionResult> GetClientProfileByIdUserAsync(int clientId)
     {
-        var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
-        if (!authorizationResult.Succeeded)
-            return Forbid();
+        var role = User.GetUserRole();
+        if (role == nameof(Roles.Client))
+        {
+            var authResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
+            if (!authResult.Succeeded) return Forbid();
+        }
 
         var result = await sender.Send(new GetClientByIdQuery(clientId));
         return HandleResult(result);
@@ -44,12 +48,12 @@ public class ClientsController(ISender sender, IAuthorizationService authService
     [Authorize]
     public async Task<IActionResult> UpdateClientAsynTask([FromRoute] int clientId, UpdateClientCommand command)
     {
-        // client Id should send if the client login not  the employee 
-        // if (clientId != command.ClientId) return BadRequest(Result.Failure("Client Id mismatch"));
-
-        // var authorizationResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
-        // if (!authorizationResult.Succeeded)
-        //     return Forbid();
+        string? role = User.GetUserRole();
+        if (role == nameof(Roles.Client))
+        {
+            var authResult = await authService.AuthorizeAsync(User, clientId, new EntityAccessRequirement());
+            if (!authResult.Succeeded) return Forbid();
+        }
 
         var result = await sender.Send(command);
         return HandleResult(result);

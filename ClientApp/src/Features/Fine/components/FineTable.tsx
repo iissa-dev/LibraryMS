@@ -61,6 +61,7 @@ const FineTable = ({ clientId }: { clientId?: number }) => {
             action: (data: FineDetailes) => {
               handlePay(data.fineId);
             },
+            allowdRoles: ["Admin", "Employee"],
           },
         ]}
         tableData={tableDataMapping}

@@ -1,10 +1,12 @@
 import { ArrowLeft, ArrowRight, type LucideProps } from "lucide-react";
 import { type ForwardRefExoticComponent, type RefAttributes } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 type actionParams = {
   Icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
+  allowdRoles?: string[];
   action: (data?: any) => void;
 };
 type tableParams<T> = {
@@ -60,10 +62,22 @@ function formatData(key: string, value: string) {
 
   return value;
 }
+
+function hasAuthorization(
+  action: actionParams,
+  userRole: string = "Client",
+): boolean {
+  if (!action.allowdRoles || action.allowdRoles.length === 0) return true;
+
+  const normalizedUserRole = userRole.toLowerCase();
+  return action.allowdRoles.some(
+    (role) => role.toLowerCase() === normalizedUserRole,
+  );
+}
 const MainTable = <T extends Record<string, any>>({
   tableHeader,
   tableData,
-  actions,
+  actions = [],
   showId,
   pageNumber,
   totalPages,
@@ -72,8 +86,20 @@ const MainTable = <T extends Record<string, any>>({
   hasPreviousPage,
   setPageNumber,
 }: tableParams<T>) => {
-  const hasActions = actions;
-  const totalColumns = hasActions ? tableHeader.length + 1 : tableHeader.length;
+  const { user } = useAuth();
+
+  const userRole = user?.role ?? "Client";
+
+  const authorizedActions = actions.filter((action) =>
+    hasAuthorization(action, userRole),
+  );
+
+  const hasAuthorizedActions = authorizedActions.length > 0;
+
+  const totalColumns = hasAuthorizedActions
+    ? tableHeader.length + 1
+    : tableHeader.length;
+
   const hanleShowId = (str: string) => {
     return !showId && str.toLowerCase().includes("id");
   };
@@ -106,7 +132,7 @@ const MainTable = <T extends Record<string, any>>({
                     </th>
                   );
                 })}
-              {hasActions && (
+              {hasAuthorizedActions && (
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest bg-border">
                   Action
                 </th>
@@ -139,8 +165,8 @@ const MainTable = <T extends Record<string, any>>({
                     );
                   })}
                   <td>
-                    {hasActions &&
-                      actions.map((action, i) => (
+                    {hasAuthorizedActions &&
+                      authorizedActions.map((action, i) => (
                         <action.Icon
                           key={i}
                           size={18}

@@ -36,13 +36,13 @@ const Login = () => {
     }
   };
   return (
-    <div className="flex min-h-screen justify-center items-center flex-col bg-background mx-2 md:mx-0 relative">
+    <div className="flex min-h-screen justify-center items-center flex-col bg-background  md:mx-0 relative">
       <div className="bg-primary p-2 rounded-md shadow-[0_0_10px] shadow-slate-300">
         <BookOpenText className="text-white" size={30} />
       </div>
       <p className="font-bold text-xl mt-2 text-text">Lexicon Systems</p>
 
-      <div className="main-card mt-5 bg-background-secondary z-10">
+      <div className="main-card mt-5 bg-background-secondary z-10 mx-2">
         <h2 className="font-bold text-2xl mb-1 text-text">Welcome Back</h2>
         <p className="text-text-secondary text-[12px]">
           Please enter your details to access the librarian portal
@@ -117,10 +117,10 @@ const Login = () => {
           </div>
 
           <div className="mt-5 flex flex-col text-center">
-            <div className="text-xs font-mono text-neutral/60 justify-center gap-1.5">
+            <div className="text-xs font-mono text-text-secondary/60 justify-center gap-1.5">
               &copy; {currentYear.year()} Lexicon Systems. All Rights Reserved.
             </div>
-            <div className="text-xs font-mono text-neutral/60 justify-center gap-1.5">
+            <div className="text-xs font-mono text-text-secondary/60 justify-center gap-1.5">
               Crafted with{"  "}
               {
                 <span className="text-red animate-pulse text-base">♥</span>

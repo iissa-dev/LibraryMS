@@ -18,13 +18,13 @@ export const SIDEBAR_ITEMS = [
     path: "/bookInventory",
     label: "Book Inventory",
     icons: Warehouse,
-    onlyAdmin: false,
+    onlyAdmin: true,
   },
   {
     path: "/loans",
     label: "Loans",
     icons: Handshake,
-    onlyAdmin: false,
+    onlyAdmin: true,
   },
   {
     path: "/member",

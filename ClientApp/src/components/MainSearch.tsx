@@ -5,9 +5,15 @@ type Params = {
   search: string;
   setSearch: (value: string) => void;
   placeholder: string;
+  disabled?: boolean;
 };
 
-const MainSearch = ({ search, setSearch, placeholder }: Params) => {
+const MainSearch = ({
+  search,
+  setSearch,
+  placeholder,
+  disabled = false,
+}: Params) => {
   const [searchLocal, setSearchLocal] = useState(search);
 
   const triggerSearch = () => {
@@ -35,6 +41,7 @@ const MainSearch = ({ search, setSearch, placeholder }: Params) => {
         <div className="relative w-full flex items-center">
           <Search className="absolute left-3 text-neutral w-5 h-5 pointer-events-none" />
           <input
+            disabled={disabled}
             className="search-input pl-10"
             type="text"
             id="search"
@@ -43,7 +50,7 @@ const MainSearch = ({ search, setSearch, placeholder }: Params) => {
             onChange={handleEmptyFilter}
           />
         </div>
-        <button type="submit" className="main-button ml-4">
+        <button type="submit" className="main-button ml-4" disabled={disabled}>
           <Search className="left-3 text-white w-5 h-5 pointer-events-none" />
         </button>
       </form>

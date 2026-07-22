@@ -3,9 +3,11 @@ import { SIDEBAR_ITEMS } from "./Constants/Sidebar.constant";
 import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import useClickOutside from "../hooks/useClickOutside";
+import { useAuth } from "../hooks/useAuth";
 
 const Sidebar = () => {
   const { pathname } = useLocation();
+  const { user } = useAuth();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const menuRef = useClickOutside(() => setShowMoreMenu(false));
 
@@ -17,6 +19,7 @@ const Sidebar = () => {
   const activeItemStyle = `font-sans font-semibold text-white bg-white/10 tracking-wide border-b-2 sm:border-b-0 sm:border-r-2 border-primary`;
   const inactiveItemStyle = `bg-none text-white/40`;
 
+  const isAdminOrEmployee = user?.role == "Admin" || user?.role === "Employee";
   return (
     <div
       className="bg-neutral/95 text-white p-2 sm:p-4 z-50 transition-all duration-300
@@ -36,6 +39,7 @@ const Sidebar = () => {
           {SIDEBAR_ITEMS.map((item, i) => {
             const isActive = pathname === item.path;
             const Icon = item.icons;
+            if (!isAdminOrEmployee && item.onlyAdmin) return;
             return (
               <li
                 key={i}
@@ -61,6 +65,7 @@ const Sidebar = () => {
           {visibleMobileItems.map((item, i) => {
             const isActive = pathname === item.path;
             const Icon = item.icons;
+            if (!isAdminOrEmployee && item.onlyAdmin) return;
             return (
               <li
                 key={i}
@@ -95,6 +100,7 @@ const Sidebar = () => {
                   {hiddenMobileItems.map((item, i) => {
                     const isActive = pathname === item.path;
                     const Icon = item.icons;
+                    if (!isAdminOrEmployee && item.onlyAdmin) return;
                     return (
                       <Link
                         key={i}

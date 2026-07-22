@@ -50,7 +50,6 @@ const BorrowTable = ({ clientId }: { clientId?: number }) => {
     });
   };
 
-  
   return (
     <div>
       <div>{/*Filter*/}</div>
@@ -72,6 +71,7 @@ const BorrowTable = ({ clientId }: { clientId?: number }) => {
               action: (data: returnType) => {
                 handleReturnBook(data);
               },
+              allowdRoles: ["Admin", "Employee"],
             },
           ]}
           tableData={mapping}
